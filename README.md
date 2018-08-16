@@ -1,1 +1,6 @@
-# fels_bioinformatics_meetup
+# Fels Bioinformatics Meetup
+
+## Getting Started
+
+### Week 1 (Sep 7)
+
