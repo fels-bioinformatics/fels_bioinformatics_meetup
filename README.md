@@ -43,7 +43,7 @@ packages <- ('dplyr', 'forcats', 'ggplot2', 'purrr', 'readr', 'stringr', 'tibble
 install.packages(packages)
 ```
 
-## Content
+# Content
 ### Week 1 (Sep 7)
 
 Outline
