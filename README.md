@@ -46,6 +46,12 @@ install.packages(packages)
 ## Content
 ### Week 1 (Sep 7)
 
+Outline
+
+- What's a meetup? / What's changing with meetups?
+- Getting Started (same as above)
+- Introduction to Rmarkdown
+
 
 
 
