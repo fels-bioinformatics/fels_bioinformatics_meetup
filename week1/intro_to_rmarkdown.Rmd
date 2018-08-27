@@ -1,0 +1,104 @@
+---
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(viridis)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+## How it Works
+
+R Markdown documents consist of mixtures of two main sections/types: simple plain text and code chunks. What you're reading right now is in plain text. Here you can type whatever you want and add some simple formatting (more on that later). Below, the gray boxes are code chunks. With RStudio as an interface you can run the code directly either by:
+
+1. Clicking the green arrow on the upper right hand side of the code chunk
+2. Clicking "Run Current Chunk" in the "Run" drop down menu above
+3. Hitting `Command` + `Shift` + `Return` on a Mac or `Ctrl` + `Shift` + `Enter` on a PC
+
+**Your cursor must be between the backticks for RStudio to run the correct chunk**
+
+```{r}
+image(volcano, col = viridis(200))
+```
+
+## How to Make a Code Chunk
+
+To make a code chunk, type three backticks (\`), follow by a lowercase r between curly braces ({}), hit `Enter`, and finish with three more backticks on the next line.
+
+```{r}
+# this is a code chunk!
+```
+
+## How to Format Your Text
+
+Markdown allows the use of simple symbols to format your plain text.
+
+### Format Text Appearance
+
+Throughout this document, there are a bunch of lines with #s in front of them. The # sign creates headings, lines of the document that are emphasized through some combination of, depending on the interpreter, larger font size, larger line weight/bolding, italicizing, and underling. One # creates the largest header, and with every ## added, headers become smaller and less emphasized.
+
+# Heading 1
+
+## Heading 2 
+
+### Heading 3
+
+#### Heading 4
+
+##### Heading 5
+
+###### Heading 6
+
+---
+
+To make text italicized add one * on either side of it.
+
+*This text will render italicized.*
+
+---
+
+To make text bold, add two ** to either side of it.
+
+**This text will render bold**
+
+### Lists
+
+You can either make an ordered list with numbers, ex:
+
+1. Item 1
+2. Item 2
+3. Item 3
+
+Or make an unordered list, a bullet-point list, ex:
+
+- Item 1
+- Item 2
+- Item 3
+
+### Miscellaneous Formatting
+
+Adding three dashes (-) creates a horizontal line break, ex:
+
+---
+
+You can add inline code with single backticks (\`) around it, ex: `head(iris)`. This code won't execute, but will look like a small code chunk inside the text to an interpreter.
+
+---
+
+You can make a link with square brackets [] followed by parentheses (), with the link text in the brackets and the link address in the parentheses.
+
+[All the material for the class is here](https://github.com/fels-bioinformatics/fels_bioinformatics_meetup)
+
+## Output R Markdown in Another File Format
+
+You can output R Markdown files as html, pdf, or word files by clicking `Knit` above. By default, R Markdown will give you an html file, but you can select the format in the dropdown menu beside the `Knit` button. Unlike using an interpreter to make the document look prettier, knitting an R Markdown document will run all the code in code chunks and show you the code and the results of the code in the final document.
+
+<br><br>
