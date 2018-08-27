@@ -19,8 +19,19 @@ To download R:
 
 ### Download RStudio
 
+Click on the link to go to R's homepage. <https://www.rstudio.com/>
+
+![RStudio homepage](rstudio_homepage_screenshot.png)
+
+To download RStudio:
+
+1. Click the Download link underneath the RStudio cartoon.
+2. Click the DOWNLOAD button for the FREE RStudio Desktop.
+3. Select your operating system from the list.
+4. The file should download to your computer and then you can install it like any other program.
+
 ### Install Packages
-Copy and paste the code below into the Console in RStudio.
+To install the main packages that will be required for meetups, open RStudio and copy and paste the code below into the **Console**.
 
 ```r
 install.packages('tidyverse')
