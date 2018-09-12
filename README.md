@@ -1,5 +1,3 @@
-# Fels Bioinformatics Meetup
-
 ## Getting Started
 
 ### Download R
@@ -48,13 +46,15 @@ install.packages(packages)
 
 Outline
 
-- What's a meetup? / What's changing with meetups?
+- [What's a meetup? / What's changing with meetups?]()
 - Getting Started (same as above)
 - [Introduction to Rmarkdown](week1/intro_to_rmarkdown.Rmd)
 
 Practice for the week is [here](week1/week1_intro_to_rmarkdown_practice.Rmd)
 
 ---
+
+### Week 2 (Sep 14)
 
 
 <br><br>

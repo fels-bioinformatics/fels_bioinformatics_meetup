@@ -1,0 +1,110 @@
+---
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(viridis)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R Markdown Practice
+
+## Practice with Code Chunks
+
+### Practice Running Code Chunks
+
+First, things first, run the code chunk at the very top of the document, to set things up. Remember you can run a code chunk by: 
+
+1. Clicking the green arrow on the upper right hand side of the code chunk
+2. Clicking "Run Current Chunk" in the "Run" drop down menu above
+3. Hitting `Command` + `Shift` + `Return` on a Mac or `Ctrl` + `Shift` + `Enter` on a PC
+
+
+
+Now try running code chunks each of the three ways. Run the first chunk below using the arrow inside it
+
+```{r}
+image(volcano, col = viridis(200))
+```
+
+Run this code chunk using the Run drop down menu
+
+```{r}
+image(volcano, col = viridis(200))
+```
+
+Run this code chunk using keyboard commands
+
+```{r}
+image(volcano, col = viridis(200))
+```
+
+You should have gotten the same output for all three chunks.
+
+### Make Your Own Code Chunk
+
+Remember, to create a code chunk
+
+1. Type three backticks (\`)
+2. Type curly braces ({})
+3. Type a lowercase r inside the curly braces
+4. Hit Enter twice
+5. Type three more backticks on the next line.
+
+Make your own code chunk in the space below, and then copy the code between backticks `image(volcano, col = viridis(200, option = 'A'))` and try running it.
+
+```{r}
+image(volcano, col = viridis(200, option = 'A'))
+```
+
+## Practice with Text Formatting
+
+For the lines of text below, add the appropriate symbols to make the text what it says. For example, if the line says, "Make me inline text" add backticks around it so it becomes inline text, `Make me inline text`. You can always reference the class materials or Google for help.
+
+---
+
+**Make me bold**
+
+---
+
+*Make me italicized*
+
+---
+
+### Make me a header (whatever size you want)
+
+---
+
+# Make me a different size of header (just not the same as the line above)
+
+---
+
+Make the stuff below into an unordered list.
+
+- satsuma
+- tomato
+- plum
+- star fruit
+- cherry
+
+---
+
+Make the stuff below into an ordered (numbered) list.
+
+1. banana
+2. pineapple
+3. apricot
+4. grape
+5. pomegranate
+
+## Knit
+
+Finally, try knitting this by hitting the `Knit` button in RStudio
+
+
+
+<br><br>
