@@ -46,11 +46,11 @@ install.packages(packages)
 
 Outline
 
-- [What's a meetup? / What's changing with meetups?]()
-- Getting Started (same as above)
+- What's a meetup? / What's changing with meetups? [(slides)](week1/bioinformatics_meetup_introduction_2018.09.07.pdf)
+- Getting Started (see section above)
 - [Introduction to Rmarkdown](week1/intro_to_rmarkdown.Rmd)
 
-Practice for the week is [here](week1/week1_intro_to_rmarkdown_practice.Rmd)
+Practice for the week is [here](week1/week1_intro_to_rmarkdown_practice.Rmd) and answers are [here in R markdown](week1/week1_intro_to_rmarkdown_practice_ANSWERKEY.Rmd) and [in html](week1/week1_intro_to_rmarkdown_practice_ANSWERKEY.html)
 
 ---
 
