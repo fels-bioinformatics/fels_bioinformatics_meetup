@@ -56,15 +56,26 @@ Note: If you have RStudio open, you'll need to restart before you can knit a PDF
 
 **Windows:**
 
+1. To install MiKTeX, go here <https://miktex.org/download>
+2. Click Download
+3. Execute the .exe files like normal
+4. During installation select the options below. Otherwise install as you normally do. 
+    - Install MiKTeX for anyone who uses the computer.
+    - Install missing packages on-the-fly: Yes
+
+Note: If you have RStudio open, you'll need to restart before you can knit a PDF.
+
 **Linux:**
 
 ## Resources
 
-Reference material used to :
+Reference material used while creating material for meetups:
 
 1. [R for Data Science](http://r4ds.had.co.nz/) by Hadley Wickham
 2. [Advanced R](http://adv-r.had.co.nz/) by Hadley Wickham
 3. Temple's BIO5312, [Biostatistics Fall 2017](http://sjspielman.org/bio5312_fall2017/) by Stephanie Spielman
+
+---
 
 # Content
 ### Week 1 (Sep 7)
