@@ -41,10 +41,33 @@ packages <- ('dplyr', 'forcats', 'ggplot2', 'purrr', 'readr', 'stringr', 'tibble
 install.packages(packages)
 ```
 
+### Install TeX
+
+TeX is a computer language/program for typesetting, particulary for math and other technical typesetting. RStudio needs it installed on your computer in order to create PDFs from your R markdown documents. To install, follow the instructions for your operating system below.
+
+**Mac:**
+
+1. To install MacTeX, go here <http://www.tug.org/mactex/>
+2. Click on MacTeX Download
+3. Click on MacTeX.pkg
+4. Install like any other program
+
+Note: If you have RStudio open, you'll need to restart before you can knit a PDF.
+
+**Windows:**
+
+**Linux:**
+
+## Resources
+
+Reference material used to :
+
+1. [R for Data Science](http://r4ds.had.co.nz/) by Hadley Wickham
+2. [Advanced R](http://adv-r.had.co.nz/) by Hadley Wickham
+3. Temple's BIO5312, [Biostatistics Fall 2017](http://sjspielman.org/bio5312_fall2017/) by Stephanie Spielman
+
 # Content
 ### Week 1 (Sep 7)
-
-Outline
 
 - What's a meetup? / What's changing with meetups? [(slides)](week1/bioinformatics_meetup_introduction_2018.09.07.pdf)
 - Getting Started (see section above)
@@ -55,6 +78,15 @@ Practice for the week is [here](week1/week1_intro_to_rmarkdown_practice.Rmd) and
 ---
 
 ### Week 2 (Sep 14)
+
+- Examining tables
+- Subsetting
+- Filtering and Selecting
+- [Rmarkdown demo file](week2/examine_subset_filter_data.Rmd)
+
+Practice for the week is [here](week2/wee2_practice_examine_filter_subset_data.Rmd)
+
+
 
 
 <br><br>
