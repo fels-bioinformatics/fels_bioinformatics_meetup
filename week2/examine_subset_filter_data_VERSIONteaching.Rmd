@@ -1,0 +1,146 @@
+---
+title: "Examine, Subset, and Filter Data"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(viridis)
+library(conflicted)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Examine, Subset and Filter Data
+
+## Examine/Look at Your Data
+
+```{r}
+iris
+```
+
+```{r}
+head(iris)
+```
+
+```{r}
+head(iris, 10)
+```
+
+```{r}
+tail(iris)
+```
+
+```{r}
+dim(iris)
+```
+
+```{r}
+str(iris)
+```
+
+## Quick Detour to Logicals
+
+These operators are how you compare values to each other. Keep them in mind for subsetting and filtering going forward.
+
+- equals `==`
+- not equal to `!=`
+- greater than `>`
+- greater than or equal to `>=`
+- less than `<`
+- less than or equal to `<=`
+- and `&`
+- or `|`
+
+## Subsetting
+
+### Basics
+
+```{r}
+iris[]
+```
+
+```{r}
+# return row 3, column 5
+iris[3,5]
+```
+
+```{r}
+# return row 1 in all columns (no number after the comma selects all columns)
+iris[1,]
+
+# return all rows in column 1 (no number before the comma selects all rows)
+iris[,1]
+```
+
+```{r}
+iris$Petal.Width
+```
+
+### Other stuff you can put in square brackets
+
+```{r}
+# drop the first column
+iris[,-1]
+```
+
+```{r}
+# select rows 1 to 5 and columns 2 to 4
+iris[1:5,2:4]
+```
+
+```{r}
+iris[c(37, 49, 132, 12, 77), c(1, 3)]
+```
+
+```{r}
+# get all columns and all rows where sepal length is greater than or equal to 5
+iris[iris$Sepal.Length >= 5,]
+
+# get all columns and all rows species is NOT viriginica
+iris[iris$Species != 'virginica',]
+```
+
+## Filtering And Selecting
+
+```{r}
+# load just the dplyr package
+library(dplyr)
+
+### OR
+
+# load the tidyverse
+library(tidyverse)
+```
+
+### `filter()`
+
+```{r}
+filter(iris, Petal.Length <= 2)
+```
+
+```{r}
+filter(iris, Petal.Length >= 2, Sepal.Length <= 5)
+```
+
+### `select()`
+
+```{r}
+select(iris, Species)
+```
+
+```{r}
+select(iris, Sepal.Width, Petal.Width, Species)
+```
+
+```{r}
+select(iris, -Species)
+```
+
+

@@ -1,0 +1,118 @@
+---
+title: 'Examine, Subset, and Filter Data: Week 2 Practice'
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(viridis)
+library(conflicted)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Examine, Subset and Filter Data
+### Week 2 Practice
+
+We'll use the built-in dataset ToothGrowth for this practice.
+
+## Examine Data
+
+Look at the `head()` of ToothGrowth
+
+```{r}
+
+```
+
+And the `tail()`
+
+```{r}
+
+```
+
+What are the dimensions of ToothGrowth?
+
+```{r}
+
+```
+
+What is ToothGrowth's structure?
+
+```{r}
+
+```
+
+## Subset Data
+
+Select the first column only using square brackets.
+
+```{r}
+
+```
+
+Select the 42nd row using square brackets.
+
+```{r}
+
+```
+
+Select rows 20 to 40 and columns 1 and 3 using square brackets.
+
+```{r}
+
+```
+
+Select the supp column using a dollar sign
+
+```{r}
+
+```
+
+## Filter/Select
+
+Filter ToothGrowth for a dose greater than 1
+
+```{r}
+
+```
+
+Filter ToothGrowth for a supplements that are NOT "VC" and length less than or equal to ten
+
+```{r}
+
+```
+
+Select all the columns, BUT the dose columns
+
+```{r}
+
+```
+
+
+## Anything Goes Challenge Questions
+
+Return only VC supplements, with length less than or equal to 10 and greater than or equal to 25.
+
+```{r}
+
+```
+
+Return length less than 10 or dose equals 2 and drop the supp column
+
+```{r}
+
+```
+
+
+
+
+

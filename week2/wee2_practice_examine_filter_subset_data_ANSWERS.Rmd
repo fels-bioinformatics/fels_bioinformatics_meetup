@@ -1,0 +1,134 @@
+---
+title: 'Examine, Subset, and Filter Data: Week 2 Practice'
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(viridis)
+library(conflicted)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Examine, Subset and Filter Data
+### Week 2 Practice
+
+We'll use the built-in dataset ToothGrowth for this practice.
+
+## Examine Data
+
+Look at the `head()` of ToothGrowth
+
+```{r}
+head(ToothGrowth)
+```
+
+And the `tail()`
+
+```{r}
+tail(ToothGrowth)
+```
+
+What are the dimensions of ToothGrowth?
+
+```{r}
+dim(ToothGrowth)
+```
+
+What is ToothGrowth's structure?
+
+```{r}
+str(ToothGrowth)
+```
+
+## Subset Data
+
+Select the first column only using square brackets.
+
+```{r}
+ToothGrowth[,1]
+```
+
+Select the 42nd row using square brackets.
+
+```{r}
+ToothGrowth[42,]
+```
+
+Select rows 20 to 40 and columns 1 and 3 using square brackets.
+
+```{r}
+ToothGrowth[20:40, c(1,3)]
+```
+
+Select the supp column using a dollar sign
+
+```{r}
+ToothGrowth$supp
+```
+
+## Filter/Select
+
+Filter ToothGrowth for a dose greater than 1
+
+```{r}
+filter(ToothGrowth, dose > 1)
+```
+
+Filter ToothGrowth for a supplements that are NOT "VC" and length less than or equal to ten
+
+```{r}
+filter(ToothGrowth, supp != 'VC', len < 10)
+```
+
+Select all the columns, BUT the dose columns
+
+```{r}
+select(ToothGrowth, len, supp)
+
+### OR
+
+select(ToothGrowth, -dose)
+```
+
+
+## Anything Goes Challenge Questions
+
+Return only VC supplements, with length less than or equal to 10 and greater than or equal to 25.
+
+```{r}
+ToothGrowth[(ToothGrowth$supp == 'VC' & (ToothGrowth$len <= 10 | ToothGrowth$len >= 25)),]
+
+### OR
+
+filter(ToothGrowth, supp == 'VC', len <= 10 | len >= 25)
+```
+
+Return length less than 10 or dose equals 2 and drop the supp column
+
+```{r}
+ToothGrowth[ToothGrowth$len < 10 | ToothGrowth$dose == 2, c(1, 3)]
+
+### OR
+
+select(filter(ToothGrowth, len < 10 | dose == 2), -supp)
+
+### OR
+
+filter(ToothGrowth, len < 10 | dose == 2) %>% select(-supp)
+```
+
+
+
+
+

@@ -1,0 +1,203 @@
+---
+title: "Examine, Subset, and Filter Data"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(viridis)
+library(conflicted)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Examine, Subset and Filter Data
+
+Here, we'll be using everyone's favorite dataset, iris! It's built into R, so no need to download or read in anything. (Don't forget to run the set up chunks at the top of the document before getting started)
+
+These topics aren't the flashiest or most interesting, but they're the most important. This is what you spend the majority of time doing.
+
+## Examine/Look at Your Data
+
+The first thing you need to with data is look at it. If you don't know how it's structured, how can you do anything with it?
+
+The simplest way is just to type the data table name and it will print. 
+
+```{r}
+iris
+```
+
+Be careful about doing this though! You can see that it printed out the entire table and some tables have thousands of rows! Use with caution. A much safer option is to use `head()` to print out the first 6 (by default) rows of the table.
+
+```{r}
+head(iris)
+```
+
+You can also specify how many rows of the table you want `head()` to print out.
+
+```{r}
+head(iris, 10)
+```
+
+You can use the opposite function of `head()`, `tail()` to look at the last 6 (by default) rows of the table
+
+```{r}
+tail(iris)
+```
+
+Another helpful thing to know is the number of rows and columns in your table, which you can get with `dim()`. Dim always prints the number of rows first, then the number of columns.
+
+```{r}
+dim(iris)
+```
+
+You might also want to know the overall structure of your table, which you can see with `str()`
+
+```{r}
+str(iris)
+```
+
+First, starting from the top row, `str()` shows you the class, aka the type of table R has your data stored in. For example, a matrix can only hold numbers, but a dataframe like iris is can hold mixed types of information in this case numbers and written categorical descriptions. (We'll talk about this more at a later time.) It tells you what the dimensions of the table are; there are 150 obs, rows, of 5 variables, columns. All of the rows starting with a $ represent columns. Each tells you the column name, the type of data in the column, numbers, characters, etc, and shows the first ten entries in the column.
+
+## Quick Detour to Logicals
+
+These operators are how you compare values to each other. Keep them in mind for subsetting and filtering going forward.
+
+- equals `==`
+- not equal to `!=`
+- greater than `>`
+- greater than or equal to `>=`
+- less than `<`
+- less than or equal to `<=`
+- and `&`
+- or `|`
+
+## Subsetting
+
+Frequently, you will only want to work with part of a table or look at only part of a table. To reduce the size of the table, you have to subset it. The two most useful operators (symbols) you can use to subset in R are square brackets `[]`, and dollar signs '$'. 
+
+### Basics
+
+When you subset a table with square brackets, you have to put square brackets next to the name of the table.
+
+```{r}
+iris[]
+```
+
+However, if you don't put anything inside the brackets, it returns the entire table, just like typing the name of the table. You have to supply numbers specifing the row number and column number, like in the chunk below.
+
+```{r}
+# return row 3, column 5
+iris[3,5]
+```
+
+This returns the value in row 3, column 5. But a single number isn't that helpful. You can get an entire row or column by supplying a number and leaving the other side of the comma blank, like below.
+
+```{r}
+# return row 1 in all columns (no number after the comma selects all columns)
+iris[1,]
+
+# return all rows in column 1 (no number before the comma selects all rows)
+iris[,1]
+```
+
+You can also get an entire column using the $ operator like below
+
+```{r}
+iris$Petal.Width
+```
+
+### Other stuff you can put in square brackets
+
+The majority of the time, you'll want more than a single row and/or column, so here are more complicated ways of subsetting.
+
+You can use negative numbers to drop rows and/or columns.
+
+```{r}
+# drop the first column
+iris[,-1]
+```
+
+You can separate numbers with a colon to select everything between them
+
+```{r}
+# select rows 1 to 5 and columns 2 to 4
+iris[1:5,2:4]
+```
+
+You can supply vectors (list values) to specify exactly which rows and columns you want
+
+```{r}
+iris[c(37, 49, 132, 12, 77), c(1, 3)]
+```
+
+You can use logicals to select data only of a certain type.
+
+```{r}
+# get all columns and all rows where sepal length is greater than or equal to 5
+iris[iris$Sepal.Length >= 5,]
+
+# get all columns and all rows species is NOT viriginica
+iris[iris$Species != 'virginica',]
+```
+
+## Filtering And Selecting
+
+Everything we've been doing so far today is included in R by default. `filter()` and `select()` are in the dplyr package, part of the tidyverse. Before you can use them you have to load either dplyr or the whole tidyverse.
+
+```{r}
+# load just the dplyr package
+library(dplyr)
+
+### OR
+
+# load the tidyverse
+library(tidyverse)
+```
+
+### `filter()`
+
+`filter()` selects rows based on the criteria you give it. You specify what column you want to filter on and by what values.
+
+```{r}
+filter(iris, Petal.Length <= 2)
+```
+
+You can filter on as many columns as you want.
+
+```{r}
+filter(iris, Petal.Length >= 2, Sepal.Length <= 5)
+```
+
+### `select()`
+
+`select()` selects columns
+
+```{r}
+select(iris, Species)
+```
+
+You can select multiple columns
+
+```{r}
+select(iris, Sepal.Width, Petal.Width, Species)
+```
+
+You can also drop columns by putting a minus sign, -, in front of them
+
+```{r}
+select(iris, -Species)
+```
+
+
+
+
