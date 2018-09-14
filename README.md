@@ -33,12 +33,12 @@ To download RStudio:
 To install the main packages that will be required for meetups, open RStudio and copy and paste the code below into the **Console**.
 
 ```r
-install.packages(c('tidyverse', 'viridis'))
+install.packages(c('tidyverse', 'viridis', 'conflicted'))
 ```
 If that doesn't work, copy and paste this code.
 
 ```r
-packages <- c('dplyr', 'forcats', 'ggplot2', 'purrr', 'readr', 'stringr', 'tibble', 'tidyr', 'viridis')
+packages <- c('dplyr', 'forcats', 'ggplot2', 'purrr', 'readr', 'stringr', 'tibble', 'tidyr', 'viridis', 'conflicted')
 install.packages(packages)
 ```
 
