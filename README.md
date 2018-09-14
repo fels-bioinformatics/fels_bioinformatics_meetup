@@ -13,6 +13,7 @@ To download R:
 4. What to Pick
     - For Mac, select the latest release
     - For Windows, select base
+    - For Linux, select your distribution and follow the instructions in the README.html file.
 5. R should be downloaded to your computer and you should follow the normal steps to install
 
 ### Download RStudio
@@ -32,7 +33,7 @@ To download RStudio:
 To install the main packages that will be required for meetups, open RStudio and copy and paste the code below into the **Console**.
 
 ```r
-install.packages('tidyverse', 'viridis')
+install.packages(c('tidyverse', 'viridis'))
 ```
 If that doesn't work, copy and paste this code.
 
@@ -66,6 +67,10 @@ Note: If you have RStudio open, you'll need to restart before you can knit a PDF
 Note: If you have RStudio open, you'll need to restart before you can knit a PDF.
 
 **Linux:**
+
+In terminal `sudo apt-get install texlive-full`
+
+Note: If you have RStudio open, you'll need to restart before you can knit a PDF.
 
 ## Resources
 
