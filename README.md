@@ -38,7 +38,7 @@ install.packages(c('tidyverse', 'viridis'))
 If that doesn't work, copy and paste this code.
 
 ```r
-packages <- ('dplyr', 'forcats', 'ggplot2', 'purrr', 'readr', 'stringr', 'tibble', 'tidyr', 'viridis')
+packages <- c('dplyr', 'forcats', 'ggplot2', 'purrr', 'readr', 'stringr', 'tibble', 'tidyr', 'viridis')
 install.packages(packages)
 ```
 
