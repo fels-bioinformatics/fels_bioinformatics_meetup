@@ -100,7 +100,23 @@ Practice for the week is [here](week1/week1_intro_to_rmarkdown_practice.Rmd) and
 - Filtering and Selecting
 - [Rmarkdown demo file](week2/examine_subset_filter_data.Rmd)
 
-Practice for the week is [here](week2/wee2_practice_examine_filter_subset_data.Rmd)
+Practice for the week is [here](week2/wee2_practice_examine_filter_subset_data.Rmd) and answers are [here in Rmd](week2/wee2_practice_examine_filter_subset_data_ANSWERS.Rmd) and [in html](wee2_practice_examine_filter_subset_data_ANSWERS.html)
+
+___
+
+### Week 3 (Sep 21)
+
+Plotting with ggplot2
+
+- Background on ggplot and review data types
+- Live demonstration of ggplot
+
+Materials
+
+- [slides]()
+- ggplot demo [Rmd file]()
+- ggplot [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
+- Practice for the week is [here]()
 
 
 

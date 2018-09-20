@@ -1,0 +1,103 @@
+---
+title: 'Week 3 Practice: Plotting with ggplot'
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Plotting with ggplot
+
+We'll be using the diamonds dataset for practice this week. It comes with the dplyr package, so make sure to run the set up chunk above before doing anything else.
+
+## Review the basics
+
+Look at the dataset before you do anything else. You'll need to know the column names and types before plotting
+
+```{r}
+
+```
+
+Plot a scatterplot with depth on the x-axis and table on the y-axis.
+
+```{r}
+
+```
+
+Now, with the same variables, add color by cut.
+
+```{r}
+
+```
+
+Make boxplots for prices at each cut.
+
+```{r}
+
+```
+
+Make a barplot for diamond color.
+
+```{r}
+
+```
+
+## Free Plotting
+
+Plot the columns listed using whatever type of plot and any extras you'd like. 
+
+All the answers in this section are guidelines; as long as you got a plot out, you did it.
+
+---
+
+price
+
+```{r}
+
+```
+
+carat, clarity
+
+```{r}
+
+```
+
+cut, price
+
+```{r}
+
+```
+
+cut, color, price
+
+```{r}
+
+```
+
+## Challenge Questions
+
+Make a scatter plot for price vs. carat, colored with viridis by depth, and with partial transparency.
+
+```{r}
+
+```
+
+Make density plots for price, faceted by clarity and filled by clarity using viridis.
+
+```{r}
+
+```
