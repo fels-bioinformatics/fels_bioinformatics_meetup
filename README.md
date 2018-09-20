@@ -113,10 +113,10 @@ Plotting with ggplot2
 
 Materials
 
-- [slides]()
-- ggplot demo [Rmd file]()
+- [slides](week3/2018.09.21_meetup_Plotting_with_ggplot2.pdf)
+- ggplot demo [Rmd file](week3/plotting_w_ggplot.Rmd)
 - ggplot [cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
-- Practice for the week is [here]()
+- Practice for the week is [here](week3/week3_practice_plotting_with_ggplot.Rmd)
 
 
 
