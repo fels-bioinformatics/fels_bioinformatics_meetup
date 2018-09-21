@@ -1,3 +1,9 @@
+---
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
 ```{r setup, include=FALSE}
 # load libraries
 library(tidyverse)
@@ -181,10 +187,14 @@ Whether you add color (or shape, size, etc.) inside or outside of 'aes()' has a 
 ggplot(iris, aes(x = Petal.Length, y = Petal.Width, color = Species)) + geom_point()
 
 # I just want my points to be another color
-ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) + geom_point(color = 'Species')
+ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) + geom_point(color = 'deepskyblue')
 
 # BUT if I put color = 'deepskyblue' instead an aes() it won't work; ggplot thinks it's a data feature
 ggplot(iris, aes(x = Petal.Length, y = Petal.Width, color = 'deepskyblue')) + geom_point()
+
+# ALSO if I DON'T put color = Species inside aes() it throws an error
+# uncomment the line below and try
+#ggplot(iris, aes(x = Petal.Length, y = Petal.Width)) + geom_point(color = 'Species')
 ```
 
 You can also put `aes()` inside either `ggplot()` or whatever geom you pick
