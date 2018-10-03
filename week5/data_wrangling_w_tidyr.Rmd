@@ -1,0 +1,66 @@
+---
+title: "Data wrangling with tidyr"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Data Wrangling with tidyr
+
+```{r}
+
+```
+
+## Tidy Data
+
+
+
+```{r}
+table1
+```
+
+
+## tidyr functions
+
+### `spread()`
+
+### `gather()`
+
+### `separate()`
+
+### `unite()`
+
+## Miscellaneous
+
+### Dealing with NAs
+
+#### `na.omit()`
+
+#### `replace_na()`
+
+### Joins
+
+## Putting it together
+
+```{r}
+who
+who %>% colnames
+who %>% gather(case_cat, count, `new_sp_m014`:`newrel_f65`)
+who %>% gather(case_cat, count, `new_sp_m014`:`newrel_f65`) %>% separate(case_cat, into = c('temp1', 'temp2')) %>% group_by(temp1) %>% count()
+who %>% gather(case_cat, count, `new_sp_m014`:`newrel_f65`) %>% separate(case_cat, into = c('temp1', 'temp2'), sep = 3) %>% group_by(temp1) %>% count()
+```
+
+
+
