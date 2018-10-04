@@ -142,7 +142,7 @@ Data manipulation with dplyr
 Materials
 
 - dplyr demo [Rmd file](week4/data_manipulation_w_dplyr.Rmd), [html file](week4/data_manipulation_w_dplyr.html)
-- practice [Rmd](week4_practice_data_manipulation_w_dplyr.Rmd)
+- practice [Rmd](week4/week4_practice_data_manipulation_w_dplyr.Rmd)
 
 References
 
