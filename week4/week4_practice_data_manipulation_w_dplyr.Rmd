@@ -1,0 +1,89 @@
+---
+title: "Practice: dplyr() Data Manipulation"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(viridis)
+library(conflicted)
+library(nycflights13)
+
+filter <- dplyr::filter
+```
+
+# Practice: `dplyr()` Data Manipulation
+
+We'll use another data table from the nycflights13 library, airports. Don't forget to look at the table before doing anything!
+
+```{r}
+airports
+```
+
+## `dplyr()` functions
+
+### `filter()`
+
+Filter airports for locations in our time zone, the US Eastern time zone.
+
+```{r}
+
+```
+
+### `select()`
+
+Select all columns BUT latitude and longitude.
+
+```{r}
+
+```
+
+### `mutate()`
+
+Add a column indicating the year the data was collected, 2013
+
+```{r}
+
+```
+
+### `arrange()`
+
+Arrange the table by latitude, then longitude
+
+```{r}
+
+```
+
+### `group_by()` / `summarize()`
+
+Find the average altitude by time zone.
+
+```{r}
+
+```
+
+## Chain functions together with pipes
+
+Filter for airports with altitude above 2000 feet and select their FAA airport codes and names
+
+```{r}
+
+```
+
+Filter for airports with an altitude less than 1000 feet and find their average latitude and longitudes by timezone.
+
+```{r}
+
+```
+
+Filter for latitude between 35 and 50, then plot boxplots of altitude by time zone.
+
+```{r}
+
+```
+
+
+
+

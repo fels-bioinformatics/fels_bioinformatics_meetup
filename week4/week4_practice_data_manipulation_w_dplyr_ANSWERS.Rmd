@@ -1,0 +1,105 @@
+---
+title: "Practice: dplyr() Data Manipulation"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(viridis)
+library(conflicted)
+library(nycflights13)
+
+filter <- dplyr::filter
+```
+
+# Practice: `dplyr()` Data Manipulation
+
+We'll use another data table from the nycflights13 library, airports. Don't forget to look at the table before doing anything!
+
+```{r}
+airports %>% head()
+```
+
+## `dplyr()` functions
+
+### `filter()`
+
+Filter airports for locations in our time zone, the US Eastern time zone.
+
+```{r}
+airports %>% filter(tz == -5)
+
+### OR
+
+airports %>% filter(tzone == 'America/New_York')
+```
+
+### `select()`
+
+Select all columns BUT latitude and longitude.
+
+```{r}
+airports %>% select(-lat, -lon)
+
+### OR
+
+airports %>% select(faa, name, alt, tz, dst, tzone)
+
+### OR
+
+airports %>% select(-(lat:lon))
+
+### OR
+
+airports %>% select(faa, name, alt:tzone)
+```
+
+### `mutate()`
+
+Add a column indicating the year the data was collected, 2013
+
+```{r}
+airports %>% mutate(dat_collect = 2013)
+```
+
+### `arrange()`
+
+Arrange the table by latitude, then longitude
+
+```{r}
+airports %>% arrange(lat, lon)
+```
+
+### `group_by()` / `summarize()`
+
+Find the average altitude by time zone.
+
+```{r}
+airports %>% group_by(tzone) %>% summarize(avg_alt = mean(alt))
+```
+
+## Chain functions together with pipes
+
+Filter for airports with altitude above 2000 feet and select their FAA airport codes and names
+
+```{r}
+airports %>% filter(alt > 2000) %>% select(faa, name)
+```
+
+Filter for airports with an altitude less than 1000 feet and find their average latitude and longitudes by timezone.
+
+```{r}
+airports %>% filter(alt < 1000) %>% group_by(tzone) %>% summarize(avg_lat = mean(lat), avg_lon = mean(lon))
+```
+
+Filter for latitude between 35 and 50, then plot boxplots of altitude by time zone.
+
+```{r}
+airports %>% filter((lat >= 35 & lat <= 50)) %>% ggplot(aes(x = tzone, y = alt)) + geom_boxplot()
+```
+
+
+
+
