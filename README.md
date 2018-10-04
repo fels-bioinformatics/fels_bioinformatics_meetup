@@ -117,7 +117,7 @@ Materials
 - [slides](week3/2018.09.21_meetup_Plotting_with_ggplot2.pdf)
 - ggplot demo [Rmd file](week3/plotting_w_ggplot.Rmd), [html](week3/plotting_w_ggplot.html)
 - updated demo file with extras discussed in meetup, [Rmd file](week3/plotting_w_ggplot_classwork.Rmd), [html](week3/plotting_w_ggplot_classwork.html)
-- Practice for the week is [here](week3/week3_practice_plotting_with_ggplot.Rmd)
+- Practice for the week is [here](week3/week3_practice_plotting_with_ggplot.Rmd) and answers are [here in Rmd](week3/week3_practice_plotting_with_ggplot_ANSWERS.Rmd) and in [html](week3_practice_plotting_with_ggplot_ANSWERS.html)
 
 References
 
@@ -125,6 +125,28 @@ References
 - [viridis vignette](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)
 - [ggbeeswarm vignette/GitHub README](https://github.com/eclarke/ggbeeswarm)
 - [list of ggplot themes](https://jrnold.github.io/ggthemes/reference/index.html)
+
+---
+
+**No meetup the week of Sep 28 because of thesis defense**
+
+---
+
+### Week 4 (Oct 5)
+
+Data manipulation with dplyr
+
+- dplyr functions
+- piping
+
+Materials
+
+- dplyr demo [Rmd file](week4/data_manipulation_w_dplyr.Rmd), [html file](week4/data_manipulation_w_dplyr.html)
+- practice [Rmd](week4_practice_data_manipulation_w_dplyr.Rmd)
+
+References
+
+- [dplyr cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
 
 
 
