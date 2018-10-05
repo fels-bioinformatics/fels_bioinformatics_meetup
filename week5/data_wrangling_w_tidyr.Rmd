@@ -19,48 +19,183 @@ select <- dplyr::select
 
 # Data Wrangling with tidyr
 
-```{r}
-
-```
+The tidyr package has some built in data-sets specifically for practicing tidying, so they'll be used for the demonstration today.
 
 ## Tidy Data
 
-
+Here's an example of tidy data, in the cleverly named "table1". The other tableNs in this dataset are untidy versions of this one
 
 ```{r}
 table1
 ```
 
-
 ## tidyr functions
 
 ### `spread()`
 
+```{r}
+table2
+```
+
 ### `gather()`
+
+```{r}
+table4a
+```
 
 ### `separate()`
 
+```{r}
+table3
+```
+
 ### `unite()`
+
+```{r}
+table5
+```
 
 ## Miscellaneous
 
+### Joins
+
+Joins combine two tables together. The `*_join()` functions combine either by the columns you specify or by auto-detecting columns with the same name. Mutating joins add additional columns, while filtering joins filter a table by another table. Joins are actually in dplyr, but fit together better with data wrangling.
+
+```{r}
+band_members
+band_instruments
+band_instruments2
+```
+
+The descriptions below refer to x and y in the join. x is the first table listed in the join and y is the second. The order tables are given in joins is important!
+
+#### Mutating Joins
+
+Mutating joins add columns onto a table from another table.
+
+##### `inner_join()`
+
+Joins tables by returning all rows where x and y equal each other (in the join columns) and all columns from both x and y.
+
+```{r}
+band_members
+band_instruments
+inner_join(band_members, band_instruments, by = c('name'))
+```
+
+##### `full_join()`
+
+The opposite of `inner_join()`, `full_join()` joins tables by returning all rows all columns from both x and y. If there is no matching value between x and y, an NA will be returned.
+
+```{r}
+band_members
+band_instruments
+full_join(band_members, band_instruments, by = c('name'))
+```
+
+##### `left_join()`
+
+Joins tables by return all rows from x and all columns from x and y. If there is no matching value in y for x, an NA will be returned.
+
+```{r}
+band_members
+band_instruments
+left_join(band_members, band_instruments, by = c('name'))
+```
+
+##### `right_join()`
+
+Joins tables by the opposite of `left_join()`, returning all rows from y and all columns from x and y. If there is no matching value in x for y, an NA will be returned.
+
+```{r}
+band_members
+band_instruments
+right_join(band_members, band_instruments, by = c('name'))
+```
+
+#### Filtering Joins
+
+Filtering joins filter a table by another table.
+
+#### `semi_join()`
+
+Filters x by returning all rows from x that match values in y.
+
+```{r}
+band_members
+band_instruments
+semi_join(band_members, band_instruments, by = c('name'))
+```
+
+#### `anti_join()`
+
+The opposite of `semi_join()`, `anti_join()` returns rows from x that DON'T match a value in y
+
+```{r}
+band_members
+band_instruments
+anti_join(band_members, band_instruments, by = c('name'))
+```
+
+### What if my column names don't match?
+
+Name and artist are the same variable, who the person is, in the tables below.
+
+```{r}
+band_members
+band_instruments2
+```
+
+To specify the join by two differently named columns, specify that they equal each other. You MUST list the column names in the order the tables are given to the join. 'name' comes first below, because that's the column you want to join by in the first table.
+
+```{r}
+full_join(band_members, band_instruments2, by = c('name' = 'artist'))
+```
+
 ### Dealing with NAs
+
+If there's no value in a table, or R can't figure out what's supposed to be there, it will give you an `NA` as seen in the Star Wars table below
+
+```{r}
+starwars
+```
+
+NAs are bad not only because you're missing data, but also because many functions in R either refuse to run or return weird answers if there are NAs in the data. 
+
+```{r}
+mean(starwars$birth_year)
+```
 
 #### `na.omit()`
 
+One strategy is just to drop all rows that contain NAs
+
+```{r}
+starwars
+starwars %>% na.omit()
+```
+
 #### `replace_na()`
 
-### Joins
+Sometimes you might want to replace NAs with a value though, which you can do using tidyr
+
+```{r}
+starwars
+starwars %>% replace_na(list(hair_color = 'none', birth_year = 'unknown', gender = 'n/a'))
+```
 
 ## Putting it together
 
 ```{r}
-who
-who %>% colnames
-who %>% gather(case_cat, count, `new_sp_m014`:`newrel_f65`)
-who %>% gather(case_cat, count, `new_sp_m014`:`newrel_f65`) %>% separate(case_cat, into = c('temp1', 'temp2')) %>% group_by(temp1) %>% count()
-who %>% gather(case_cat, count, `new_sp_m014`:`newrel_f65`) %>% separate(case_cat, into = c('temp1', 'temp2'), sep = 3) %>% group_by(temp1) %>% count()
+table1
+table4a
+table4b
 ```
 
+```{r}
+table4a %>% gather(year, cases, `1999`:`2000`) -> table4a_tidy
+table4b %>% gather(year, population, `1999`:`2000`) -> table4b_tidy
 
+left_join(table4a_tidy, table4b_tidy, by = c('country', 'year'))
+```
 

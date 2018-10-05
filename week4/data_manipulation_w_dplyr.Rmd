@@ -40,6 +40,8 @@ head(flights)
 
 ## Piping
 
+### Pipes
+
 The pipe operator `%>%` pipes output from one function to the next (like | in Linux). You can use this to chain together as many command/functions as desired. For a simple example, instead of calling `head()` on flights, we could have piped flights to `head()`
 
 ```{r}
@@ -50,6 +52,32 @@ You can chain as many pipes as you want together and you can also pipe into `ggp
 
 ```{r}
 flights %>% filter(sched_dep_time <= 1200) %>% ggplot(aes(x = origin, y = dep_time, color = origin)) + geom_violin()
+```
+
+### Assignment
+
+The assignment operator, `->` saves the current output as an object (aka a data structure) to whatever name you pick. You can save data of any format this way.
+
+Either as a list or a table
+
+```{r}
+list(1:100) -> int_list
+
+int_list
+```
+
+```{r}
+flights %>% select(year, month, day, dep_time, arr_time) %>% filter(month >= 3) -> sched_flights_q1
+
+sched_flights_q1
+```
+
+Or a plot
+
+```{r}
+ggplot(flights, aes(x = as.factor(month), y = dep_delay, color = month)) + geom_boxplot() + scale_color_viridis() + labs(x = 'Month', y = 'Departure Delay (min)') + theme_classic() + theme(legend.position = 'none') -> dep_delay_plot
+
+dep_delay_plot
 ```
 
 ## dplyr functions
