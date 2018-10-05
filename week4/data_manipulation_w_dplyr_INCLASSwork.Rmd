@@ -1,0 +1,198 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+library(tidyverse)
+library(viridis)
+library(conflicted)
+library(nycflights13)
+
+filter <- dplyr::filter
+```
+
+# Data Manipulation with dplyr
+
+For today's demonstration (and the practice), we'll use data tables from the nycflights13 package. 
+
+## Setup
+
+First, install the package.
+
+```{r}
+install.packages('nycflights13')
+```
+
+The library is in the set up chunk above  as well, but you need to load the library before using the tables
+
+```{r}
+library(nycflights13)
+```
+
+Before we do 
+
+```{r}
+head(flights)
+```
+
+## Piping
+
+### Pipes
+
+The pipe operator `%>%` pipes output from one function to the next (like | in Linux). You can use this to chain together as many command/functions as desired. For a simple example, instead of calling `head()` on flights, we could have piped flights to `head()`
+
+```{r}
+flights %>% head()
+```
+
+You can chain as many pipes as you want together and you can also pipe into `ggplot()`
+
+```{r}
+flights %>% filter(sched_dep_time <= 1200) %>% ggplot(aes(x = origin, y = dep_time, color = origin)) + geom_violin()
+```
+
+### Assignment
+
+The assignment operator, `->` saves the current output as an object (aka a data structure) to whatever name you pick. You can save data of any format this way.
+
+Either as a list or a table
+
+```{r}
+list(1:100) -> int_list
+
+int_list
+```
+
+```{r}
+flights %>% select(year, month, day, dep_time, arr_time) %>% filter(month >= 3) -> sched_flights_q1
+
+sched_flights_q1
+```
+
+Or a plot
+
+```{r}
+ggplot(flights, aes(x = as.factor(month), y = dep_delay, color = month)) + geom_boxplot() + scale_color_viridis() + labs(x = 'Month', y = 'Departure Delay (min)') + theme_classic() + theme(legend.position = 'none') -> dep_delay_plot
+
+dep_delay_plot
+```
+
+## dplyr functions
+
+### Review
+
+The first two functions are a review from week 2: `filter()` and `select()`. Remember `filter()` works on rows and `select()` works on columns.
+
+#### `filter()`
+
+As a quick review of `filter()`, filter for carrier F9 and arrivale times after noon.
+
+```{r}
+filter(flights, carrier == 'F9', arr_time > 1200)
+```
+
+#### `select()`
+
+As a quick review of `select()`, select the year, month, and day columns.
+
+```{r}
+select(flights, year, month, day)
+```
+
+An additional trick, you can select many columns at once using a : like with numbers. For example, when you type 1:5, you get the numbers 1 to 5, and if you select carrier:dest, you get all the columns in flights between them as in the example below.
+
+```{r}
+flights
+select(flights, carrier:dest)
+```
+
+### New Functions
+
+#### `mutate()`
+
+Mutate adds another column onto a table. Let's say we want to add the average time spent in security on as another column. The syntax is column_name = values.
+
+```{r}
+mutate(flights, avg_secur_time = 1)
+
+mutate(flights, speed = distance / hour)
+```
+
+If you just add a single value (which could be a number or a character), it's listed in every row. Sometimes this is useful, for example if you're adding a sample ID to an entire table, but often you probably want more than one value in your column. For that, use `ifelse()` and `case_when()`. For example, there are three origin airports in flights for the three airports around New York City, EWR (Newark), JFK, and LGA (LaGuardia). Maybe the average wait time in the New York airports (JFK and LGA) is 1 hour, but it's 1.5 hours in Newark. You can add values based on another column using `ifelse()` when you have two different values
+
+```{r}
+flights
+mutate(flights, location = ifelse(origin == 'LGA' | origin == 'JFK', 'NY', 'NJ')) %>% select (origin, location)
+```
+
+If you have more than two values, use `case_when()`. In the example below, we'll set different times for each airport.
+
+```{r}
+mutate(flights, avg_secur_time = case_when(origin == 'EWR' ~ 1.5,
+                                           origin == 'JFK' ~ 1,
+                                           origin == 'LGA' ~ 2)) %>% select(origin, avg_secur_time)
+```
+
+#### `arrange()`
+
+`arrange()` orders the entire table by the column(s) selected.
+
+```{r}
+# this is how it looked originally
+flights
+```
+
+Flights arranged by arrival time
+
+```{r}
+arrange(flights, arr_time)
+```
+
+Flights arranged by carrier, then arrival time.
+
+```{r}
+arrange(flights, carrier, arr_time)
+```
+
+By default, `arrange()` orders by least to greatest. If you want to greatest first, use `desc()`, which selects greatest values first.
+
+```{r}
+arrange(flights, desc(arr_time))
+```
+
+#### `group_by()` & `summarize()`/`summarise()`
+
+`summarize()` summarizes your table. This can be a summary statistic like mean, or median, or it can be whatever function you want. Also, fyi, for all the tidyverse functions that have multiple English spellings, you can call the function with any version. 
+
+```{r}
+summarize(flights, avg_dep_time = mean(sched_dep_time))
+```
+
+Using `group_by()`, you can group by one (or more) thing(s) and have a summary function applied to each group individually
+
+```{r}
+flights %>% group_by(origin) %>% summarize(avg_dep_delay = mean(dep_delay, na.rm = TRUE))
+
+flights %>% group_by(origin) %>% summarize(avg_dep_delay = mean(dep_delay, na.rm = TRUE)) %>% ungroup()
+```
+
+### All Together Now
+
+```{r}
+flights %>% 
+  filter(origin == 'LGA') %>% 
+  group_by(carrier) %>% 
+  summarize(avg_dep_time = mean(sched_dep_time), 
+            avg_arr_time = mean(sched_arr_time)) %>%
+  
+  ggplot(aes(x = carrier, y = avg_dep_time, color = avg_arr_time)) + 
+    geom_point(size = 4) + 
+    scale_color_viridis() +
+    labs(x = 'Airline Carrier', 
+         y = 'Average Departure Time (24h)', 
+         color = 'Average Arrival Time (24h)') +
+    theme_classic()
+```
+
+
+
+
+

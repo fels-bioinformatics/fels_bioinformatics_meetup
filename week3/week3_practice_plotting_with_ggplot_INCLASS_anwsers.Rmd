@@ -1,0 +1,102 @@
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE, fig.width = 4, fig.height = 3)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Plotting with ggplot
+
+We'll be using the diamonds dataset for practice this week. It comes with the dplyr package, so make sure to run the set up chunk above before doing anything else.
+
+## Review the basics
+
+Look at the dataset before you do anything else. You'll need to know the column names and types before plotting
+
+```{r}
+
+```
+
+Plot a scatterplot with depth on the x-axis and table on the y-axis.
+
+```{r}
+ggplot(diamonds, aes(x = depth, y = table)) + geom_point()
+```
+
+Now, with the same variables, add color by cut.
+
+```{r}
+ggplot(diamonds, aes(x = depth, y = table, color = cut)) + geom_point()
+```
+
+Make boxplots for prices at each cut.
+
+```{r}
+ggplot(diamonds, aes(x = cut, y = price)) + geom_boxplot()
+```
+
+Make a barplot for diamond color.
+
+```{r}
+ggplot(diamonds, aes(x = color)) + geom_bar()
+```
+
+## Free Plotting
+
+Plot the columns listed using whatever type of plot and any extras you'd like. 
+
+All the answers in this section are guidelines; as long as you got a plot out, you did it.
+
+---
+
+price
+
+```{r}
+ggplot(diamonds, aes(x = price)) + geom_density(fill = 'green', color = 'orange')
+```
+
+carat, clarity
+
+```{r}
+ggplot(diamonds, aes(x = carat, fill = clarity)) + geom_histogram(alpha = 0.5)
+
+ggplot(diamonds, aes(x = carat, fill = clarity)) + geom_histogram(position = 'identity', alpha = 0.5)
+
+ggplot(diamonds, aes(x = carat, fill = clarity)) + geom_histogram() + facet_wrap(~ clarity)
+
+ggplot(diamonds, aes(x = carat, color = clarity)) + geom_density(alpha = 0.5)
+
+```
+
+cut, price
+
+```{r}
+ggplot(diamonds, aes(x = cut, y = price, fill = cut)) + geom_violin()
+```
+
+cut, color, price
+
+```{r}
+ggplot(diamonds, aes(x = cut, y = price, color = color)) + geom_boxplot() + facet_wrap(~ color)
+```
+
+## Challenge Questions
+
+Make a scatter plot for price vs. carat, colored with viridis by depth, and with partial transparency.
+
+```{r}
+ggplot(diamonds, aes(x = price, y = carat, color = depth)) + geom_point(alpha = 0.5) + scale_color_viridis() 
+```
+
+Make density plots for price, faceted by clarity and filled by clarity using viridis.
+
+```{r}
+ggplot(diamonds, aes(x = price, fill = clarity)) + geom_density() + scale_fill_viridis(discrete = TRUE)
+```

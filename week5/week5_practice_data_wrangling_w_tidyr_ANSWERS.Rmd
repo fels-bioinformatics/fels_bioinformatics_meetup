@@ -1,0 +1,143 @@
+---
+title: "Week 5 Practice: Data wrangling with tidyr"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Practice: Data wrangling with `tidyr`
+
+
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`)
+```
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>% separate(code, into = c('new', 'case_type', 'sex_age'), sep = '_') %>% separate(sex_age, into = c('sex', 'age'), sep = 1) %>% group_by(case_type) %>% count
+```
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`)
+```
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>%
+  separate(code, into = c('new', 'tb_type', 'sex_age'), sep = '_')
+```
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>%
+  group_by(code) %>% count
+```
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>%
+  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel'))
+```
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>%
+  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
+  group_by(code) %>% count
+```
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>%
+  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
+  separate(code, into = c('new', 'tb_type', 'sex_age'), sep = '_')
+```
+
+# check all the new columns
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>%
+  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
+  separate(code, into = c('new', 'tb_type', 'sex_age'), sep = '_') %>% 
+  group_by(new) %>% count()
+```
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>%
+  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
+  separate(code, into = c('new', 'tb_type', 'sex_age'), sep = '_') %>% 
+  group_by(tb_type) %>% count()
+```
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>%
+  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
+  separate(code, into = c('new', 'tb_type', 'sex_age'), sep = '_') %>% 
+  group_by(sex_age) %>% count()
+```
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>%
+  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
+  separate(code, into = c('new', 'tb_type', 'sex_age'), sep = '_') %>%
+  separate(sex_age, into = c('sex', 'age'), sep = 1)
+```
+
+# check again
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>%
+  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
+  separate(code, into = c('new', 'tb_type', 'sex_age'), sep = '_') %>%
+  separate(sex_age, into = c('sex', 'age'), sep = 1) %>%
+  group_by(sex) %>% count
+```
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>%
+  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
+  separate(code, into = c('new', 'tb_type', 'sex_age'), sep = '_') %>%
+  separate(sex_age, into = c('sex', 'age'), sep = 1) %>%
+  group_by(age) %>% count
+```
+
+
+# drop redundant columns
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>%
+  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
+  separate(code, into = c('new', 'tb_type', 'sex_age'), sep = '_') %>%
+  separate(sex_age, into = c('sex', 'age'), sep = 1) %>%
+  select(-iso2, -iso3, -new)
+```
+
+# drop NAs
+
+```{r}
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>%
+  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
+  separate(code, into = c('new', 'tb_type', 'sex_age'), sep = '_') %>%
+  separate(sex_age, into = c('sex', 'age'), sep = 1) %>%
+  select(-iso2, -iso3, -new) %>%
+  na.omit()
+```
+
+# replace NAs with something reasonable
+
+```{r}
+# 0
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>%
+  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
+  separate(code, into = c('new', 'tb_type', 'sex_age'), sep = '_') %>%
+  separate(sex_age, into = c('sex', 'age'), sep = 1) %>%
+  select(-iso2, -iso3, -new) %>%
+  replace_na(list(count = 0))
+
+# no data
+who %>% gather(code, count, `new_sp_m014`:`newrel_f65`) %>%
+  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
+  separate(code, into = c('new', 'tb_type', 'sex_age'), sep = '_') %>%
+  separate(sex_age, into = c('sex', 'age'), sep = 1) %>%
+  select(-iso2, -iso3, -new) %>%
+  replace_na(list(count = 'no_data')) 
+```
+
+

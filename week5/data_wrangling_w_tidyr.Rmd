@@ -23,7 +23,7 @@ The tidyr package has some built in data-sets specifically for practicing tidyin
 
 ## Tidy Data
 
-Here's an example of tidy data, in the cleverly named "table1". The other tableNs in this dataset are untidy versions of this one
+Here's an example of tidy data, in the cleverly named "table1". The other tableNs in this dataset are untidy versions of this one to practice on
 
 ```{r}
 table1
@@ -33,26 +33,44 @@ table1
 
 ### `spread()`
 
+If you look at table 2 in the chunk below, it's not tidy because the column 'type' contains two variables, cases and population. Cases and population are separate measurements, so they should be their own columns. To make more columns from existing columns, use `spread()`. 
+
 ```{r}
 table2
+
+table2 %>% spread(type, count)
 ```
 
 ### `gather()`
 
+
+
 ```{r}
 table4a
+
+table4a %>% gather(year, cases, `1999`:`2000`)
 ```
 
 ### `separate()`
 
 ```{r}
 table3
+
+table3 %>% separate(rate, into = c('cases', 'population'), sep = '/')
+
+### add in an example of sep = integer
 ```
 
 ### `unite()`
 
 ```{r}
 table5
+
+table5 %>% unite(year, c('century', 'year'), sep = '')
+```
+
+```{r}
+table5 %>% unite(year, c('century', 'year'), sep = '') %>% separate(rate, into = c('cases', 'population'), sep = '/')
 ```
 
 ## Miscellaneous

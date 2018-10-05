@@ -141,7 +141,9 @@ Data manipulation with dplyr
 
 Materials
 
+- week3 practice ggplot in class review [Rmd file](week3/week3_practice_plotting_with_ggplot_INCLASS_anwsers.Rmd)
 - dplyr demo [Rmd file](week4/data_manipulation_w_dplyr.Rmd), [html file](week4/data_manipulation_w_dplyr.html)
+- dplyr demo with in class extras [Rmd file](week4/data_manipulation_w_dplyr_INCLASSwork.Rmd)
 - practice [Rmd](week4/week4_practice_data_manipulation_w_dplyr.Rmd)
 
 References
