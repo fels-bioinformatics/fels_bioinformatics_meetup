@@ -10,7 +10,7 @@ library(conflicted)
 library(viridis)
 
 # configure knit settings
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
 
 # resolve package conflicts
 filter <- dplyr::filter
@@ -43,7 +43,7 @@ table2 %>% spread(type, count)
 
 ### `gather()`
 
-
+Looking at table4a in the chunk below, it's not tidy because the columns 1999 and 2000 are not variable descriptions, they're data (the year the measurement was made in). We need the column names to become data, so to do that use gather.
 
 ```{r}
 table4a
@@ -53,15 +53,25 @@ table4a %>% gather(year, cases, `1999`:`2000`)
 
 ### `separate()`
 
+In the chunk below, table3 is not tidy because it has multiple values separate by a backslash in the rate column. To split one column into two or more columns, use `separate()`
+
 ```{r}
 table3
 
+# separate example
 table3 %>% separate(rate, into = c('cases', 'population'), sep = '/')
+```
 
-### add in an example of sep = integer
+`separate()` also lets you specify an interger position to split at
+
+```{r}
+# just so you know, you can also separate by specifying a position to separate after
+table3 %>% separate(rate, into = c('cases', 'population'), sep = 3)
 ```
 
 ### `unite()`
+
+In the chunk below, table5 is not tidy because the date is split between two columns, century and year. To combine columns, use the opposite of `separate()`, `unite()`
 
 ```{r}
 table5
@@ -69,11 +79,39 @@ table5
 table5 %>% unite(year, c('century', 'year'), sep = '')
 ```
 
+You may have noticed that the rate column in table5 is the same as the rate column in table3 and contains two values. Chain together some of the tidyr functions above to completely tidy table5.
+
 ```{r}
 table5 %>% unite(year, c('century', 'year'), sep = '') %>% separate(rate, into = c('cases', 'population'), sep = '/')
 ```
 
 ## Miscellaneous
+
+### Binds
+
+#### `rbind()` / `bind_rows()`
+
+```{r}
+table4a
+table4b
+
+# rbind will fail if column names aren't completely the same, but bind_rows will compensate and add on another columns
+rbind(table4a, table4b)
+
+bind_rows(table4a, table4b)
+```
+
+#### `cbind()` / `bind_cols()`
+
+```{r}
+table4a
+table4b
+
+# rbind will fail if column names aren't completely the same, but bind_rows will compensate and add on another columns
+cbind(table4a, table4b)
+
+bind_cols(table4a, table4b)
+```
 
 ### Joins
 
