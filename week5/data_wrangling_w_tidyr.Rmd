@@ -85,11 +85,15 @@ You may have noticed that the rate column in table5 is the same as the rate colu
 table5 %>% unite(year, c('century', 'year'), sep = '') %>% separate(rate, into = c('cases', 'population'), sep = '/')
 ```
 
-## Miscellaneous
+## Combining Tables
 
 ### Binds
 
+Attach tables together. In order to bind tables, they tables bound together have to have the same number of rows OR the same number of columns.
+
 #### `rbind()` / `bind_rows()`
+
+Attach tables by adding additional rows. 
 
 ```{r}
 table4a
@@ -103,19 +107,27 @@ bind_rows(table4a, table4b)
 
 #### `cbind()` / `bind_cols()`
 
+Attach tables by adding additional columns.
+
 ```{r}
 table4a
 table4b
 
-# rbind will fail if column names aren't completely the same, but bind_rows will compensate and add on another columns
+
 cbind(table4a, table4b)
 
+rbind(table4b, tibble(country = 'India', `1999` = 1035000000, `2000` = 1053000000)) %>%
+  cbind(table4a)
+
 bind_cols(table4a, table4b)
+
+rbind(table4b, tibble(country = 'India', `1999` = 1035000000, `2000` = 1053000000)) %>%
+  bind_cols(table4a)
 ```
 
 ### Joins
 
-Joins combine two tables together. The `*_join()` functions combine either by the columns you specify or by auto-detecting columns with the same name. Mutating joins add additional columns, while filtering joins filter a table by another table. Joins are actually in dplyr, but fit together better with data wrangling.
+Joins combine two tables together by common variables. The difference between binds and joins is that binds are intended to combine tables together that have exactly the same information like for different samples while joins are intended to combine together tables with complimentary but different information by common variables like samples with their metadata. The `*_join()` functions combine either by the columns you specify or by auto-detecting columns with the same name. Mutating joins add additional columns, while filtering joins filter a table by another table. Joins are actually in dplyr, but fit together better with data wrangling.
 
 ```{r}
 band_members
@@ -243,15 +255,20 @@ starwars %>% replace_na(list(hair_color = 'none', birth_year = 'unknown', gender
 ## Putting it together
 
 ```{r}
+# what the tidy table should look like
 table1
+
+# the tables we need to tidy into one table
 table4a
 table4b
 ```
 
 ```{r}
+# tidy individual tables
 table4a %>% gather(year, cases, `1999`:`2000`) -> table4a_tidy
 table4b %>% gather(year, population, `1999`:`2000`) -> table4b_tidy
 
+# combine
 left_join(table4a_tidy, table4b_tidy, by = c('country', 'year'))
 ```
 
