@@ -49,6 +49,9 @@ Looking at table4a in the chunk below, it's not tidy because the columns 1999 an
 table4a
 
 table4a %>% gather(year, cases, `1999`:`2000`)
+
+# also with column numbers
+table4a %>% gather(year, cases, 2:3)
 ```
 
 ### `separate()`
