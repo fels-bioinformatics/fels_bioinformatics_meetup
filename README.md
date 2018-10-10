@@ -138,6 +138,7 @@ ___
 - [viridis vignette](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)
 - [ggbeeswarm vignette/GitHub README](https://github.com/eclarke/ggbeeswarm)
 - [list of ggplot themes](https://jrnold.github.io/ggthemes/reference/index.html)
+- [list of colors](week3/ColorChart.pdf) you can plot with in R 
 
 ---
 
