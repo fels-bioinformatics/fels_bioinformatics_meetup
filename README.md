@@ -85,41 +85,54 @@ Reference material used while creating material for meetups:
 # Content
 ### Week 1 (Sep 7)
 
-- What's a meetup? / What's changing with meetups? [(slides)](week1/bioinformatics_meetup_introduction_2018.09.07.pdf)
-- Getting Started (see section above)
-- [Introduction to Rmarkdown](week1/intro_to_rmarkdown.Rmd)
+**Introduction to the class and Rmarkdown**
 
-Practice for the week is [here](week1/week1_intro_to_rmarkdown_practice.Rmd) and answers are [here in R markdown](week1/week1_intro_to_rmarkdown_practice_ANSWERKEY.Rmd) and [in html](week1/week1_intro_to_rmarkdown_practice_ANSWERKEY.html)
+- Introduction to meetups
+- Getting started with R and RStudio
+- Rmarkdown
+
+**Materials**
+
+- [slides](week1/bioinformatics_meetup_introduction_2018.09.07.pdf)
+- Introduction to Rmarkdown [in Rmd](week1/intro_to_rmarkdown.Rmd), [html](week1/intro_to_rmarkdown.html), [word document](week1/intro_to_rmarkdown.docx), and [pdf](week1/intro_to_rmarkdown.pdf)
+- Practice for the week is [here](week1/week1_intro_to_rmarkdown_practice.Rmd) and answers are [here in R markdown](week1/week1_intro_to_rmarkdown_practice_ANSWERKEY.Rmd) and [in html](week1/week1_intro_to_rmarkdown_practice_ANSWERKEY.html)
+
+**References**
+
+- [Rmarkdown cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
 
 ---
 
 ### Week 2 (Sep 14)
 
+**Subsetting and filtering**
+
 - Examining tables
 - Subsetting
 - Filtering and Selecting
-- [Rmarkdown demo file](week2/examine_subset_filter_data.Rmd)
 
-Practice for the week is [here](week2/wee2_practice_examine_filter_subset_data.Rmd) and answers are [here in Rmd](week2/wee2_practice_examine_filter_subset_data_ANSWERS.Rmd) and [in html](wee2_practice_examine_filter_subset_data_ANSWERS.html)
+**Materials**
+
+- Demo in [Rmd](week2/examine_subset_filter_data.Rmd) and in [html](week2/examine_subset_filter_data.html)
+- Practice for the week is [here](week2/wee2_practice_examine_filter_subset_data.Rmd) and answers are [here in Rmd](week2/wee2_practice_examine_filter_subset_data_ANSWERS.Rmd) and [in html](wee2_practice_examine_filter_subset_data_ANSWERS.html)
 
 ___
 
 ### Week 3 (Sep 21)
 
-Plotting with ggplot2
+**Plotting with ggplot**
 
-- Go over practice from last week
 - Background on ggplot and review data types
-- Live demonstration of ggplot
+- ggplot demonstration
 
-Materials
+**Materials**
 
 - [slides](week3/2018.09.21_meetup_Plotting_with_ggplot2.pdf)
 - ggplot demo [Rmd file](week3/plotting_w_ggplot.Rmd), [html](week3/plotting_w_ggplot.html)
 - updated demo file with extras discussed in meetup, [Rmd file](week3/plotting_w_ggplot_classwork.Rmd), [html](week3/plotting_w_ggplot_classwork.html)
 - Practice for the week is [here](week3/week3_practice_plotting_with_ggplot.Rmd) and answers are [here in Rmd](week3/week3_practice_plotting_with_ggplot_ANSWERS.Rmd) and in [html](week3_practice_plotting_with_ggplot_ANSWERS.html)
 
-References
+**References**
 
 - [ggplot cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
 - [viridis vignette](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)
@@ -134,21 +147,44 @@ References
 
 ### Week 4 (Oct 5)
 
-Data manipulation with dplyr
+**Data manipulation with dplyr**
 
 - dplyr functions
 - piping
 
-Materials
+**Materials**
 
 - week3 practice ggplot in class review [Rmd file](week3/week3_practice_plotting_with_ggplot_INCLASS_anwsers.Rmd)
 - dplyr demo [Rmd file](week4/data_manipulation_w_dplyr.Rmd), [html file](week4/data_manipulation_w_dplyr.html)
 - dplyr demo with in class extras [Rmd file](week4/data_manipulation_w_dplyr_INCLASSwork.Rmd)
-- practice [Rmd](week4/week4_practice_data_manipulation_w_dplyr.Rmd)
+- practice [Rmd](week4/week4_practice_data_manipulation_w_dplyr.Rmd) and answers in [Rmd](week4/week4_practice_data_manipulation_w_dplyr_ANSWERS.Rmd) and in [html](week4/week4_practice_data_manipulation_w_dplyr_ANSWERS.Rmd)
 
-References
+**References**
 
 - [dplyr cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+
+---
+
+### Week 5 (Oct 12)
+
+**Data Wrangling with tidyr**
+
+- the tidyverse
+- tidy data
+- data wrangling
+    - tidyr functions
+    - binds and joins
+    - dealing with NAs
+
+**Materials**
+
+- [slides](week5/the_tidyverse_and_tidy_data.pdf)
+- data wrangling demo [Rmd](week5/data_wrangling_w_tidyr.Rmd), [html](week5/data_wrangling_w_tidyr.html)
+- data wrangling [practice](week5/week5_practice_data_wrangling_w_tidyr.Rmd)
+
+**References**
+
+- data wrangling [cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
 
 
 

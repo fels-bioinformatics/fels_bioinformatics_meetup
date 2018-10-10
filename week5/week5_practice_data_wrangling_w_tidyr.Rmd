@@ -64,7 +64,7 @@ iris_no_species %>%
 As usual before doing anything else, take a look at the table. What do you see that's not tidy? Try and list them yourself before looking at the answers below.
 
 ```{r}
-who
+
 ```
 
 Some reasons the table isn't tidy/feature of the table you should pay attention to are:
@@ -83,7 +83,7 @@ Follow the guiding instructions below to tidy `who`!
 First, take care of the easiest tidying step and drop the redundant iso2 and iso3 columns.
 
 ```{r}
-who %>% select(-iso2, -iso3)
+
 ```
 
 ### Gather columns
@@ -91,15 +91,7 @@ who %>% select(-iso2, -iso3)
 We decided earlier that the columns new_sp_m014 to newrel_f65 are values of the same variable(s) so gather them together into two columns. Name your two new columns "code" and "count" (or whatever you want to call the new columns, but they'll be referred to as code and count downstream)
 
 ```{r}
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, `new_sp_m014`:`newrel_f65`)
 
-### OR
-
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, 3:58)
 ```
 
 So what does the text in the code column mean? Thankfully, because this is a built-in dataset, you can find out by typing `?who` into the console. But what about in real life? Well you might have to talk to whoever generated the data, or read the documentation for a tool that generated a table or figure it out yourself or some combination of all of these. 
@@ -118,10 +110,7 @@ But here's what our data in the code column means:
 So we're going to need to split this column into four columns. First, separate the code column by underscores, ('_') into three new columns, case_type, diag_type, and sexage.
 
 ```{r}
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, `new_sp_m014`:`newrel_f65`) %>% 
-  separate(code, into = c('case_type', 'diag_type', 'sexage'), sep = '_')
+
 ```
 
 #### Check results
@@ -142,23 +131,13 @@ When you run the code in the chunk above, you can see that you didn't just get '
 Check diag_type column in this chunk.
 
 ```{r}
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, `new_sp_m014`:`newrel_f65`) %>% 
-  separate(code, into = c('case_type', 'diag_type', 'sexage'), sep = '_') %>%
-  group_by(diag_type) %>%
-  count()
+
 ```
 
 And check the sexage column in this chunk.
 
 ```{r}
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, `new_sp_m014`:`newrel_f65`) %>% 
-  separate(code, into = c('case_type', 'diag_type', 'sexage'), sep = '_') %>%
-  group_by(sexage) %>%
-  count()
+
 ```
 
 You should have seen a mix of values belonging to the different variables in the diag_type and sexage columns. This is because code wasn't split properly. If we go back and split code correctly, that should fix the problem. 
@@ -167,11 +146,7 @@ You should have seen a mix of values belonging to the different variables in the
 Because the missing underscore problem is complicated and hasn't been covered so far, use this mutate command `mutate(code = stringr::str_replace(code, 'newrel', 'new_rel'))` to fix the problem. Pipe into the mutate command and then to the separate command you ran before and that should fix the problem.
 
 ```{r}
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, `new_sp_m014`:`newrel_f65`) %>% 
-  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
-  separate(code, into = c('case_type', 'diag_type', 'sexage'), sep = '_')
+
 ```
 
 #### Check results
@@ -181,37 +156,19 @@ You shouldn't have gotten any errors this time, but just to make sure, in the th
 Check the case_type column here.
 
 ```{r}
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, `new_sp_m014`:`newrel_f65`) %>% 
-  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
-  separate(code, into = c('case_type', 'diag_type', 'sexage'), sep = '_') %>%
-  group_by(case_type) %>%
-  count()
+
 ```
 
 Check the diag_type column here.
 
 ```{r}
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, `new_sp_m014`:`newrel_f65`) %>% 
-  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
-  separate(code, into = c('case_type', 'diag_type', 'sexage'), sep = '_') %>%
-  group_by(diag_type) %>%
-  count()
+
 ```
 
 Check the sexage column here.
 
 ```{r}
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, `new_sp_m014`:`newrel_f65`) %>% 
-  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
-  separate(code, into = c('case_type', 'diag_type', 'sexage'), sep = '_') %>%
-  group_by(sexage) %>%
-  count()
+
 ```
 
 #### Drop column
@@ -219,12 +176,7 @@ who %>%
 All the columns should look good now! Their values all belong to the variable indicated in the column name. However, the case_type column only has 'new' in it. That makes this columnn unnecessary, so drop the case_type column in the chunk below.
 
 ```{r}
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, `new_sp_m014`:`newrel_f65`) %>% 
-  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
-  separate(code, into = c('case_type', 'diag_type', 'sexage'), sep = '_') %>%
-  select(-case_type)
+
 ```
 
 #### Separate column again
@@ -232,13 +184,7 @@ who %>%
 The sexage column is still a problem because it has two variables in it, sex and age. Use the chunk below to split the sexage column into two columns, sex and age.
 
 ```{r}
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, `new_sp_m014`:`newrel_f65`) %>% 
-  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
-  separate(code, into = c('case_type', 'diag_type', 'sexage'), sep = '_') %>%
-  select(-case_type) %>%
-  separate(sexage, into = c('sex', 'age'), sep = 1)
+
 ```
 
 #### Check results
@@ -248,29 +194,13 @@ The new sex and age columns should *theoretically* be ok, because we looked at t
 Check the sex column here.
 
 ```{r}
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, `new_sp_m014`:`newrel_f65`) %>% 
-  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
-  separate(code, into = c('case_type', 'diag_type', 'sexage'), sep = '_') %>%
-  select(-case_type) %>%
-  separate(sexage, into = c('sex', 'age'), sep = 1) %>%
-  group_by(sex) %>%
-  count()
+
 ```
 
 Check the age column here.
 
 ```{r}
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, `new_sp_m014`:`newrel_f65`) %>% 
-  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
-  separate(code, into = c('case_type', 'diag_type', 'sexage'), sep = '_') %>%
-  select(-case_type) %>%
-  separate(sexage, into = c('sex', 'age'), sep = 1) %>%
-  group_by(age) %>%
-  count()
+
 ```
 
 They should both look good!
@@ -282,40 +212,13 @@ One last problem - all those NAs in the count column! They need to be dealt with
 Use this chunk to practice dropping NAs
 
 ```{r}
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, `new_sp_m014`:`newrel_f65`) %>% 
-  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
-  separate(code, into = c('case_type', 'diag_type', 'sexage'), sep = '_') %>%
-  select(-case_type) %>%
-  separate(sexage, into = c('sex', 'age'), sep = 1) %>%
-  na.omit()
+
 ```
 
 Use this chunk to replace NAs with something
 
 ```{r}
-# 0
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, `new_sp_m014`:`newrel_f65`) %>% 
-  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
-  separate(code, into = c('case_type', 'diag_type', 'sexage'), sep = '_') %>%
-  select(-case_type) %>%
-  separate(sexage, into = c('sex', 'age'), sep = 1) %>%
-  replace_na(list(count = 0))
 
-### OR
-
-# no data
-who %>% 
-  select(-iso2, -iso3) %>%
-  gather(code, count, `new_sp_m014`:`newrel_f65`) %>% 
-  mutate(code = stringr::str_replace(code, 'newrel', 'new_rel')) %>%
-  separate(code, into = c('case_type', 'diag_type', 'sexage'), sep = '_') %>%
-  select(-case_type) %>%
-  separate(sexage, into = c('sex', 'age'), sep = 1) %>%
-  replace_na(list(count = 'no_data')) 
 ```
 
 The dataset should now be tidy!

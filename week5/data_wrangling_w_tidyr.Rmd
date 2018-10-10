@@ -23,11 +23,13 @@ The tidyr package has some built in data-sets specifically for practicing tidyin
 
 ## Tidy Data
 
-Here's an example of tidy data, in the cleverly named "table1". The other tableNs in this dataset are untidy versions of this one to practice on
+The first example data table in tidyr is the cleverly named "table1". This table is tidy! The other tableNs in this dataset are untidy versions of this one to practice on.
 
 ```{r}
 table1
 ```
+
+As you can see when you look at table1, each column is a variable and contains only values of the same type belonging to that variable. Going foward, we'll be tidying messed up versions of table1
 
 ## tidyr functions
 
@@ -43,11 +45,12 @@ table2 %>% spread(type, count)
 
 ### `gather()`
 
-Looking at table4a in the chunk below, it's not tidy because the columns 1999 and 2000 are not variable descriptions, they're data (the year the measurement was made in). We need the column names to become data, so to do that use gather.
+Looking at table4a in the chunk below, it's not tidy because the columns 1999 and 2000 are not variable descriptions, they're data (the year the measurement was made in). We need the column names to be values in a column. To do that we'll use gather.
 
 ```{r}
 table4a
 
+# you can gather by specifying column names
 table4a %>% gather(year, cases, `1999`:`2000`)
 
 # also with column numbers
@@ -85,28 +88,35 @@ table5 %>% unite(year, c('century', 'year'), sep = '')
 You may have noticed that the rate column in table5 is the same as the rate column in table3 and contains two values. Chain together some of the tidyr functions above to completely tidy table5.
 
 ```{r}
-table5 %>% unite(year, c('century', 'year'), sep = '') %>% separate(rate, into = c('cases', 'population'), sep = '/')
+table5 %>% 
+  unite(year, c('century', 'year'), sep = '') %>% 
+  separate(rate, into = c('cases', 'population'), sep = '/')
 ```
 
 ## Combining Tables
 
+Binds and joins are in the dplyr package, but fit in better with data wrangling, so they were saved for this week.
+
 ### Binds
 
-Attach tables together. In order to bind tables, they tables bound together have to have the same number of rows OR the same number of columns.
+Attach tables together. In order to bind tables, the tables being bound together have to have the same number of rows OR the same number of columns (depending if you're binding by rows or columns).
 
 #### `rbind()` / `bind_rows()`
 
-Attach tables by adding additional rows. 
+Attach tables together by adding additional rows. When you bind by rows, the second table is added to the bottom of the first table. 
 
 ```{r}
 table4a
 table4b
 
-# rbind will fail if column names aren't completely the same, but bind_rows will compensate and add on another columns
+# base R
 rbind(table4a, table4b)
 
+# tidyverse, dplyr
 bind_rows(table4a, table4b)
 ```
+
+The difference between `rbind()` and `bind_rows()` is that if you have a different number of columns, `rbind()` will refuse to work and return an error, while `bind_rows()` will keep all columns from all tables and add NAs where there are no values.
 
 #### `cbind()` / `bind_cols()`
 
@@ -116,21 +126,18 @@ Attach tables by adding additional columns.
 table4a
 table4b
 
-
+# base R
 cbind(table4a, table4b)
 
-rbind(table4b, tibble(country = 'India', `1999` = 1035000000, `2000` = 1053000000)) %>%
-  cbind(table4a)
-
+# tidyverse, dplyr
 bind_cols(table4a, table4b)
-
-rbind(table4b, tibble(country = 'India', `1999` = 1035000000, `2000` = 1053000000)) %>%
-  bind_cols(table4a)
 ```
 
 ### Joins
 
-Joins combine two tables together by common variables. The difference between binds and joins is that binds are intended to combine tables together that have exactly the same information like for different samples while joins are intended to combine together tables with complimentary but different information by common variables like samples with their metadata. The `*_join()` functions combine either by the columns you specify or by auto-detecting columns with the same name. Mutating joins add additional columns, while filtering joins filter a table by another table. Joins are actually in dplyr, but fit together better with data wrangling.
+Joins combine two tables together by common variables. The difference between binds and joins is that binds are intended to combine tables together that have exactly the same information, like for different samples, while joins are intended to combine together tables with complimentary but different information by common variables, like samples with their metadata. The `*_join()` functions combine either by the columns you specify or by auto-detecting columns with the same name. Mutating joins add additional columns, while filtering joins filter a table by another table.
+
+We'll use the band_* tables from the dplyr package to practice joins. As you can see when you run the tables in the chunk below, the tables have information in common, musician names, but complimentary information, what band they belong to in one table and what instruments they play in the others.
 
 ```{r}
 band_members
@@ -208,7 +215,7 @@ band_instruments
 anti_join(band_members, band_instruments, by = c('name'))
 ```
 
-### What if my column names don't match?
+#### What if my column names don't match?
 
 Name and artist are the same variable, who the person is, in the tables below.
 
