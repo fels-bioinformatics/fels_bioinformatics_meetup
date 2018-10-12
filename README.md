@@ -186,6 +186,7 @@ ___
 **References**
 
 - data wrangling [cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+- Hadley Wickhams tidy data [paper](http://vita.had.co.nz/papers/tidy-data.pdf)
 
 
 
