@@ -158,7 +158,7 @@ ___
 - week3 practice ggplot in class review [Rmd file](week3/week3_practice_plotting_with_ggplot_INCLASS_anwsers.Rmd)
 - dplyr demo [Rmd file](week4/data_manipulation_w_dplyr.Rmd), [html file](week4/data_manipulation_w_dplyr.html)
 - dplyr demo with in class extras [Rmd file](week4/data_manipulation_w_dplyr_INCLASSwork.Rmd)
-- practice [Rmd](week4/week4_practice_data_manipulation_w_dplyr.Rmd) and answers in [Rmd](week4/week4_practice_data_manipulation_w_dplyr_ANSWERS.Rmd) and in [html](week4/week4_practice_data_manipulation_w_dplyr_ANSWERS.Rmd)
+- practice [Rmd](week4/week4_practice_data_manipulation_w_dplyr.Rmd) and answers in [Rmd](week4/week4_practice_data_manipulation_w_dplyr_ANSWERS.Rmd) and in [html](week4/week4_practice_data_manipulation_w_dplyr_ANSWERS.Rmd) and answer [Rmd](week4_practice_data_manipulation_w_dplyr_INCLASS.Rmd) with in class solutions and extra comments
 
 **References**
 
@@ -181,6 +181,7 @@ ___
 
 - [slides](week5/the_tidyverse_and_tidy_data.pdf)
 - data wrangling demo [Rmd](week5/data_wrangling_w_tidyr.Rmd), [html](week5/data_wrangling_w_tidyr.html)
+- tidyr/data wrangling demo with in class additions [Rmd](week5/data_wrangling_w_tidyr_INCLASS.Rmd)
 - data wrangling [practice](week5/week5_practice_data_wrangling_w_tidyr.Rmd)
 
 **References**
