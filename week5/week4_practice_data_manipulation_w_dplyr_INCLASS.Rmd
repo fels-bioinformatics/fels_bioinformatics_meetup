@@ -1,0 +1,109 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+library(tidyverse)
+library(viridis)
+library(conflicted)
+library(nycflights13)
+
+filter <- dplyr::filter
+```
+
+# Practice: `dplyr()` Data Manipulation
+
+We'll use another data table from the nycflights13 library, airports. Don't forget to look at the table before doing anything!
+
+```{r}
+airports
+```
+
+## `dplyr()` functions
+
+### `filter()`
+
+Filter airports for locations in our time zone, the US Eastern time zone.
+
+```{r}
+filter(airports, tz == -5)
+```
+
+### `select()`
+
+Select all columns BUT latitude and longitude.
+
+```{r}
+select(airports, -lat, -lon)
+```
+
+### `mutate()`
+
+Add a column indicating the year the data was collected, 2013
+
+```{r}
+# wrong, use only one equal sign when creating a new column because we're *assigning* (=) new values, not checking if values are equal (==)
+airports %>% mutate(collected == 2013)
+
+airports %>% mutate(collected = 2013)
+```
+
+### `arrange()`
+
+Arrange the table by latitude, then longitude
+
+```{r}
+arrange(airports, lat, lon)
+
+### OR equivalent answer
+
+airports %>% arrange(lat, lon)
+```
+
+### `group_by()` / `summarize()`
+
+Find the average altitude by time zone.
+
+```{r}
+airports %>% group_by(tzone) %>% summarize(average_alt = mean(alt))
+```
+
+## Chain functions together with pipes
+
+Filter for airports with altitude above 2000 feet and select their FAA airport codes and names
+
+```{r}
+airports %>% filter(alt >= 2000) %>% select(faa, name)
+```
+
+Filter for airports with an altitude less than 1000 feet and find their average latitude and longitudes by timezone.
+
+```{r}
+airports %>% filter(alt < 1000) %>% group_by(tzone) %>% summarize(avg_lat = mean(lat), avg_lon = mean(lon))
+```
+
+Filter for latitude between 35 and 50, then plot boxplots of altitude by time zone.
+
+```{r}
+# class answer
+airports %>% filter(lat > 35 & lat < 50) %>%
+  ggplot() + geom_boxplot(aes(y = alt, x = tzone))
+
+# doesn't work -- best practice is to put aesthetics (aes()) inside ggplot() so all geoms can inherit the aesthetics (see the data) from ggplot()
+airports %>% filter(lat > 35 & lat < 50) %>%
+  ggplot() + geom_point(aes(x = lat, y = lon)) + geom_line()
+
+# this works!
+airports %>% filter(lat > 35 & lat < 50) %>%
+  ggplot(aes(x = lat, y = lon)) + geom_point() + geom_line()
+
+
+# example of how color works differently when you put in ggplot(aes()) vs. geom_*(aes())
+airports %>% filter(lat > 35 & lat < 50) %>%
+  ggplot(aes(x = lat, y = lon)) + geom_point(aes(color=tzone)) + geom_line()
+
+airports %>% filter(lat > 35 & lat < 50) %>%
+  ggplot(aes(x = lat, y = lon, color = tzone)) + geom_point() + geom_line()
+```
+
+
+
+
