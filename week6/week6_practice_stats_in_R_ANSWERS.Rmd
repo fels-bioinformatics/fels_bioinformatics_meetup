@@ -1,0 +1,127 @@
+---
+title: "Week 6 Practice: Stats in R"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(conflicted)
+library(nycflights13)
+
+filter <- dplyr::filter
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Practice: Statistical Tests in R
+
+Before doing anything else, install the broom package in the console! Once you've done that load the library.
+
+```{r}
+library(broom)
+```
+
+## Practice Running the Code
+
+### Summary Statistics
+
+Find the mean, median, and standard deviation of the departure delay in the flights table in a SINGLE line of code by airport.
+
+```{r}
+flights %>% 
+  group_by(origin) %>% 
+  na.omit() %>%
+  summarize(avg_delay = mean(dep_delay),
+            median_delay = median(dep_delay),
+            sd_delay = sd(dep_delay))
+```
+
+Why is there such a large difference between the mean and the median? Plotting a histogram of the departure delay gives the answer the question. Can you explain it now?
+
+```{r}
+ggplot(flights, aes(x = dep_delay)) + geom_histogram() + xlab('Departure Delay (mins)')
+```
+
+The handful of very large delays skews the mean higher/to the right.
+
+### t test
+
+On Thanksgiving, the average departure delay is 45 mins. Is this unusual? Test it with a t test.
+
+```{r}
+t.test(flights$dep_delay, mu = 45)
+```
+
+### chi square test
+
+Practice your data wrangling skills and don't forget to end by tidying the test with `broom::tidy()`!
+
+```{r}
+Titanic %>% 
+  as_tibble() %>% 
+  spread(Class, n) %>% 
+  filter(Survived == 'Yes') %>% 
+  select(-(Sex:Survived)) %>%
+  chisq.test(.)
+```
+
+## Pick the Test for the Data
+
+Is the average departure delay the same as the average arrival delay?
+
+```{r}
+flights %>% 
+  na.omit() %>%
+  summarize(avg_dep_delay = mean(dep_delay), avg_arr_delay = mean(arr_delay))
+```
+
+In the weather dataset, is wind speed different at JFK vs. LaGuardia?
+
+```{r}
+weather %>% filter(origin != 'EWR') %>% t.test(wind_speed ~ origin, data = .)
+```
+
+Do flights from Newark vs. LaGuardia fly about the same distances?
+
+```{r}
+flights %>% filter(origin != 'JFK') %>% t.test(distance ~ origin, data = .)
+```
+
+In the built-in HairEyeColor dataset, are there equal numbers of students between the four hair colors (black, blonde, brown, and red)?
+
+```{r}
+HairEyeColor %>% 
+  as_tibble() %>% 
+  spread(Hair, n) %>%
+  select(-Eye, -Sex) %>%
+  chisq.test(.)
+```
+
+Is the variation in depature delays the same at all the airports in the flights table?
+
+```{r}
+flights %>% 
+  group_by(origin) %>% 
+  na.omit() %>% 
+  summarize(sd_dep_delay = sd(dep_delay))
+```
+
+## Come Up with Your Own Questions
+
+Come up with two questions about the flights dataset and test them in the chunks below.
+
+Question 1:
+
+```{r}
+
+```
+
+Question 2:
+
+```{r}
+
+```
+
+
+
+

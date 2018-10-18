@@ -1,0 +1,176 @@
+---
+title: "Import/export"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# import/export
+
+### Working directory
+
+#### `getwd()`
+
+Ideally, you just want to have everything, all files and your Rmarkdown file/R scripts, in your working directory. To see where your working directory is, use `getwd()` with no arguments.
+
+```{r}
+getwd()
+```
+
+#### `setwd()`
+
+However, if you need to set your working directory to somewhere other than where your Rmarkdown file/R script is (not recommended), use `setwd()` with the path to the directory you want to use. (**NOTE:** Any file path I put here will NOT work if you try running it on your computer. That's the downside of `setwd()`. Try setting your own working directory instead.)
+
+```{r}
+setwd()
+```
+
+#### `dir()`
+
+You might also want to see what's in your working directory. To do that use `dir()`.
+
+```{r}
+dir()
+```
+
+## Reading and writing data tables with readr
+
+### Read tables
+
+#### `read_tsv()`
+
+Reads in tab separated value (tsv) files
+
+```{r}
+wine <- read_tsv('wine.tsv')
+```
+
+#### `read_csv()`
+
+Reads in comma separated value (csv) files
+
+```{r}
+sparrows <- read_csv('sparrows.csv')
+```
+
+#### `read_delim()`
+
+Reads in files. You have to specify what the file is delimited by.
+
+```{r}
+biopsy <- read_delim('biopsy.txt', delim = ' ')
+```
+
+#### Problems
+
+Sometimes there aren't column names, or the column names are in a file header or are not read in properly. This example has column names in a commented header.
+
+```{r}
+rowan <- read_csv('rowan.csv')
+```
+
+We can solve the problem by specifying the column names and that the header is a comment or skipping the first line will do the same thing.
+
+```{r}
+rowan <- read_csv('rowan.csv', 
+                  col_names = c('altitude', 'resp.rate', 'species', 'leaf.len', 'nesting'), 
+                  comment = '#')
+
+rowan <- read_csv('rowan.csv', 
+                  col_names = c('altitude', 'resp.rate', 'species', 'leaf.len', 'nesting'), 
+                  skip = 1)
+```
+
+`read_*()` functions guess data types from the first 1,000 rows. Guess where this always fails? Chromosomes!
+
+### Write tables
+
+When you want to save a data table that you've made inside R, you have to write the table.
+
+#### `write_tsv()`
+
+This will save your table with tabs to delimit the data.
+
+```{r}
+# change something about biopsy
+wine %>% select(Cultivar, Color) -> wine_cult_col
+
+# save it as a tsv
+write_tsv(wine_cult_col, 'cultivar_color.tsv')
+```
+
+#### `write_csv()`
+
+This will save your table with commas to delimit the data.
+
+```{r}
+wine %>% select(Cultivar, Color) %>% write_csv('cultivar_color.csv')
+```
+
+#### `write_delim()`
+
+You can specify what you want as a delimiter using `write_delim()`
+
+```{r}
+sparrows %>% group_by(Sex, Age, Survival) %>% count() -> sparrow_survival
+
+write_delim(sparrow_survival, 'sparrow_survival.tsv', delim = '\t')
+```
+
+## Saving plots
+
+#### base R
+
+```{r}
+png('sparrows_weight_by_age_sex.png')
+
+ggplot(sparrows, aes(x = Age, y = Weight, fill = Age)) + 
+  geom_violin(alpha = 0.8) + 
+  scale_fill_manual(values = c('darkcyan', 'hotpink')) +
+  facet_wrap(~ Sex) + 
+  theme_classic() +
+  theme(legend.position = 'none') 
+
+dev.off()
+```
+
+#### `ggsave()`
+
+ggplot has its own way of saving plots, `ggsave()`. It will automatically save the last plot run in memory, or you can specify what plot to save. It will also autodetect the image filetype from the extension given in the filename you give it.
+
+```{r}
+# automatic
+ggplot(biopsy, aes(x = marg_adhesion, fill = outcome )) + 
+  geom_density(alpha = 0.5) +
+  scale_fill_manual(values = c('darkgray', 'firebrick')) + 
+  labs(x = 'margin adhesion') +
+  theme_classic()
+
+ggsave('biopsy_margins.png')
+```
+
+```{r}
+# specify saved plot
+ggplot(wine, aes(x = Alcohol, y = Ash, color = as.factor(Cultivar))) + 
+  geom_point() + 
+  scale_color_viridis(discrete = T) +
+  labs(color = 'Cultivar') +
+  theme_classic() -> wine_plot
+
+ggsave('wine_cult.png', plot = wine_plot)
+```
+
+
+

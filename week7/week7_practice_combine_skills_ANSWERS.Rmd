@@ -1,0 +1,57 @@
+---
+title: "week6 combine skills"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Week 6 Practice: Combine all your skills
+
+## Pick a dataset
+
+Pick a dataset to download from the website <https://fels-bioinformatics.github.io/fels_bioinformatics_meetup/> to work with under Week 6 demo (or if there's another data set you'd like to use go for it).
+
+### Provided datasets
+
+###### sparrows.csv
+
+Briefly, in 1898, Hermon Bumpus, an American biologist working at Brown
+University, collected data on one of the first examples of natural selection directly
+observed in nature. Immediately following a bad winter storm, he collected 136 English
+house sparrows, Passer domesticus, and brought them indoors. Of these birds, 64 had
+died during the storm, but 72 recovered and survived. By comparing measurements of
+physical traits, Bumpus claimed to detect substantial physical differences between the
+dead and living birds.
+
+###### biopsy.txt
+
+This dataset reports breast tumor biopsy results for 699 patients from the University of Wisconsin Hospitals, Madison. Nine attributes were measured each on a scale of 1-10, and the diagnosis for each patient is given in the column  outcome.
+
+###### wine.tsv
+
+The wine dataset contains the results of a chemical analysis of wines grown in a specific area of Italy. Three types of wine are represented in the 178 samples, with the results of 13 chemical analyses recorded for each sample. The Type variable has been transformed into a categoric variable.
+
+###### rowan.txt
+
+This dataset is from a field experiment studying the diversity of Chinese Rowan, or Mountain Ash, trees from the genus Sorbus. Researchers randomly sampled and recorded characteristics of leaves from three different Rowan species, and they further noted whether birds were actively nesting in each tree (recorded as y/n for yes/no). Altitude is recorded in meters (m), respiration rate (resp.rate) is recorded in per unit leaf mass, and leaf length (leaf.len) is recorded in centimeters (cm).
+
+## Read In Data
+
+## Clean Data 
+
+## Look at the Data and Ask Questions
+
+```{r}
+
+```
+
+## Visualize
+
+```{r}
+
+```
+
+Did you answer your question with the visualization?
+
