@@ -1,2 +1,6 @@
+### ignore file types
 **/.DS_Store
 **/.Rhistory
+
+### ignore this directory
+biostar_handbook/
