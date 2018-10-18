@@ -182,12 +182,30 @@ ___
 - [slides](week5/the_tidyverse_and_tidy_data.pdf)
 - data wrangling demo [Rmd](week5/data_wrangling_w_tidyr.Rmd), [html](week5/data_wrangling_w_tidyr.html)
 - tidyr/data wrangling demo with in class additions [Rmd](week5/data_wrangling_w_tidyr_INCLASS.Rmd)
-- data wrangling [practice](week5/week5_practice_data_wrangling_w_tidyr.Rmd)
+- data wrangling [practice](week5/week5_practice_data_wrangling_w_tidyr.Rmd) and answers in [Rmd](week5/week5_practice_data_wrangling_w_tidyr_ANSWERS.Rmd) and in [html](week5/week5_practice_data_wrangling_w_tidyr_ANSWERS.Rmd)
 
 **References**
 
 - data wrangling [cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
 - Hadley Wickhams tidy data [paper](http://vita.had.co.nz/papers/tidy-data.pdf)
+
+---
+
+### Week 6 (Oct 19)
+
+**Basic Statistics in R**
+
+- descriptive and summary statistics
+- hypothesis testing
+    - t test
+    - chi squared
+- tidying the test
+- correcting for multiple testing
+
+**Materials**
+
+- [slides](week6/statistics_review.pdf)
+- practice [Rmd](week6/week6_practice_stats_in_R.Rmd)
 
 
 
