@@ -182,7 +182,7 @@ ___
 - [slides](week5/the_tidyverse_and_tidy_data.pdf)
 - data wrangling demo [Rmd](week5/data_wrangling_w_tidyr.Rmd), [html](week5/data_wrangling_w_tidyr.html)
 - tidyr/data wrangling demo with in class additions [Rmd](week5/data_wrangling_w_tidyr_INCLASS.Rmd)
-- data wrangling [practice](week5/week5_practice_data_wrangling_w_tidyr.Rmd) and answers in [Rmd](week5/week5_practice_data_wrangling_w_tidyr_ANSWERS.Rmd) and in [html](week5/week5_practice_data_wrangling_w_tidyr_ANSWERS.Rmd)
+- data wrangling [practice](week5/week5_practice_data_wrangling_w_tidyr.Rmd) and answers in [Rmd](week5/week5_practice_data_wrangling_w_tidyr_ANSWERS.Rmd) and in [html](week5/week5_practice_data_wrangling_w_tidyr_ANSWERS.Rmd) and in-class answers in [Rmd](week5/week5_practice_data_wrangling_w_tidyr_INCLASS.Rmd)
 
 **References**
 
