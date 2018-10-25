@@ -1,5 +1,4 @@
 ---
-title: "Import/export"
 output: html_document
 ---
 
@@ -17,7 +16,7 @@ filter <- dplyr::filter
 select <- dplyr::select
 ```
 
-# import/export
+## import/export
 
 ### Working directory
 
@@ -29,13 +28,17 @@ Ideally, you just want to have everything, all files and your Rmarkdown file/R s
 getwd()
 ```
 
+<br>
+
 #### `setwd()`
 
 However, if you need to set your working directory to somewhere other than where your Rmarkdown file/R script is (not recommended), use `setwd()` with the path to the directory you want to use. (**NOTE:** Any file path I put here will NOT work if you try running it on your computer. That's the downside of `setwd()`. Try setting your own working directory instead.)
 
 ```{r}
-setwd()
+#setwd('/this_is_a_fake_path/to_show_function_syntax/')
 ```
+
+<br>
 
 #### `dir()`
 
@@ -44,6 +47,8 @@ You might also want to see what's in your working directory. To do that use `dir
 ```{r}
 dir()
 ```
+
+<br>
 
 ## Reading and writing data tables with readr
 
@@ -54,50 +59,62 @@ dir()
 Reads in tab separated value (tsv) files
 
 ```{r}
-wine <- read_tsv('wine.tsv')
+wine <- read_tsv('./demo_files/wine.tsv')
 ```
+
+<br>
 
 #### `read_csv()`
 
 Reads in comma separated value (csv) files
 
 ```{r}
-sparrows <- read_csv('sparrows.csv')
+sparrows <- read_csv('demo_files/sparrows.csv')
 ```
+
+<br>
 
 #### `read_delim()`
 
 Reads in files. You have to specify what the file is delimited by.
 
 ```{r}
-biopsy <- read_delim('biopsy.txt', delim = ' ')
+biopsy <- read_delim('demo_files/biopsy.txt', delim = ' ')
 ```
+
+<br>
 
 #### Problems
 
 Sometimes there aren't column names, or the column names are in a file header or are not read in properly. This example has column names in a commented header.
 
 ```{r}
-rowan <- read_csv('rowan.csv')
+rowan <- read_csv('demo_files/rowan.csv')
 ```
+
+<br>
 
 We can solve the problem by specifying the column names and that the header is a comment or skipping the first line will do the same thing.
 
 ```{r}
-rowan <- read_csv('rowan.csv', 
+rowan <- read_csv('demo_files/rowan.csv', 
                   col_names = c('altitude', 'resp.rate', 'species', 'leaf.len', 'nesting'), 
                   comment = '#')
 
-rowan <- read_csv('rowan.csv', 
+rowan <- read_csv('demo_files/rowan.csv', 
                   col_names = c('altitude', 'resp.rate', 'species', 'leaf.len', 'nesting'), 
                   skip = 1)
 ```
 
 `read_*()` functions guess data types from the first 1,000 rows. Guess where this always fails? Chromosomes!
 
+<br>
+
 ### Write tables
 
 When you want to save a data table that you've made inside R, you have to write the table.
+
+<br>
 
 #### `write_tsv()`
 
@@ -111,6 +128,8 @@ wine %>% select(Cultivar, Color) -> wine_cult_col
 write_tsv(wine_cult_col, 'cultivar_color.tsv')
 ```
 
+<br>
+
 #### `write_csv()`
 
 This will save your table with commas to delimit the data.
@@ -118,6 +137,8 @@ This will save your table with commas to delimit the data.
 ```{r}
 wine %>% select(Cultivar, Color) %>% write_csv('cultivar_color.csv')
 ```
+
+<br>
 
 #### `write_delim()`
 
@@ -128,6 +149,8 @@ sparrows %>% group_by(Sex, Age, Survival) %>% count() -> sparrow_survival
 
 write_delim(sparrow_survival, 'sparrow_survival.tsv', delim = '\t')
 ```
+
+<br>
 
 ## Saving plots
 
@@ -146,6 +169,8 @@ ggplot(sparrows, aes(x = Age, y = Weight, fill = Age)) +
 dev.off()
 ```
 
+<br>
+
 #### `ggsave()`
 
 ggplot has its own way of saving plots, `ggsave()`. It will automatically save the last plot run in memory, or you can specify what plot to save. It will also autodetect the image filetype from the extension given in the filename you give it.
@@ -161,6 +186,10 @@ ggplot(biopsy, aes(x = marg_adhesion, fill = outcome )) +
 ggsave('biopsy_margins.png')
 ```
 
+<br>
+
+If you save the plot as an object, you can tell `ggsave()` what plot object you want to save.
+
 ```{r}
 # specify saved plot
 ggplot(wine, aes(x = Alcohol, y = Ash, color = as.factor(Cultivar))) + 
@@ -172,5 +201,38 @@ ggplot(wine, aes(x = Alcohol, y = Ash, color = as.factor(Cultivar))) +
 ggsave('wine_cult.png', plot = wine_plot)
 ```
 
+<br>
 
+## Work on data together
 
+### Import
+
+```{r}
+biopsy <- read_tsv('demo_files/biopsy_inclass_demo.tsv')
+```
+
+<br>
+
+### Tidy
+
+```{r}
+
+```
+
+<br>
+
+### Visualize
+
+```{r}
+
+```
+
+<br>
+
+### Test
+
+```{r}
+
+```
+
+<br><br>

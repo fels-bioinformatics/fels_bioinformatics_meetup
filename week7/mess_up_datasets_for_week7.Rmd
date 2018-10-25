@@ -1,0 +1,89 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Mess Up Datasets for Week7 Class
+
+#### sparrows
+
+```{r}
+# sparrows.csv
+sparrows <- read_csv('sparrows.csv')
+```
+
+```{r}
+# untidy sparrows
+sparrows %>% 
+  unite('skull_width_length', c('Skull_Width', 'Skull_Length'), sep = ';') ->
+  sparrows_untidy
+```
+
+```{r}
+# save untidy sparrows
+#write_csv(sparrows_untidy, 'sparrows2.csv')
+```
+
+#### biopsy
+
+```{r}
+# biopsy.txt
+biopsy <- read_delim('biopsy.txt', delim = ' ')
+```
+
+```{r}
+biopsy %>% 
+  select(outcome, everything()) %>% 
+  unite('tumor_params', clump_thickness:mitoses, sep = ';') -> biopsy_untidy
+```
+
+```{r}
+#write_tsv(biopsy_untidy, 'biopsy_inclass_demo.tsv')
+```
+
+#### wine
+
+```{r}
+# wine.tsv
+wine <- read_tsv('wine.tsv')
+```
+
+```{r}
+wine %>% gather(phenol/flav, value, TotalPhenol:NonflavPhenols) -> wine_untidy
+```
+
+```{r}
+# save untidy wine dataset
+#write_tsv(wine_untidy, 'wine2.tsv')
+```
+
+#### rowan
+
+```{r}
+# rowan.csv
+rowan <- read_csv('rowan.csv', 
+                  comment = '#',
+                  col_names = c('altitude', 'resp.rate', 'species', 
+                                'leaf.len', 'nesting'))
+```
+
+```{r}
+# mess up rowan dataset
+rowan %>% spread(species, leaf.len) -> rowan_untidy
+```
+
+```{r}
+# save untidy rowan dataset
+#write_tsv(rowan_untidy, 'rowan2.csv')
+```
+
+
+
+
+
+
+

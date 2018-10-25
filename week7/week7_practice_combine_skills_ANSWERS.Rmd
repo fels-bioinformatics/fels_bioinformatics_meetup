@@ -1,21 +1,28 @@
 ---
-title: "week6 combine skills"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
+
+library(tidyverse)
+library(conflicted)
+library(viridis)
+library(broom)
+
+filter <- dplyr::filter
+
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Week 6 Practice: Combine all your skills
+# Week 7 Practice: Combine all your skills
 
 ## Pick a dataset
 
-Pick a dataset to download from the website <https://fels-bioinformatics.github.io/fels_bioinformatics_meetup/> to work with under Week 6 demo (or if there's another data set you'd like to use go for it).
+Pick a dataset to download from the website <https://fels-bioinformatics.github.io/fels_bioinformatics_meetup/> to work with (or if there's another data set you'd like to use go for it).
 
 ### Provided datasets
 
-###### sparrows.csv
+##### **sparrows.csv**
 
 Briefly, in 1898, Hermon Bumpus, an American biologist working at Brown
 University, collected data on one of the first examples of natural selection directly
@@ -23,35 +30,391 @@ observed in nature. Immediately following a bad winter storm, he collected 136 E
 house sparrows, Passer domesticus, and brought them indoors. Of these birds, 64 had
 died during the storm, but 72 recovered and survived. By comparing measurements of
 physical traits, Bumpus claimed to detect substantial physical differences between the
-dead and living birds.
+dead and living birds. The tidy sparrows dataset contains the following columns:
 
-###### biopsy.txt
+- **Sex** = sex of the bird
+- **Age** = whether the bird was adult or young
+- **Survival** = whether the bird survived
+- **Length** = body length of the bird (cm)
+- **Wingspread** = length of the bird's wings from wingtip to wingtip (cm)
+- **Weight** = weight of the bird (g)
+- **Skull_Length** = length of the bird's skull (cm)
+- **Humerus_Length** = length of the bird's long arm bone (cm)
+- **Femur_Length** = length of the bird's long leg bone (cm)
+- **Tarsus_Length** = length of the bird's ankle bones (cm)
+- **Sternum_Length** = length of the bird's breastbone (cm)
+- **Skull_Width** = width of the bird's skull (cm)
 
-This dataset reports breast tumor biopsy results for 699 patients from the University of Wisconsin Hospitals, Madison. Nine attributes were measured each on a scale of 1-10, and the diagnosis for each patient is given in the column  outcome.
+<br>
 
-###### wine.tsv
+##### **wine.tsv**
 
-The wine dataset contains the results of a chemical analysis of wines grown in a specific area of Italy. Three types of wine are represented in the 178 samples, with the results of 13 chemical analyses recorded for each sample. The Type variable has been transformed into a categoric variable.
+The wine dataset contains the results of a chemical analysis of wines grown in a specific area of Italy. Three types of wine are represented in the 178 samples, with the results of 13 chemical analyses recorded for each sample. The Type variable has been transformed into a categoric variable. The tidy wine dataset contains the following columns:
 
-###### rowan.txt
+- **Cultivar** = the number factor indicating the grape cultivar the wine was made from
+- **Alcohol** = the alcohol concentration in the wine sample (g/L)
+- **MalicAcid** = the malic acid concentration in the wine sample (g/L)
+- **Ash** = the ash concentration in the wine sample (g/L)
+- **Magnesium** = the magnesium concentration in the wine sample (g/L)
+- **TotalPhenol** = the total amount of all phenol compounds in the wine sample (g/L)
+- **Flavanoids** = the concentration of all flavanoids in the wine sample (g/L)
+- **NonflavPhenols** = the concentration of all non-flavanoid phenols in the wine sample (g/L)
+- **Color** = wine color (spectrophotometric measure?)
 
-This dataset is from a field experiment studying the diversity of Chinese Rowan, or Mountain Ash, trees from the genus Sorbus. Researchers randomly sampled and recorded characteristics of leaves from three different Rowan species, and they further noted whether birds were actively nesting in each tree (recorded as y/n for yes/no). Altitude is recorded in meters (m), respiration rate (resp.rate) is recorded in per unit leaf mass, and leaf length (leaf.len) is recorded in centimeters (cm).
+<br>
 
-## Read In Data
+##### **rowan.csv**
 
-## Clean Data 
+This dataset is from a field experiment studying the diversity of Chinese Rowan, or Mountain Ash, trees from the genus Sorbus. Researchers randomly sampled and recorded characteristics of leaves from three different Rowan species, and they further noted whether birds were actively nesting in each tree (recorded as y/n for yes/no). Altitude is recorded in meters (m), respiration rate (resp.rate) is recorded in per unit leaf mass, and leaf length (leaf.len) is recorded in centimeters (cm). The tidy rowan dataset contains the following columns:
 
-## Look at the Data and Ask Questions
+- **altitude** = the alitude the rowan was found at (m)
+- **resp.rate** = the rowan's respiration rate (nmol/s)
+- **species** = the rowan species
+- **leaf.len** = the rowan's leaf length (cm)
+- **neating** = logial, was there a bird nesting in the rowan, yes or no
+
+<br>
+
+---
+
+**Note:** This is the answer key, so I've provided example workflows for all three of the datasets above, but you should only have done one.
+
+---
+
+<br>
+
+# sparrows example
+
+## Wrangle
+
+### Import
+
+Read in your dataset of choice (either from the list above or your own dataset) in the chunk below!
 
 ```{r}
-
+# sparrows.csv
+sparrows <- read_csv('practice_files/sparrows2.csv')
 ```
 
-## Visualize
+<br>
+
+### Tidy
+
+As ever, first thing is to look at your data. Use the chunk below.
 
 ```{r}
-
+sparrows
 ```
 
-Did you answer your question with the visualization?
+<br>
 
+Do you see any odd features that need to be tidied before continuing? If yes, tidy the table in the chunk below. Don't forget to save your tidied table to another variable/object before continuing.
+
+```{r}
+sparrows %>% separate(skull_width_length, into = c('Skull_Width', 'Skull_Length'), sep = ';') -> sparrows_tidy
+```
+
+<br>
+
+## Understand the Data
+
+### Ask a Question
+
+Looking at your dataset, what questions come to mind? For example, in everyone's favorite dataset iris, you might ask if petal width is different between the three iris species. Look at your dataset and come up with a question and write it down below.
+
+**Write your question here:**  Does the age of sparrows affect their survival?
+
+<br>
+
+### Visualize
+
+Think about your question. How can you visually represent the relevant data columns? Plot your data in the chunk below.
+
+```{r}
+ggplot(sparrows_tidy, aes(x = Age, fill = Survival)) + 
+  geom_bar(position = 'dodge') + 
+  scale_fill_manual(values = c('dodgerblue3', 'gray60')) + 
+  theme_classic()
+```
+
+<br>
+
+### Test
+
+Use the appropriate hypothesis test (ex: `t.test()` or `chisq.test()`) to test your question.
+
+```{r}
+sparrows_tidy %>% 
+  group_by(Age, Survival) %>% 
+  count() %>% 
+  ungroup() %>% 
+  spread(Age, n) %>%
+  column_to_rownames('Survival') %>%
+  as.matrix() %>% 
+  chisq.test(.) %>%
+  tidy()
+```
+
+<br>
+
+### Ask a Question
+
+Ask another question about your data!
+
+**Write your question here:** Does the weight of sparrows affect their survival?
+
+<br>
+
+### Visualize
+
+Make another figure in the chunk below visualizing the variables you asked your second question about.
+
+```{r}
+ggplot(sparrows_tidy, aes(x = Weight, fill = Survival)) + 
+  geom_density(alpha = 0.5) + 
+  scale_fill_manual(values = c('darkorchid4', 'gray60')) + 
+  theme_classic()
+```
+
+<br>
+
+### Test
+
+And again, use an appropriate hypothesis test to test your idea.
+
+```{r}
+t.test(Weight ~ Survival, data = sparrows_tidy) %>% tidy()
+```
+
+<br>
+
+## Communicate
+
+Write a few sentences here that explain what you tested and why.
+
+**Erase me and put sentences here**
+
+<br>
+
+---
+
+<br>
+
+# wine example
+
+## Wrangle
+
+### Import
+
+Read in your dataset of choice (either from the list above or your own dataset) in the chunk below!
+
+```{r}
+# wine.tsv
+wine <- read_tsv('practice_files/wine2.tsv')
+```
+
+<br>
+
+### Tidy
+
+As ever, first thing is to look at your data. Use the chunk below.
+
+```{r}
+wine
+```
+
+<br>
+
+Do you see any odd features that need to be tidied before continuing? If yes, tidy the table in the chunk below. Don't forget to save your tidied table to another variable/object before continuing.
+
+```{r}
+wine %>% spread(`phenol/flav`, value) %>% mutate(Cultivar = as.factor(Cultivar)) -> wine_tidy
+```
+
+<br>
+
+## Understand the Data
+
+### Ask a Question
+
+Looking at your dataset, what questions come to mind? For example, in everyone's favorite dataset iris, you might ask if petal width is different between the three iris species. Look at your dataset and come up with a question and write it down below.
+
+**Write your question here:**  Does the amount of alcohol in the wine differ between cultivars?
+
+<br>
+
+### Visualize
+
+Think about your question. How can you visually represent the relevant data columns? Plot your data in the chunk below.
+
+```{r}
+ggplot(wine_tidy, aes(x = Cultivar, y = Alcohol, fill = Cultivar)) + 
+  scale_fill_viridis(discrete = TRUE, option = 'cividis') +
+  geom_boxplot()
+```
+
+<br>
+
+### Test
+
+Use the appropriate hypothesis test (ex: `t.test()` or `chisq.test()`) to test your question.
+
+```{r}
+pairwise.t.test(wine_tidy$Alcohol, wine_tidy$Cultivar) %>% tidy()
+```
+
+<br>
+
+### Ask a Question
+
+Ask another question about your data!
+
+**Write your question here:** Is the color of the wine different between different cultivars?
+
+<br>
+
+### Visualize
+
+Make another figure in the chunk below visualizing the variables you asked your second question about.
+
+```{r}
+ggplot(wine_tidy, aes(x = Cultivar, y = Color, fill = Cultivar)) + 
+  geom_boxplot() +
+  geom_jitter(width = 0.2) + 
+  theme_classic()
+```
+
+<br>
+
+### Test
+
+And again, use an appropriate hypothesis test to test your idea.
+
+```{r}
+pairwise.t.test(wine_tidy$Color, wine_tidy$Cultivar, p.adj = 'fdr') %>% tidy()
+```
+
+<br>
+
+## Communicate
+
+Write a few sentences here that explain what you tested and why.
+
+<br>
+
+---
+
+<br>
+
+# rowan example
+
+## Wrangle
+
+### Import
+
+Read in your dataset of choice (either from the list above or your own dataset) in the chunk below!
+
+```{r}
+# rowan.csv
+rowan <- read_csv('practice_files/rowan2.csv')
+```
+
+<br>
+
+### Tidy
+
+As ever, first thing is to look at your data. Use the chunk below.
+
+```{r}
+rowan
+```
+
+<br>
+
+Do you see any odd features that need to be tidied before continuing? If yes, tidy the table in the chunk below. Don't forget to save your tidied table to another variable/object before continuing.
+
+```{r}
+rowan %>% separate(`altitude\tresp.rate\tnesting\tmicrophylla\toligodonta\tsargentiana`, 
+                   into = c('altitude', 'resp.rate', 'nesting', 'microphylla', 'oligodonta', 'sargentiana'),
+                   sep = '\t', convert = TRUE) %>%
+  gather(species, leaf.len, microphylla:sargentiana) %>%
+  filter(leaf.len != 'NA') -> rowan_tidy
+```
+
+<br>
+
+## Understand the Data
+
+### Ask a Question
+
+Looking at your dataset, what questions come to mind? For example, in everyone's favorite dataset iris, you might ask if petal width is different between the three iris species. Look at your dataset and come up with a question and write it down below.
+
+**Write your question here:**  Do different species live at different altitudes?
+
+<br>
+
+### Visualize
+
+Think about your question. How can you visually represent the relevant data columns? Plot your data in the chunk below.
+
+```{r}
+ggplot(rowan_tidy, aes(x = species, y = altitude, fill = species)) + 
+  geom_violin(alpha = 0.8) +
+  scale_fill_manual(values = c('darkorange1', 'deepskyblue', 'firebrick'))
+```
+
+<br>
+
+### Test
+
+Use the appropriate hypothesis test (ex: `t.test()` or `chisq.test()`) to test your question.
+
+```{r}
+pairwise.t.test(rowan_tidy$altitude, rowan_tidy$species) %>% tidy()
+```
+
+<br>
+
+### Ask a Question
+
+Ask another question about your data!
+
+**Write your question here:** Does nesting happen more often in one species vs another?
+
+<br>
+
+### Visualize
+
+Make another figure in the chunk below visualizing the variables you asked your second question about.
+
+```{r}
+ggplot(rowan_tidy, aes(x = species, fill = nesting)) + 
+  geom_bar(position = 'dodge') +
+  scale_fill_manual(values = c('firebrick4', 'turquoise4')) +
+  theme_classic()
+```
+
+<br>
+
+### Test
+
+And again, use an appropriate hypothesis test to test your idea.
+
+```{r}
+rowan_tidy %>%
+  group_by(nesting, species) %>%
+  count() %>%
+  ungroup() %>%
+  spread(species, n) %>%
+  column_to_rownames('nesting') %>%
+  chisq.test(.) %>% 
+  tidy()
+```
+
+<br>
+
+## Communicate
+
+Write a few sentences here that explain what you tested and why.
+
+<br><br>
