@@ -207,6 +207,29 @@ ___
 - [slides](week6/statistics_review.pdf)
 - practice [Rmd](week6/week6_practice_stats_in_R.Rmd)
 
+---
+
+### Week 7 (Oct 26)
+
+**Import/Export Data and Review**
+
+- read/write data
+- combine skills from all weeks
+
+**Materials**
+
+- [slides](week7/reading_and_writing_data.pdf)
+- demo [Rmd](week7/import_data_and_review.Rmd), [html](week7/import_data_and_review.html)
+- pratice [Rmd](week7_practice_combine_skills.Rmd)
+- practice datasets
+    - [sparrows](week7/practice_files/sparrows2.csv)
+    - [wine](week7/practice_files/wine2.csv)
+    - [rowan](week7/practice_files/rowan2.csv)
+
+**References**
+
+- data import [cheat sheet](https://ugoproto.github.io/ugo_r_doc/data-import.pdf)
+
 
 
 <br><br>
