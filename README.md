@@ -220,10 +220,10 @@ ___
 
 - [slides](week7/reading_and_writing_data.pdf)
 - demo [Rmd](week7/import_data_and_review.Rmd), [html](week7/import_data_and_review.html)
-- pratice [Rmd](week7_practice_combine_skills.Rmd)
+- pratice [Rmd](week7/week7_practice_combine_skills.Rmd)
 - practice datasets
     - [sparrows](week7/practice_files/sparrows2.csv)
-    - [wine](week7/practice_files/wine2.csv)
+    - [wine](week7/practice_files/wine2.tsv)
     - [rowan](week7/practice_files/rowan2.csv)
 
 **References**
