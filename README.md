@@ -205,7 +205,7 @@ ___
 **Materials**
 
 - [slides](week6/statistics_review.pdf)
-- practice [Rmd](week6/week6_practice_stats_in_R.Rmd)
+- practice [Rmd](week6/week6_practice_stats_in_R.Rmd) and answers in [Rmd](week6/week6_practice_stats_in_R.Rmd) and in [html](week6/week6_practice_stats_in_R.html)
 
 ---
 
@@ -219,8 +219,8 @@ ___
 **Materials**
 
 - [slides](week7/reading_and_writing_data.pdf)
-- demo [Rmd](week7/import_data_and_review.Rmd), [html](week7/import_data_and_review.html)
-- pratice [Rmd](week7/week7_practice_combine_skills.Rmd)
+- demo [Rmd](week7/import_data_and_review.Rmd), [html](week7/import_data_and_review.html), and the in-class [Rmd](week7/import_data_and_review_INCLASS.Rmd)
+- practice [Rmd](week7/week7_practice_combine_skills.Rmd)
 - practice datasets
     - [sparrows](week7/practice_files/sparrows2.csv)
     - [wine](week7/practice_files/wine2.tsv)
