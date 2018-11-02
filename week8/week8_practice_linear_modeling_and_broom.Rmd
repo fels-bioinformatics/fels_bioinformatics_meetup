@@ -1,0 +1,209 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+library(broom)
+library(magrittr)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Week 8 practice: Linear modeling and `broom`
+
+To practice the new tests we've learned, we'll use the built-in `mtcars` dataset. 
+
+## Test Practice
+
+### correlation
+
+What is the correlation between horsepower and weight? Is it significant?
+
+```{r}
+### answer here
+```
+
+<br>
+
+### linear model
+
+#### Plot
+
+Plot a scatterplot of the rear axle ratio vs. fuel displacement. Does the relationship look linear?
+
+```{r}
+### answer here 
+```
+
+<br>
+
+#### Test
+
+Since the relationship looks approximately linear, test it with `lm()`
+
+```{r}
+### answer here
+```
+
+<br>
+
+### ANOVA
+
+Do an ANOVA of quarter mile time over the number of cylinders in the the engine.
+
+```{r}
+### answer here)
+```
+
+<br>
+
+Now take the same ANOVA from the chunk above and add a post-hoc Tukey test to it.
+
+```{r}
+### answer here
+```
+
+<br>
+
+### broom
+
+Pick one of the three tests you did above and practice tidying it up with the three `broom` functions!
+
+<br>
+
+#### `tidy()`
+
+Add `tidy()` onto end of your test.
+
+```{r}
+### answer here
+```
+
+<br>
+
+#### `glance()`
+
+Add `glance()` onto the end of your test to look at the model parameters.
+
+```{r}
+### answer here
+```
+
+<br>
+
+#### `augment()`
+
+Add the results of the test back to mtcars using `augment()`
+
+```{r}
+### answer heres)
+```
+
+<br>
+
+Use the augmented table from the chunk above to plot something.
+
+```{r}
+### answer here
+```
+
+<br><br>
+
+## Come Up with Your Own Questions
+
+Use the tests talked about this week, `cor()`, `cor.test()`, `lm()`, `aov()`, and/or `TukeyHSD()` to ask two more questions about the `mtcars` dataset.
+
+<br>
+
+### Question 1
+
+#### Plot
+
+Look at mtcars again. What's another question you could ask about it? Plot the variable(s) you're interested in below
+
+```{r}
+### answer here
+```
+
+<br>
+
+#### Ask a Question
+
+Based on the variables you just plotted, what's your question?
+
+**Type your question here** 
+
+<br>
+
+#### Test
+
+Pick one of the tests to answer your question and run it in the chunk below.
+
+```{r}
+### answer here
+```
+
+<br>
+
+#### Answer the Question
+
+What do you conclude from your test?
+
+**Type your answer here** 
+
+<br>
+
+### Question 2
+
+### Plot
+
+Look at mtcars again. What's another question you could ask about it? Plot the variable(s) you're interested in below
+
+```{r}
+### answer here
+```
+
+<br>
+
+#### Ask a Question
+
+Based on the variables you just plotted, what's your question?
+
+**Type your question here** Can displacement predict horsepower?
+
+<br>
+
+#### Test
+
+Pick one of the tests to answer your question and run it in the chunk below.
+
+```{r}
+### answer here
+```
+
+<br>
+
+#### Answer the Question
+
+What do you conclude from your test?
+
+**Type your answer here** 
+
+
+<br><br>
+
+
+
+
+
+
+

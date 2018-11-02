@@ -1,0 +1,222 @@
+
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+library(broom)
+library(magrittr)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Week 8 practice: Linear modeling and `broom`
+
+To practice the new tests we've learned, we'll use the built-in `mtcars` dataset. 
+
+## Test Practice
+
+### correlation
+
+What is the correlation between horsepower and weight? Is it significant?
+
+```{r}
+mtcars %$% cor.test(hp, wt) %>% tidy()
+```
+
+<br>
+
+### linear model
+
+#### Plot
+
+Plot a scatterplot of the rear axle ratio vs. fuel displacement. Does the relationship look linear?
+
+```{r}
+ggplot(mtcars, aes(x = drat, y = disp)) + 
+  geom_point(size = 3) +
+  labs(x = 'Rear axle ratio', y = 'Displacement (cu. in.)') +
+  theme_classic() 
+```
+
+<br>
+
+#### Test
+
+Since the relationship looks approximately linear, test it with `lm()`
+
+```{r}
+lm(disp ~ drat, data = mtcars) %>% tidy()
+```
+
+<br>
+
+### ANOVA
+
+Do an ANOVA of quarter mile time over the number of cylinders in the the engine.
+
+```{r}
+aov(qsec ~ cyl, data = mtcars) %>% tidy()
+```
+
+<br>
+
+Now take the same ANOVA from the chunk above and add a post-hoc Tukey test to it.
+
+```{r}
+aov(qsec ~ as.factor(cyl), data = mtcars) %>% TukeyHSD() %>% tidy()
+```
+
+<br>
+
+### broom
+
+Pick one of the three tests you did above and practice tidying it up with the three `broom` functions!
+
+<br>
+
+#### `tidy()`
+
+Add `tidy()` onto end of your test.
+
+```{r}
+aov(qsec ~ cyl, data = mtcars) %>% tidy()
+```
+
+<br>
+
+#### `glance()`
+
+Add `glance()` onto the end of your test to look at the model parameters.
+
+```{r}
+aov(cyl ~ qsec, data = mtcars) %>% glance()
+```
+
+<br>
+
+#### `augment()`
+
+Add the results of the test back to mtcars using `augment()`
+
+```{r}
+aov(cyl ~ qsec, data = mtcars) %>% augment(mtcars)
+```
+
+<br>
+
+Use the augmented table from the chunk above to plot something.
+
+```{r}
+aov(cyl ~ qsec, data = mtcars) %>% augment(mtcars) %>%
+  ggplot(aes(x = qsec, y = .resid, color = cyl)) +
+  geom_point()
+```
+
+<br><br>
+
+## Come Up with Your Own Questions
+
+Use the tests talked about this week, `cor()`, `cor.test()`, `lm()`, `aov()`, and/or `TukeyHSD()` to ask two more questions about the `mtcars` dataset.
+
+<br>
+
+### Question 1
+
+#### Plot
+
+Look at mtcars again. What's another question you could ask about it? Plot the variable(s) you're interested in below
+
+```{r}
+ggplot(mtcars, aes(x = mpg, color = as.factor(vs))) +
+  geom_density(size = 1) +
+  labs(x = 'miles per gallon', y = '') + 
+  scale_color_discrete(name = 'engine ehape', labels = c('v-shaped', 'straight')) +
+  theme_classic()
+```
+
+<br>
+
+#### Ask a Question
+
+Based on the variables you just plotted, what's your question?
+
+**Does engine shape affect the number of miles per gallon a car gets?**
+
+<br>
+
+#### Test
+
+Pick one of the tests to answer your question and run it in the chunk below.
+
+```{r}
+aov(mpg ~ as.factor(vs), data = mtcars) %>% tidy()
+```
+
+<br>
+
+#### Answer the Question
+
+What do you conclude from your test?
+
+**With a p-value of 0.0000342, it's unlikely that the difference in mpg between the different engine types is due to chance.**
+
+<br>
+
+### Question 2
+
+### Plot
+
+Look at mtcars again. What's another question you could ask about it? Plot the variable(s) you're interested in below
+
+```{r}
+ggplot(mtcars, aes(x = disp, y = hp)) +
+  geom_point(size = 3) +
+  labs(x = 'displacement (cu. in.)', y = 'gross horsepower') +
+  theme_classic()
+```
+
+<br>
+
+#### Ask a Question
+
+Based on the variables you just plotted, what's your question?
+
+**Can displacement predict horsepower?**
+
+<br>
+
+#### Test
+
+Pick one of the tests to answer your question and run it in the chunk below.
+
+```{r}
+lm(hp ~ disp, data = mtcars) %>% tidy()
+```
+
+<br>
+
+#### Answer the Question
+
+What do you conclude from your test?
+
+**With a p-value of 0.00811 for the y-intercept and a p-value of 7.14e-8 for the slope, displacement can make a good prediction of the car's horsepower.**
+
+
+<br><br>
+
+
+
+
+
+
+

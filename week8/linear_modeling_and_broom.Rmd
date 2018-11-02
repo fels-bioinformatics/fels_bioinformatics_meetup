@@ -1,0 +1,280 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+library(broom)
+library(magrittr)
+library(nycflights13)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Linear modeling and `broom`
+
+## Tests
+
+### correlation
+
+Correlation gives you the direction and strength of the linear association between two numeric variables. What can you use it to test?
+
+- Is the expression of this gene associated with the expression of another gene?
+- Is the expression of this gene associated with the dose of the drug?
+- Is the level of this molecule associated with a disease state?
+
+<br>
+
+#### Plot first
+
+Before deciding whether to test something, you should always plot first! Visualizing the variables helps you decided what test/action to take next.
+
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Width)) +
+  geom_point() +
+  labs(x = 'Sepal Length (cm)', y = 'Petal Width (cm)') +
+  theme_classic() +
+  theme(axis.text = element_text(size = 14))
+```
+
+The variables look linearly related, so calculating the correlation between them might tell us something.
+
+<br>
+
+#### `cor()`
+
+`cor()` gives you the correlation (the r value) between two numeric values.
+
+```{r}
+# correlated
+cor(iris$Sepal.Length, iris$Petal.Width)
+
+# not correlated
+cor(iris$Sepal.Length, iris$Sepal.Width)
+```
+
+<br>
+
+#### Side note: the `%$%` pipe
+
+Remember how some tests we couldn't pipe into? The solution is the `%$%` pipe!!! Basically, behind the scenes it translates the column names to base R, so functions can take them. It's in the magrittr package (which is installed along with the tidyverse), so you have to load the library before using the `%$%` pipe. The library is in the setup chunk at the top of the document, so if you haven't already, make sure to run that chunk before continuing 
+
+```{r}
+# tidy t test example
+iris %$% t.test(Sepal.Length, Petal.Width) %>% tidy()
+
+# and use it to pipe into cor()
+iris %$% cor(Sepal.Length, Petal.Width)
+```
+
+<br>
+
+#### `cor.test()`
+
+Similar to a t test, there's a correlation test. In addition to giving you the correlation between two variables, it gives you a p-value, confidence interval, and a few other statistics.
+
+```{r}
+# correlated
+cor.test(iris$Sepal.Length, iris$Petal.Width)
+
+# not correlated
+cor.test(iris$Sepal.Length, iris$Sepal.Width)
+
+# tidy
+iris %$% cor.test(Sepal.Length, Petal.Width) %>% tidy()
+```
+
+<br>
+
+### linear model / linear regression
+
+Linear regression attempts to model the relationship between two variables by fitting a linear equation to observed data (by minimizing residuals). Then you use can use it for making further predictions.
+
+<br>
+
+#### Plot first
+
+Before deciding whether to test something, you should always plot first! Visualizing the variables helps you decided what test/action to take next.
+
+```{r}
+ggplot(mtcars, aes(x = wt, y = mpg)) + 
+  geom_point(size = 3) +
+  labs(x = 'Weight (1,000 lbs)', y = 'Miles / Gallon') +
+  theme_classic() +
+  theme(axis.text = element_text(size = 14))
+```
+
+Again, the variables appear linearly related, so a linear model might be interesting here.
+
+<br>
+
+#### model
+
+`lm()` calculates the linear regression/linear model/line of best fit. It gives you the slope and y-intercept of the lines, the error, the test statistic, and the p-value
+
+```{r}
+lm(mpg ~ wt, data = mtcars) %>% tidy()
+
+# can pipe into lm()
+mtcars %>% lm(mpg ~ wt, data = .) %>% tidy()
+```
+
+<br>
+
+#### plot again
+
+Now, you can add the regression line to the scatterplot.
+
+```{r}
+ggplot(mtcars, aes(x = wt, y = mpg)) + 
+  geom_point(size = 3) +
+  geom_abline(slope = -5.34, intercept = 37.3, linetype = 'dashed', size = 1, color = 'red') +
+  labs(x = 'Weight (1,000 lbs)', y = 'Miles / Gallon') +
+  theme_classic() +
+  theme(axis.text = element_text(size = 14))
+```
+
+<br>
+
+#### predict
+
+You can use the slope and intercept from the regression line to make predictions. For example, what mpg would a car weighing 2,500 lbs have?
+
+```{r}
+2.5 * -5.34 + 37.3
+```
+
+<br>
+
+### ANOVA
+
+#### Plot first
+
+Before deciding whether to test something, you should always plot first! Visualizing the variables helps you decided what test/action to take next. 
+
+```{r}
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length)) +
+  geom_point(size = 3) +
+  labs(x = 'Sepal Length (cm)', y = 'Sepal Width (cm)') +
+  theme_classic() +
+  theme(axis.text = element_text(size = 14))
+```
+
+<br>
+
+Sometimes it doesn't look interesting at first and you need to plot multiple times.
+
+```{r}
+# with color by species
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, color = Species)) +
+  geom_point(size = 3) +
+  labs(x = 'Sepal Length (cm)', y = 'Sepal Width (cm)') +
+  theme_classic() +
+  theme(axis.text = element_text(size = 14))
+```
+
+<br>
+
+#### test
+
+Analysis of variance (ANOVA) is (almost) the same as a pairwise t test; it compares means among three or more groups, but minimizes the error due to multiple testing. Use `aov()` for an ANOVA
+
+```{r}
+aov(Sepal.Length ~ Species, data = iris) %>% tidy()
+```
+
+<br>
+
+#### `TukeyHSD()`
+
+Just knowing that there is a difference between species isn't super interesting, so after ANOVA, you can use a Tukey test for pairwise comparisons of the groups using `TukeyHSD()`
+
+```{r}
+aov(Sepal.Length ~ Species, data = iris) %>% TukeyHSD() %>% tidy()
+```
+
+<br>
+
+One thing you have to watch out for with `TukeyHSD()`, is that the variable you're doing comparisons over has to be a character or a factor. Notice the error we get when we try to do a Tukey test over the months in the `flights` dataset.
+
+```{r}
+flights
+
+aov(dep_time ~ month, data = flights) %>% TukeyHSD()
+```
+
+<br>
+
+Fix the problem by wrapping the numeric column that's not really numeric in either `as.factor()` or `as.character()`
+
+```{r}
+# as.factor()
+aov(dep_time ~ as.factor(month), data = flights) %>% TukeyHSD() %>% tidy()
+
+# as.character()
+aov(dep_time ~ as.character(month), data = flights) %>% TukeyHSD() %>% tidy()
+```
+
+<br><br>
+
+## `broom`
+
+The `broom` package is for tidying up base R statistical tests and models. We've touched on the `tidy()` function from the package before, but it has two more useful functions.
+
+<br>
+
+### `glance()`
+
+`glance()` gives you the model parameters. For the most part, you don't need to worry about these (but it's nice to known how to get them easily if you need them)
+
+```{r}
+aov(Sepal.Length ~ Species, data = iris) %>% glance()
+```
+
+<br>
+
+Sometimes `tidy()` and `glance()` give the same output
+
+```{r}
+# t test
+t.test(extra ~ group, data = sleep) %>% tidy()
+t.test(extra ~ group, data = sleep) %>% glance()
+```
+
+<br>
+
+### `augment()`
+
+`augment()` adds information from your test/model back to a data table
+
+```{r}
+lm(Sepal.Width ~ Species, data = iris) %>% augment(iris) -> iris_lm
+
+iris_lm
+```
+
+<br>
+
+You can then do something with the original data and the model parameters together.
+
+```{r}
+ggplot(iris_lm, aes(x = Species, y = .resid, fill = Species)) + 
+  geom_violin() +
+  theme_classic()
+```
+
+<br><br>
+
+
+
+
+
+

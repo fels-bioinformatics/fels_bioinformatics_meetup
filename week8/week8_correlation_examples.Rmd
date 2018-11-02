@@ -1,0 +1,206 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+library(broom)
+library(cowplot)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+ggsave <- cowplot::ggsave
+```
+
+## Correlation Review
+
+Correlation gives you the direction and strength of the linear association between two numeric variables. Usually referred to using the variable r, correlation values lie between -1 and 1.
+
+#### Example 1: Perfect Correlation
+
+```{r}
+# get random numbers to plot
+runif(100, -10, 10) %>% round() %>% as_tibble() -> random
+```
+
+```{r}
+# plot perfect correlation
+ggplot(random, aes(x = value, y = value)) +
+  geom_point() + 
+  theme(axis.title = element_blank()) -> perfect_cor
+
+# perfect inverse correlation
+ggplot(random, aes(x = value, y = -value)) +
+  geom_point() + 
+  theme(axis.title = element_blank()) -> perfect_inverse_cor
+
+# plot together
+plot_grid(perfect_cor, perfect_inverse_cor)
+
+# save
+#ggsave('perfect_cor.png', width = 4, height = 2)
+```
+
+#### Example 2: Some plots with different correlations
+
+Generate random numbers to make correlations
+
+```{r}
+tibble(random1 = rnorm(100, 1, 1),
+       random2 = rnorm(100, 2, 0.5)) -> random_norm
+```
+
+Create correlations using the random numbers 
+
+```{R}
+random_norm %>% mutate(cor_high = (0.8*random1 + sqrt(1-(0.8^2))*random2),
+                       cor_no = (-0.05*random1 + sqrt(1-(-0.05^2))*random2),
+                       cor_mod = (-0.4*random1 + sqrt(1-(-0.4^2))*random2),
+                       cor_low = (0.1*random1 + sqrt(1-(0.1^2))*random2)) -> random_cor
+```
+
+Get correlation values
+
+```{r}
+cor(random_cor)
+```
+
+Plot the correlations
+
+```{r}
+# high correlation
+ggplot(random_cor, aes(x = random1, y = cor_high)) + 
+  geom_point() +
+  theme(axis.title = element_blank()) -> cor_high
+
+# moderate correlation
+ggplot(random_cor, aes(x = random1, y = cor_mod)) + 
+  geom_point() +
+  theme(axis.title = element_blank()) -> cor_mod
+
+# low correlation
+ggplot(random_cor, aes(x = random1, y = cor_low)) + 
+  geom_point() +
+  theme(axis.title = element_blank()) -> cor_low
+
+# no correlation
+ggplot(random_cor, aes(x = random1, y = random2)) + 
+  geom_point() +
+  theme(axis.title = element_blank()) -> cor_no
+
+# plot together
+plot_grid(cor_high, cor_mod, cor_low, cor_no)
+
+# save
+Eggsave('different_cors.png', width = 4, height = 4)
+```
+
+#### Example 3: Effect of Variability on Correlation
+
+Get different variabilties
+
+```{r}
+random_norm %>% mutate(var1 = (0.9*random1 + sqrt(1-(0.8^2))*random2),
+                       var2 = (0.7*random1 + sqrt(1-(0.7^2))*random2),
+                       var3 = (0.5*random1 + sqrt(1-(0.6^2))*random2),
+                       var4 = (0.3*random1 + sqrt(1-(0.5^2))*random2)) -> random_var
+```
+
+Find the correlation of the varied numbers
+
+```{r}
+cor(random_var)
+```
+
+Plot the differences in variation
+
+```{r}
+# high correlation
+ggplot(random_var, aes(x = random1, y = var1)) + 
+  geom_point() +
+  theme(axis.title = element_blank()) -> var1
+
+# moderate correlation
+ggplot(random_var, aes(x = random1, y = var2)) + 
+  geom_point() +
+  theme(axis.title = element_blank()) -> var2
+
+# low correlation
+ggplot(random_var, aes(x = random1, y = var3)) + 
+  geom_point() +
+  theme(axis.title = element_blank()) -> var3
+
+# no correlation
+ggplot(random_var, aes(x = random1, y = var4)) + 
+  geom_point() +
+  theme(axis.title = element_blank()) -> var4
+
+# plot together
+plot_grid(var1, var2, var3, var4)
+
+#ggsave('var_on_cor.png', width = 4, height = 4)
+```
+
+## Linear Regression Review
+
+### Example 4: Linear Regression and Correlation
+
+```{r}
+random_var %>% select(random1, var4) %>% .[1:25,] -> lm_examp
+```
+
+```{r}
+lm(var4 ~ random1, data = lm_examp) %>% tidy()
+```
+
+```{r}
+# no line of fit
+ggplot(lm_examp, aes(x = random1, y = var4)) +
+  geom_point(size = 3, color = 'red2') +
+  theme_classic() + 
+  theme(axis.title = element_blank()) -> no_fit
+
+# very bad line of fit
+ggplot(lm_examp, aes(x = random1, y = var4)) +
+  geom_abline(slope = 0.2, intercept = 1.5) +
+  geom_segment(aes(x = random1, xend = random1, y = var4, yend = 0.2*random1 + 1.5)) +
+  geom_point(size = 3, color = 'red2') +
+  theme_classic() + 
+  theme(axis.title = element_blank()) -> bad_fit
+
+# better line of fit
+ggplot(lm_examp, aes(x = random1, y = var4)) +
+  geom_abline(slope = 0.5, intercept = 1.5) +
+  geom_segment(aes(x = random1, xend = random1, y = var4, yend = 0.5*random1 + 1.5)) +
+  geom_point(size = 3, color = 'red2') +
+  theme_classic() + 
+  theme(axis.title = element_blank()) -> better_fit
+
+# line of best fit
+ggplot(lm_examp, aes(x = random1, y = var4)) +
+  geom_abline(slope = 0.323, intercept = 1.86) +
+  geom_segment(aes(x = random1, xend = random1, y = var4, yend = 0.323*random1 + 1.86)) +
+  geom_point(size = 3, color = 'red2') +
+  theme_classic() + 
+  theme(axis.title = element_blank()) -> best_fit
+
+# plot together
+plot_grid(no_fit, bad_fit, better_fit, best_fit)
+
+# save
+#ggsave('linear_regression.png', width = 4, height = 4)
+```
+
+
+
+
+
+
+
