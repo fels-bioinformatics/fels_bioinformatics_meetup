@@ -205,7 +205,7 @@ ___
 **Materials**
 
 - [slides](week6/statistics_review.pdf)
-- practice [Rmd](week6/week6_practice_stats_in_R.Rmd) and answers in [Rmd](week6/week6_practice_stats_in_R.Rmd) and in [html](week6/week6_practice_stats_in_R.html)
+- practice [Rmd](week6/week6_practice_stats_in_R.Rmd) and answers in [Rmd](week6/week6_practice_stats_in_R_ANSWERS.Rmd) and in [html](week6/week6_practice_stats_in_R_ANSWERS.html)
 
 ---
 
