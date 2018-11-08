@@ -1,0 +1,299 @@
+
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+library(broom)
+library(magrittr)
+library(nycflights13)
+library(Rtsne)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Practice: Clustering
+
+For this week's practice on clustering, we'll use two datasets from previous weeks, the wine and biopsy datasets, to try out all the algorithms discussed this week. Just like in the clustering demo for this week, we'll try to recover a categorical variable from the dataset using clustering.
+
+<br>
+
+Download the tables from the meetup website and stick them in the same folder as your practice R Markdown file for easy read-in.
+
+## wine.csv
+
+In the wine dataset, Cultivar is a categorical variable that we'll try to recover. All the information about the dataset is repeated below (from week 7) for reference.
+
+The wine dataset contains the results of a chemical analysis of wines grown in a specific area of Italy. Three types of wine are represented in the 178 samples, with the results of 13 chemical analyses recorded for each sample. The Type variable has been transformed into a categoric variable. The tidy wine dataset contains the following columns:
+
+- **Cultivar** = the number factor indicating the grape cultivar the wine was made from
+- **Alcohol** = the alcohol concentration in the wine sample (g/L)
+- **MalicAcid** = the malic acid concentration in the wine sample (g/L)
+- **Ash** = the ash concentration in the wine sample (g/L)
+- **Magnesium** = the magnesium concentration in the wine sample (g/L)
+- **TotalPhenol** = the total amount of all phenol compounds in the wine sample (g/L)
+- **Flavanoids** = the concentration of all flavanoids in the wine sample (g/L)
+- **NonflavPhenols** = the concentration of all non-flavanoid phenols in the wine sample (g/L)
+- **Color** = wine color (spectrophotometric measure?)
+
+<br>
+
+### Read and Wrangle
+
+Read in the wine.csv file in the chunk below and do any wrangling you might need to. Save the file read in as an object to use later.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+### Kmeans
+
+#### Plot
+
+Pick two numeric variables and plot a scatterplot colored by Cultivar. You'll use this plot for comparison purposes after running kmeans clustering.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+#### Pick Number of Clusters for Kmeans
+
+Using the code from meetup as a guide, pick the best number of clusters for kmeans.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+How many clusters are you going to use? **Write your answer here**
+
+<br>
+
+#### Run Kmeans
+
+Now run `kmeans()` with the number of clusters you selected and plot the cluster results with whichever numeric variables you want.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+#### Plot Clustering Results
+
+Using the same numeric variables as above, plot them colored by kmeans cluster.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+**Questions to Consider:** Did the kmeans recapitulate the cultivar? Did it seem to find an other underlying pattern/structure in the data?
+
+<br>
+
+### PCA
+
+#### Run a PCA
+
+Run a PCA on the wine dataset and add the PCs back to the wine table with `augment()`. Don't forget to remove categorical columns first!
+
+```{r}
+# put answer here
+```
+
+<br>
+
+#### Plot Results
+
+Plot PC1 vs PC2 from your results, colored by cultivar
+
+```{r}
+# put answer here
+```
+
+<br>
+
+It doesn't really discriminate between cultivars does it? Try plotting at least two combinations of other PCs in the chunk below to see if other PCs discriminate between cultivars.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+**Questions to Consider:** Did the PCA create distinct clusters? Do some combinations of PCs create better clusters than others?
+
+<br>
+
+### tSNE
+
+#### Run a tSNE
+
+Run a tSNE on the wine dataset. Don't forget to remove categorical columns first and set `check_duplicates = FALSE`.
+
+```{r}
+# put answer here
+```
+
+Add the tSNE results vectors back to the original data. Remember you can subset them from the tSNE using the `$` operator
+
+```{r}
+# put answer here
+```
+
+Plot your tSNE results colored by cultivar
+
+```{r}
+# put answer here
+```
+
+<br><br>
+
+## biopsy.csv
+
+In the biopsy dataset, outcome is the categorical variable that we'll try to recover. All the information about the dataset is below for reference.
+
+The biopsy dataset contains the results of breast tumor biopsy results from 699 patients from the University of Wisconsin, Madison. Tumor biopsy attributes were measured on a scale of 1-10 and the diagnosis is given in the outcome column. The tidy biopsy dataset contains the following columns:
+
+- **clump_thickness** = biopsy thickness on a scale from 1-10
+- **uniform_cell_size** = uniformity of cell size on a scale from 1-10
+- **marg_adhesion** = marginal adhesion on a scale from 1-10
+- **epithelial_cell_size** = epithelial cell size on a scale from 1-10
+- **bare_nuclei** = proportion of cells that are mainly nucleus on a scale from 1-10
+- **bland_chromatin** = texture of chromatin on a scale from 1-10
+- **normal_nucleoli** = proportion of cells with normal nucleoli on a scale from 1-10
+- **mitoses** = proportion of mitoses on a scale from 1-10
+- **outcome** = is the biopsy cancerous or not? character, either 'benign' or 'malignant'
+
+<br>
+
+### Read and Wrangle
+
+Read in the biopsy.csv file in the chunk below and do any wrangling you might need to. Save the file read in as an object to use later.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+### Kmeans
+
+#### Plot
+
+Pick two numeric variables and plot a scatterplot colored by outcome. You'll use this plot for comparison purposes after running kmeans clustering.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+#### Pick Number of Clusters for Kmeans
+
+Using the code from meetup as a guide, pick the best number of clusters for kmeans.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+How many clusters are you going to use? **Write your answer here**
+
+<br>
+
+#### Run Kmeans
+
+Now run `kmeans()` with the number of clusters you selected and plot the cluster results with whichever numeric variables you want.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+#### Plot Clustering Results
+
+Using the same numeric variables as above, plot them colored by kmeans cluster.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+**Questions to Consider:** How did the kmeans do at separating the set into clusters? Why did it turn out the way it did? Why should you have known from the first plot that kmeans was a bad idea?
+
+<br>
+
+### PCA
+
+#### Run a PCA
+
+Run a PCA on the biopsy dataset.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+#### Plot Results
+
+Plot PC1 vs PC2 from your results, colored by outcome
+
+```{r}
+# put answer here
+```
+
+<br>
+
+**Questions to Consider:** Why did the PCA do better at separating the data than kmeans?
+
+<br>
+
+### tSNE
+
+#### Run a tSNE
+
+Run a tSNE on the biopsy dataset.
+
+```{r}
+# put answer here
+```
+
+Add the tSNE results vectors back to the original data.
+
+```{r}
+# put answer here
+```
+
+Plot your tSNE results colored by cultivar
+
+```{r}
+# put answer here
+```
+
+<br>
+
+**Questions to Consider:** How does the tSNE compare to the PCA? Which cluster method would you pick and why? 
+
+<br><br>
+

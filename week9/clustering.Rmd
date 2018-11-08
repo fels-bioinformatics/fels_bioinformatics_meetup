@@ -1,0 +1,217 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+library(broom)
+library(magrittr)
+library(nycflights13)
+library(Rtsne)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Clustering
+
+You have to install the Rtsne package before you can run a tSNE. If you don't have the package installed already, uncomment the code in the chunk below and install it.
+
+```{r}
+#install.packages('Rtsne')
+```
+
+<br>
+
+## Clustering Methods
+
+To demonstrate all of the clustering methods, we'll use the `iris` dataset again. There's an underlying variable, Species, that explains some of the variation in the data. We'll see if the clustering methods can recover the three species.
+
+```{r}
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, color = Species)) +
+  geom_point(size = 3) +
+  labs(x = 'Sepal Width (cm)', y = 'Sepal Length (cm)') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+```
+
+### kmeans
+
+For kmeans clustering, we have to pick the number of clusters we want. All of clustering methods only work on numeric data, so you have to remove any categorical variables before running the clustering function.
+
+```{r}
+iris %>% select(-Species) %>% kmeans(4)
+```
+
+The `broom` package functions work with `kmeans()`
+
+```{r}
+iris %>% select(-Species) %>% kmeans(4) %>% tidy()
+```
+
+`augment()` is really useful with clustering in particular because it can add back the cluster assignments to the original table.
+
+```{r}
+iris %>% select(-Species) %>% kmeans(4) %>% augment(iris)
+```
+
+And let's visualize the clusters we just created!
+
+```{r}
+iris %>% select(-Species) %>% kmeans(4) %>% augment(iris) %>%
+  ggplot(aes(x = Sepal.Width, y = Sepal.Length, color = .cluster)) +
+  geom_point(size = 3) +
+  labs(x = 'Sepal Width (cm)', y = 'Sepal Length (cm)', color = 'cluster') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+```
+
+Notice that clusters can overlap. Also it looks like from the visualization that four is probably not the correct number of clusters.
+
+#### Test Different Kmeans Cluster Numbers
+
+Because it can be difficult to pick the correct number of kmeans clusters, just test a bunch of them. By running many kmeans and picking the kmeans with the fewest number of clusters with the best fit, we can do a little better than just guessing.
+
+```{r}
+# drop the categorial columns from the data
+iris %>% select(-Species) -> iris_num
+
+### do a bunch of kmeans
+# make a table of numbers of clusters
+tibble(k = 2:15) %>% 
+# group by those numbers so the next command is applied to all of them
+  group_by(k) %>% 
+# do() is a helper function to get things to work with dplyr; do kmeans for all those cluster numbers
+  do(kclust = kmeans(iris_num, .$k)) %>% 
+# remember you use glance to get the model parameters
+  glance(kclust) -> kmeans_params  
+
+# plot to see the inflection point and pick number of clusters 
+kmeans_params %>%
+  mutate(group = 1) %>%   # just do this (add a grouping variable) to make geom_line() happy
+  ggplot(aes(x = as.factor(k), y = tot.withinss, group = group)) + 
+    geom_point(size = 3) + 
+    geom_line(size = 1) + 
+    labs(x = 'Number of Clusters', y = 'Goodness of Fit \n (within cluster sum of squares)') +
+    theme_classic() +
+    theme(axis.title = element_text(size = 14))
+```
+
+Let's try some of the numbers of clusters where we see an inflection point from the plot above.
+
+```{r}
+### kmeans with three clusters
+iris %>% select(-Species) %>% kmeans(3) %>% augment(iris) %>%
+  ggplot(aes(x = Sepal.Width, y = Sepal.Length, color = .cluster)) +
+    geom_point(size = 3) +
+    labs(x = 'Sepal Width (cm)', y = 'Sepal Length (cm)', color = 'cluster') +
+    theme_classic() +
+    theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+
+### kmeans with five clusters
+iris %>% select(-Species) %>% kmeans(5) %>% augment(iris) %>%
+  ggplot(aes(x = Sepal.Width, y = Sepal.Length, color = .cluster)) +
+    geom_point(size = 3) +
+    labs(x = 'Sepal Width (cm)', y = 'Sepal Length (cm)', color = 'cluster') +
+    theme_classic() +
+    theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+```
+
+Three clusters does a pretty good job of finding the species of the irises.
+
+<br>
+
+### PCA
+
+For PCA, no prep is necessary beyond removing any categorical variables
+
+```{r}
+iris %>% select(-Species) %>% prcomp()
+```
+
+There are multiple ways to view the output. Frequently when you look at code on the internet, people will use base R's `summary()` to sort of tidy up the PCA output. `summary()` does nicely show the percent of variation explained by each principal component (PC).
+
+```{r}
+iris %>% select(-Species) %>% prcomp() %>% summary()
+```
+
+All the `broom` functions work with PCAs as well! And just like with kmeans, you can conviently use `augment()` to add the information from the model back to the original table
+
+```{r}
+iris %>% select(-Species) %>% prcomp() %>% augment(iris) -> iris_pca
+```
+
+Let's plot the first two PCs and see how well we did at clustering by species.
+
+```{r}
+ggplot(iris_pca, aes(x = .fittedPC1, y = .fittedPC2, color = Species)) +
+  geom_point(size = 3) +
+  labs(x = 'PC1', y = 'PC2') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+```
+
+PCA does a good job of clustering. Notice however that we're no longer plotting the original data and instead plotting the PC components, so the numbers on the axes here don't have real biological meaning.
+
+### tSNE
+
+Like for the other clustering methods, you need to drop categorical variables before running a tSNE. You also (annoyingly) always need to supply `check_duplicates = FALSE` to `Rtsne()`. If you don't, if there's ANY numbers that repeat anywhere in the table, `Rtsne()` will throw an error and tell you to remove duplicates. It's perfectly fine to run a tSNE with duplicate numbers though, so just always put that command in.
+
+```{r}
+iris %>% select(-Species) %>% Rtsne(check_duplicates = FALSE)
+```
+
+Very sadly, the `broom` functions haven't been implemented for `Rtsne()`. If you uncomment the code below, you'll see it throws an error and refuses to work.
+
+```{r}
+#iris %>% select(-Species) %>% Rtsne(check_duplicates = FALSE) %>% tidy()
+```
+
+Because we can't use `augment()`, we'll have to 
+
+```{r}
+### run the tSNE
+iris %>% select(-Species) %>% Rtsne(check_duplicates = FALSE) -> iris_tsne
+
+### you can get the numbers for plotting with $ subsetting
+iris_tsne$Y %>% head
+
+### bind together the original iris table with the tSNE numbers
+cbind(iris, iris_tsne$Y) %>% as_tibble() %>% rename(tSNE1 = `1`, tSNE2 = `2`) -> iris_tbl_w_tsne
+```
+
+Let's plot the tSNE dimensions and see how well we did at clustering by species.
+
+```{r}
+ggplot(iris_tbl_w_tsne, aes(x = tSNE1, y = tSNE2, color = Species)) +
+  geom_point(size = 3) +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+```
+
+Again, does a good job of recapitulating the species of the irises
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

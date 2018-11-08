@@ -1,0 +1,88 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+library(broom)
+library(magrittr)
+library(nycflights13)
+library(ape)
+library(Rtsne)
+library(umap)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Clustering
+
+```{r}
+install.packages('ape', 'umap')
+```
+
+<br>
+
+## Clustering Methods
+
+### PCoA
+
+```{r}
+ggplot(iris, aes(x = Sepal.Width, y = Sepal.Length, color = Species)) +
+  geom_point(size = 3) +
+  labs(x = 'Sepal Width (cm)', y = 'Sepal Length (cm)') +
+  theme_classic()
+```
+
+```{r}
+iris %>% select(-Species) %>% dist(.)
+```
+
+```{r}
+iris %>% select(-Species) %>% dist(.) %>% pcoa()
+```
+
+# can't use broom with pcoa
+
+```{r}
+iris %>% select(-Species) %>% dist(.) %>% pcoa() %>% tidy()
+```
+
+# have to combine back with iris somehow
+
+```{r}
+iris %>% select(-Species) %>% dist(.) %>% pcoa() -> iris_pcoa
+
+iris_pcoa$vectors %>% cbind(iris, .) %>% as_tibble()
+
+iris_pcoa$vectors %>% cbind(iris, .) %>% as_tibble() %>%
+  ggplot(aes(x = Axis.1, y = Axis.2, color = Species)) + 
+  geom_point(size = 3) +
+  labs(x = 'PCoA1', y = 'PCoA2') +
+  theme_classic()
+```
+
+## umap
+
+```{r}
+iris %>% select(-Species) %>% umap()
+```
+
+```{r}
+iris %>% select(-Species) %>% umap() -> iris_umap
+```
+
+```{r}
+cbind(iris, iris_umap$layout) %>% as_tibble() %>% rename(UMAP1 = `1`, UMAP2 = `2`) %>%
+  ggplot(aes(x = UMAP1, y = UMAP2, color = Species)) +
+  geom_point() +
+  theme_classic()
+```
+

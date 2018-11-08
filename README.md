@@ -220,7 +220,7 @@ ___
 
 - [slides](week7/reading_and_writing_data.pdf)
 - demo [Rmd](week7/import_data_and_review.Rmd), [html](week7/import_data_and_review.html), and the in-class [Rmd](week7/import_data_and_review_INCLASS.Rmd)
-- practice [Rmd](week7/week7_practice_combine_skills.Rmd) and answers in [Rmd](week7/week7_practice_combine_skills_ANSWERS.Rmd) and in [html](week7/week7_practice_combine_skills_ANSWERS.html)
+- practice [Rmd](week7/week7_practice_combine_skills.Rmd) and answers in [Rmd](week7/week7_practice_combine_skills_ANSWERS.Rmd) and in [html](week7/week7_practice_combine_skills_ANSWERS.html) and from class in [Rmd](week7/week7_practice_combine_skills_INCLASS.Rmd)
 - practice datasets
     - [sparrows](week7/practice_files/sparrows2.csv)
     - [wine](week7/practice_files/wine2.tsv)
@@ -243,12 +243,33 @@ ___
 **Materials**
 
 - [slides](week8/correlation_and_linear_regression_conceptual_review.pdf)
-- demo [Rmd](week8/linear_modeling_and_broom.Rmd)
-- practice [Rmd](week8/week8_practice_linear_modeling_and_broom.Rmd) and [html](week8/week8_practice_linear_modeling_and_broom.html)
+- demo [Rmd](week8/linear_modeling_and_broom.Rmd) and in class demo [Rmd](week8/linear_modeling_and_broom_INCLASS.Rmd)
+- practice [Rmd](week8/week8_practice_linear_modeling_and_broom.Rmd) and [html](week8/week8_practice_linear_modeling_and_broom.html) and answers in [Rmd](week8/week8_practice_linear_modeling_and_broom_ANSWERS.Rmd) and in [html](wek8/week8_practice_linear_modeling_and_broom_ANSWERS.html)
 
 **References**
 
 - [broom vignette](https://broom.tidyverse.org/articles/broom.html)
+
+---
+
+### Week 9
+
+**Clustering**
+
+- Review linear modeling and broom
+- clustering
+    - kmeans
+    - PCA
+    - tSNE
+ 
+ **Materials**
+ 
+ -[slides](week9/clustering.pdf)
+ - demo [Rmd](week9/clustering.Rmd)
+ - practice in [Rmd](week9/week9_practice_clustering.Rmd) and in [html](week9/week9_practice_clustering.html)
+ - practice datasets
+     - [wine](week9/wine.csv)
+     - [biopsy](week9/biopsy.csv)
 
 <br><br>
 

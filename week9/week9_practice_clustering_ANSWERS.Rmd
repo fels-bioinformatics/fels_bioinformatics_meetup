@@ -1,0 +1,405 @@
+
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+library(broom)
+library(magrittr)
+library(nycflights13)
+library(Rtsne)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Practice: Clustering
+
+For this week's practice on clustering, we'll use two datasets from previous weeks, the wine and biopsy datasets, to try out all the algorithms discussed this week. Just like in the clustering demo for this week, we'll try to recover a categorical variable from the dataset using clustering.
+
+<br>
+
+Download the tables from the meetup website and stick them in the same folder as your practice R Markdown file for easy read-in.
+
+## wine.csv
+
+In the wine dataset, Cultivar is a categorical variable that we'll try to recover. All the information about the dataset is repeated below (from week 7) for reference.
+
+The wine dataset contains the results of a chemical analysis of wines grown in a specific area of Italy. Three types of wine are represented in the 178 samples, with the results of 13 chemical analyses recorded for each sample. The Type variable has been transformed into a categoric variable. The tidy wine dataset contains the following columns:
+
+- **Cultivar** = the number factor indicating the grape cultivar the wine was made from
+- **Alcohol** = the alcohol concentration in the wine sample (g/L)
+- **MalicAcid** = the malic acid concentration in the wine sample (g/L)
+- **Ash** = the ash concentration in the wine sample (g/L)
+- **Magnesium** = the magnesium concentration in the wine sample (g/L)
+- **TotalPhenol** = the total amount of all phenol compounds in the wine sample (g/L)
+- **Flavanoids** = the concentration of all flavanoids in the wine sample (g/L)
+- **NonflavPhenols** = the concentration of all non-flavanoid phenols in the wine sample (g/L)
+- **Color** = wine color (spectrophotometric measure?)
+
+<br>
+
+### Read and Wrangle
+
+Read in the wine.csv file in the chunk below and do any wrangling you might need to. Save the file read in as an object to use later.
+
+```{r}
+read_csv('wine.csv', col_types = list('Cultivar' = col_factor(levels = c('1', '2', '3')))) -> wine
+```
+
+<br>
+
+### Kmeans
+
+#### Plot
+
+Pick two numeric variables and plot a scatterplot colored by Cultivar. You'll use this plot for comparison purposes after running kmeans clustering.
+
+```{r}
+ggplot(wine, aes(x = Alcohol, y = Magnesium, color = Cultivar)) + 
+  geom_point(size = 3) +
+  labs(x = 'alcohol (g/L)', y = 'magnesium (g/L)', color = 'grape cultivar') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+```
+
+<br>
+
+#### Pick Number of Clusters for Kmeans
+
+Using the code from meetup as a guide, pick the best number of clusters for kmeans.
+
+```{r}
+# drop the categorial columns from the data
+wine %>% select(-Cultivar) -> wine_num
+
+# do a bunch of kmeans
+tibble(k = 2:15) %>% 
+  group_by(k) %>% 
+  do(kclust = kmeans(wine_num, .$k)) %>% 
+  glance(kclust) -> wine_kmeans_params  
+
+# plot to see the inflection point and pick number of clusters 
+wine_kmeans_params %>%
+  mutate(group = 1) %>%   # just do this (add a grouping variable) to make geom_line() happy
+  ggplot(aes(x = as.factor(k), y = tot.withinss, group = group)) + 
+    geom_point(size = 3) + 
+    geom_line(size = 1) + 
+    labs(x = 'Number of Clusters', y = 'Goodness of Fit \n (within cluster sum of squares)') +
+    theme_classic() +
+    theme(axis.title = element_text(size = 14))
+```
+
+<br>
+
+How many clusters are you going to use? **Write your answer here**
+
+<br>
+
+#### Run Kmeans
+
+Now run `kmeans()` with the number of clusters you selected and plot the cluster results with whichever numeric variables you want.
+
+```{r}
+# run the kmeans
+wine %>% 
+  select(-Cultivar) %>% 
+  kmeans(4) %>% 
+  augment(wine) -> wine_kmeans4
+```
+
+<br>
+
+#### Plot Clustering Results
+
+Using the same numeric variables as above, plot them colored by kmeans cluster.
+
+```{r}
+ggplot(wine_kmeans4, aes(x = Alcohol, y = Magnesium, color = .cluster)) + 
+  geom_point(size = 3) +
+  labs(x = 'alcohol (g/L)', y = 'magnesium (g/L)', color = 'kmeans clusters') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+```
+
+<br>
+
+**Questions to Consider:** Did the kmeans recapitulate the cultivar? Did it seem to find an other underlying pattern/structure in the data?
+
+<br>
+
+### PCA
+
+#### Run a PCA
+
+Run a PCA on the wine dataset and add the PCs back to the wine table with `augment()`. Don't forget to remove categorical columns first!
+
+```{r}
+wine %>% select(-Cultivar) %>% prcomp() %>% augment(wine) -> wine_pca
+```
+
+<br>
+
+#### Plot Results
+
+Plot PC1 vs PC2 from your results, colored by cultivar
+
+```{r}
+ggplot(wine_pca, aes(x = .fittedPC1, y = .fittedPC2, color = Cultivar)) + 
+  geom_point(size = 3) +
+  labs(x = 'PC1', y = 'PC2', color = 'grape cultivar') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+```
+
+<br>
+
+It doesn't really discriminate between cultivars does it? Try plotting at least two combinations of other PCs in the chunk below to see if other PCs discriminate between cultivars.
+
+```{r}
+# PC1 vs PC3
+ggplot(wine_pca, aes(x = .fittedPC1, y = .fittedPC3, color = Cultivar)) + 
+  geom_point(size = 3) +
+  labs(x = 'PC1', y = 'PC3', color = 'grape cultivar') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+
+# PC1 vs PC4
+ggplot(wine_pca, aes(x = .fittedPC1, y = .fittedPC3, color = Cultivar)) + 
+  geom_point(size = 3) +
+  labs(x = 'PC1', y = 'PC3', color = 'grape cultivar') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+
+# PC2 vs PC3
+ggplot(wine_pca, aes(x = .fittedPC2, y = .fittedPC3, color = Cultivar)) + 
+  geom_point(size = 3) +
+  labs(x = 'PC2', y = 'PC3', color = 'grape cultivar') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+
+# PC2 vs PC4
+ggplot(wine_pca, aes(x = .fittedPC2, y = .fittedPC4, color = Cultivar)) + 
+  geom_point(size = 3) +
+  labs(x = 'PC2', y = 'PC4', color = 'grape cultivar') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+
+# PC3 vs PC4
+ggplot(wine_pca, aes(x = .fittedPC3, y = .fittedPC4, color = Cultivar)) + 
+  geom_point(size = 3) +
+  labs(x = 'PC1', y = 'PC3', color = 'grape cultivar') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+```
+
+<br>
+
+**Questions to Consider:** Did the PCA create distinct clusters? Do some combinations of PCs create better clusters than others?
+
+<br>
+
+### tSNE
+
+#### Run a tSNE
+
+Run a tSNE on the wine dataset. Don't forget to remove categorical columns first and set `check_duplicates = FALSE`.
+
+```{r}
+wine %>% select(-Cultivar) %>% Rtsne(check_duplicates = FALSE) -> wine_tsne
+```
+
+Add the tSNE results vectors back to the original data. Remember you can subset them from the tSNE using the `$` operator
+
+```{r}
+cbind(wine, wine_tsne$Y) %>% rename(tSNE1 = `1`, tSNE2 = `2`) -> wine_w_tsne
+```
+
+Plot your tSNE results colored by cultivar
+
+```{r}
+ggplot(wine_w_tsne, aes(x = tSNE1, y = tSNE2, color = Cultivar)) + 
+  geom_point(size = 3) +
+  labs(color = 'grape cultivar') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+```
+
+<br><br>
+
+## biopsy.csv
+
+In the biopsy dataset, outcome is the categorical variable that we'll try to recover. All the information about the dataset is below for reference.
+
+The biopsy dataset contains the results of breast tumor biopsy results from 699 patients from the University of Wisconsin, Madison. Tumor biopsy attributes were measured on a scale of 1-10 and the diagnosis is given in the outcome column. The tidy biopsy dataset contains the following columns:
+
+- **clump_thickness** = biopsy thickness on a scale from 1-10
+- **uniform_cell_size** = uniformity of cell size on a scale from 1-10
+- **marg_adhesion** = marginal adhesion on a scale from 1-10
+- **epithelial_cell_size** = epithelial cell size on a scale from 1-10
+- **bare_nuclei** = proportion of cells that are mainly nucleus on a scale from 1-10
+- **bland_chromatin** = texture of chromatin on a scale from 1-10
+- **normal_nucleoli** = proportion of cells with normal nucleoli on a scale from 1-10
+- **mitoses** = proportion of mitoses on a scale from 1-10
+- **outcome** = is the biopsy cancerous or not? character, either 'benign' or 'malignant'
+
+<br>
+
+### Read and Wrangle
+
+Read in the biopsy.csv file in the chunk below and do any wrangling you might need to. Save the file read in as an object to use later.
+
+```{r}
+read_csv('biopsy.csv') -> biopsy
+```
+
+<br>
+
+### Kmeans
+
+#### Plot
+
+Pick two numeric variables and plot a scatterplot colored by outcome. You'll use this plot for comparison purposes after running kmeans clustering.
+
+```{r}
+ggplot(biopsy, aes(x = clump_thickness, y = bland_chromatin, color = outcome)) + 
+  geom_point(size = 3, alpha = 0.8) +
+  labs(x = 'clump thickness', y = 'bland chromatin') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+```
+
+<br>
+
+#### Pick Number of Clusters for Kmeans
+
+Using the code from meetup as a guide, pick the best number of clusters for kmeans.
+
+```{r}
+# drop the categorial columns from the data
+biopsy %>% select(-outcome) -> biopsy_num
+
+# do a bunch of kmeans
+tibble(k = 2:15) %>% 
+  group_by(k) %>% 
+  do(kclust = kmeans(biopsy_num, .$k)) %>% 
+  glance(kclust) -> biopsy_kmeans_params  
+
+# plot to see the inflection point and pick number of clusters 
+biopsy_kmeans_params %>%
+  mutate(group = 1) %>%   # just do this (add a grouping variable) to make geom_line() happy
+  ggplot(aes(x = as.factor(k), y = tot.withinss, group = group)) + 
+    geom_point(size = 3) + 
+    geom_line(size = 1) + 
+    labs(x = 'Number of Clusters', y = 'Goodness of Fit \n (within cluster sum of squares)') +
+    theme_classic() +
+    theme(axis.title = element_text(size = 14))
+```
+
+<br>
+
+How many clusters are you going to use? **Write your answer here**
+
+<br>
+
+#### Run Kmeans
+
+Now run `kmeans()` with the number of clusters you selected and plot the cluster results with whichever numeric variables you want.
+
+```{r}
+# run the kmeans
+biopsy %>% 
+  select(-outcome) %>% 
+  kmeans(6) %>% 
+  augment(biopsy) -> biopsy_kmeans6
+```
+
+<br>
+
+#### Plot Clustering Results
+
+Using the same numeric variables as above, plot them colored by kmeans cluster.
+
+```{r}
+ggplot(biopsy_kmeans6, aes(x = clump_thickness, y = bland_chromatin, color = .cluster)) + 
+  geom_point(size = 3, alpha = 0.8) +
+  labs(x = 'clump thickness', y = 'bland chromatin') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+```
+
+<br>
+
+**Questions to Consider:** How did the kmeans do at separating the set into clusters? Why did it turn out the way it did? Why should you have known from the first plot that kmeans was a bad idea?
+
+<br>
+
+### PCA
+
+#### Run a PCA
+
+Run a PCA on the biopsy dataset.
+
+```{r}
+biopsy %>% select(-outcome) %>% prcomp() %>% augment(biopsy) -> biopsy_pca
+```
+
+<br>
+
+#### Plot Results
+
+Plot PC1 vs PC2 from your results, colored by outcome
+
+```{r}
+ggplot(biopsy_pca, aes(x = .fittedPC1, y = .fittedPC2, color = outcome)) + 
+  geom_point(size = 3) +
+  labs(x = 'PC1', y = 'PC2') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+```
+
+<br>
+
+**Questions to Consider:** Why did the PCA do better at separating the data than kmeans?
+
+<br>
+
+### tSNE
+
+#### Run a tSNE
+
+Run a tSNE on the biopsy dataset.
+
+```{r}
+biopsy %>% select(-outcome) %>% Rtsne(check_duplicates = FALSE) -> biopsy_tsne
+```
+
+Add the tSNE results vectors back to the original data.
+
+```{r}
+cbind(biopsy, biopsy_tsne$Y) %>% rename(tSNE1 = `1`, tSNE2 = `2`) -> biopsy_w_tsne
+```
+
+Plot your tSNE results colored by cultivar
+
+```{r}
+ggplot(biopsy_w_tsne, aes(x = tSNE1, y = tSNE2, color = outcome)) + 
+  geom_point(size = 3) +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), legend.title = element_text(size = 14))
+```
+
+<br>
+
+**Questions to Consider:** How does the tSNE compare to the PCA? Which cluster method would you pick and why? 
+
+<br><br>
+
