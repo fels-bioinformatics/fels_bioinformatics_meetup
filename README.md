@@ -244,7 +244,7 @@ ___
 
 - [slides](week8/correlation_and_linear_regression_conceptual_review.pdf)
 - demo [Rmd](week8/linear_modeling_and_broom.Rmd) and in class demo [Rmd](week8/linear_modeling_and_broom_INCLASS.Rmd)
-- practice [Rmd](week8/week8_practice_linear_modeling_and_broom.Rmd) and [html](week8/week8_practice_linear_modeling_and_broom.html) and answers in [Rmd](week8/week8_practice_linear_modeling_and_broom_ANSWERS.Rmd) and in [html](wek8/week8_practice_linear_modeling_and_broom_ANSWERS.html)
+- practice [Rmd](week8/week8_practice_linear_modeling_and_broom.Rmd) and [html](week8/week8_practice_linear_modeling_and_broom.html) and answers in [Rmd](week8/week8_practice_linear_modeling_and_broom_ANSWERS.Rmd) and in [html](week8/week8_practice_linear_modeling_and_broom_ANSWERS.html)
 
 **References**
 
@@ -262,9 +262,9 @@ ___
     - PCA
     - tSNE
  
- **Materials**
+**Materials**
  
- -[slides](week9/clustering.pdf)
+ - [slides](week9/clustering.pdf)
  - demo [Rmd](week9/clustering.Rmd)
  - practice in [Rmd](week9/week9_practice_clustering.Rmd) and in [html](week9/week9_practice_clustering.html)
  - practice datasets
