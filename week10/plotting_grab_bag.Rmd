@@ -1,0 +1,217 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+library(magrittr)
+library(cowplot)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Plotting Grab Bag
+
+## `cowplot`
+
+`cowplot` goes on top of `ggplot` to create publication-ready plots. It has some minor tweaks to the default `ggplot` theme, but what most people use it for is to arrange plots in a grid.
+
+<br>
+
+If you haven't already, install `cowplot` by uncommenting the code in the chunk below.
+
+```{r}
+#install.packages('cowplot')
+```
+
+<br>
+
+**Make a bunch of plots**
+
+```{r}
+# sepal length vs sepal width
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color = Species)) +
+  geom_point(size = 3) +
+  labs(x = 'Sepal Length (cm)', y = 'Sepal Width (cm)') +
+  theme_classic() -> iris1
+
+# sepal length vs petal length
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
+  geom_point(size = 3) +
+  labs(x = 'Sepal Length (cm)', y = 'Petal Length (cm)') +
+  theme_classic() -> iris2
+
+# sepal length vs petal width
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Width, color = Species)) +
+  geom_point(size = 3) +
+  labs(x = 'Sepal Length (cm)', y = 'Petal Width (cm)') +
+  theme_classic() -> iris3
+```
+
+<br>
+
+**Plot together using `cowplot::plot_grid()`
+
+```{r}
+# basic
+plot_grid(iris1, iris2, iris3)
+
+# add labels
+plot_grid(iris1, iris2, iris3, labels = c('A', 'B', 'C'))
+
+# specify number of columns/rows
+plot_grid(iris1, iris2, iris3, labels = c('A', 'B', 'C'), ncol = 1)
+
+plot_grid(iris1, iris2, iris3, labels = c('A', 'B', 'C'), nrow = 1)
+```
+
+<br><br>
+
+## Plotting Differential Expression
+
+```{r}
+diff_exp <- read_tsv('demo_diff_exp_tbl.tsv')
+```
+
+### Volcano Plot
+
+
+
+```{r}
+diff_exp %>%
+  mutate(log_pvalue = -log10(PValue),
+         significant = ifelse(-log10(PValue) > -log10(0.05) & (logFC < -2 | logFC > 2), 'sig', 'notsig')) -> diff_exp_volcplot
+```
+
+<br>
+
+```{r}
+ggplot(diff_exp_volcplot, aes(x = logFC, y = log_pvalue)) +
+  geom_point(aes(color = significant)) +
+  scale_color_manual(name = '', 
+                     values = c('black', 'red'), 
+                     labels = c('significant', 'not significant')) +
+  geom_hline(yintercept = -log10(0.05), 
+             linetype = 'dashed', 
+             color = 'grey40') +
+  geom_vline(xintercept = c(-2, 2), 
+             linetype = 'dashed', 
+             color = 'grey40') +
+  labs(x = 'Log2 Fold Change in Expression', y = '-Log10 P-Value') +
+  theme_classic() +
+  theme(axis.title = element_text(size = 14), 
+        legend.text = element_text(size = 12))
+```
+
+### MA Plot
+
+An MA plot has average expression on the x axis and log fold change in expression on the y axis. Looking at our table, we don't have average expression, so we'll have to calculate it first. Also, since `ggplot` prefers to color by categorical variables it will be easier to make a significant p-value/not signficant p-value column now.
+
+```{r}
+# tidy calculation
+diff_exp %>% 
+  gather(sample_id, count, `SRX014818and9`:`SRX014828and9`) %>%
+  group_by(gene) %>%
+  mutate(mean_exp = mean(count)) %>%
+  ungroup() %>%
+  spread(sample_id, count) %>%
+  mutate(significant = ifelse(-log10(PValue) > 2 & (logFC < -2 | logFC > 2), 'sig', 'notsig')) -> diff_exp_maplot
+```
+
+**Plot**
+
+```{r}
+ggplot(diff_exp_maplot, aes(x = mean_exp, y = logFC)) +
+  geom_point(aes(color = significant)) +
+  theme_classic()
+```
+
+```{r}
+# fix the color
+ggplot(diff_exp_maplot, aes(x = mean_exp, y = logFC)) +
+  geom_point(aes(color = significant)) +
+  scale_color_manual(values = c('black', 'red')) +
+  theme_classic()
+```
+
+```{r}
+# add lines
+ggplot(diff_exp_maplot, aes(x = mean_exp, y = logFC)) +
+  geom_point(aes(color = significant)) +
+  scale_color_manual(values = c('black', 'red')) +
+  geom_hline(yintercept = c(-2, 0, 2)) +
+  theme_classic()
+```
+
+```{r}
+# fix more appearance stuff
+ggplot(diff_exp_maplot, aes(x = mean_exp, y = logFC)) +
+  geom_point(aes(color = significant)) +
+  scale_color_manual(values = c('black', 'red'), labels = c('significant', 'not significant')) +
+  geom_hline(yintercept = c(-2, 0, 2), 
+             linetype = c('dashed', 'solid', 'dashed'), 
+             color = c('grey40', 'red', 'grey40')) +
+  labs(x = 'Mean Expression', y = 'Log2 Fold Change in Expression') +
+  theme_classic() +
+  theme(legend.title = element_blank(), 
+        axis.title = element_text(size = 14),
+        legend.text = element_text(size = 12))
+```
+
+change scale of axis
+
+```{r}
+# rescale
+ggplot(diff_exp_maplot, aes(x = mean_exp, y = logFC)) +
+  geom_point(aes(color = significant)) +
+  scale_color_manual(values = c('black', 'red'), labels = c('significant', 'not significant')) +
+  geom_hline(yintercept = c(-2, 0, 2), 
+             linetype = c('dashed', 'solid', 'dashed'), 
+             color = c('grey40', 'red', 'grey40')) +
+  labs(x = 'Mean Expression', y = 'Log2 Fold Change in Expression') +
+  xlim(c(0, 100)) +
+  theme_classic() +
+  theme(legend.title = element_blank(), 
+        axis.title = element_text(size = 14),
+        legend.text = element_text(size = 12))
+
+# shift view
+ggplot(diff_exp_maplot, aes(x = mean_exp, y = logFC)) +
+  geom_point(aes(color = significant)) +
+  scale_color_manual(values = c('black', 'red'), labels = c('significant', 'not significant')) +
+  geom_hline(yintercept = c(-2, 0, 2), 
+             linetype = c('dashed', 'solid', 'dashed'), 
+             color = c('grey40', 'red', 'grey40')) +
+  labs(x = 'Mean Expression', y = 'Log2 Fold Change in Expression') +
+  coord_cartesian(xlim = c(0, 100)) +
+  theme_classic() +
+  theme(legend.title = element_blank(), 
+        axis.title = element_text(size = 14),
+        legend.text = element_text(size = 12))
+
+# log scale
+ggplot(diff_exp_maplot, aes(x = logCPM, y = logFC)) +
+  geom_point(aes(color = significant)) +
+  scale_color_manual(values = c('black', 'red'), labels = c('significant', 'not significant')) +
+  geom_hline(yintercept = c(-2, 0, 2), 
+             linetype = c('dashed', 'solid', 'dashed'), 
+             color = c('grey40', 'red', 'grey40')) +
+  labs(x = 'Mean Expression', y = 'Log2 Fold Change in Expression') +
+#  scale_x_log10() +
+  theme_classic() +
+  theme(legend.title = element_blank(), 
+        axis.title = element_text(size = 14),
+        legend.text = element_text(size = 12))
+```
+
+
+
+

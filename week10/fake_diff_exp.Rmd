@@ -1,0 +1,67 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(edgeR)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Fake RNAseq Differential Expression for Fels Bioinformatics Meetup 2018.11.16
+
+Data download from ReCount <http://bowtie-bio.sourceforge.net/recount/> on 2018.11.09. Paper data was used in here <https://www.ncbi.nlm.nih.gov/pubmed?term=20009012>
+
+```{r}
+read_tsv('gilad_count_table.txt') -> count_tbl
+```
+
+Calculate fold change and significance using edgeR
+
+```{r}
+# set what groups samples belong to; did not read original paper and aribitrarily decided on triplicates based on the order of the samples in the table
+group <- factor(c(1, 1, 1, 2, 2, 2))
+
+# create a DGEList object for edgeR combining the data and groups
+count_tbl %>% as.data.frame() %>% column_to_rownames('gene') %>% DGEList(counts = ., group = group) -> y
+
+# calculate normalization for edgeR and save back to metadata of the same DGEList object
+y <- calcNormFactors(y)
+
+# create the design matrix for what groups are where
+design <- model.matrix(~ group)
+
+# estimate the dispersion/variance in the data for calculating differential expression
+y <- estimateDisp(y, design)
+
+# fit a linear model to the data
+fit <- glmQLFit(y, design)
+
+# calculate fold change and test significance with an F test
+qlf <- glmQLFTest(fit, coef = 2)
+```
+
+```{r}
+# combine the results of the test with the original data
+qlf$table %>% 
+  rownames_to_column() %>% 
+  as_tibble() %>% 
+  rename(gene = rowname) %>%
+  right_join(count_tbl) %>%
+  select(gene, starts_with('SRX'), everything()) -> diff_exp
+```
+
+```{r}
+# save to use in class
+#write_tsv(diff_exp, 'demo_diff_exp_tbl.tsv')
+```
+
+<br><br>
+
