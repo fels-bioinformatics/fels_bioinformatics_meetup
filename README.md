@@ -286,6 +286,7 @@ ___
 **Materials**
 
 - demo [Rmd](week10/plotting_grab_bag.Rmd)
+- demo [data](week10/demo_diff_exp_tbl.tsv)
 
 **References**
 
