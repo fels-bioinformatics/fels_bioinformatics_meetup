@@ -265,11 +265,31 @@ ___
 **Materials**
  
  - [slides](week9/clustering.pdf)
- - demo [Rmd](week9/clustering.Rmd)
- - practice in [Rmd](week9/week9_practice_clustering.Rmd) and in [html](week9/week9_practice_clustering.html) and in class demo in [Rmd](week9/clustering_INCLASS.Rmd)
+ - demo [Rmd](week9/clustering.Rmd) and in class demo in [Rmd](week9/clustering_INCLASS.Rmd)
+ - practice in [Rmd](week9/week9_practice_clustering.Rmd) and in [html](week9/week9_practice_clustering.html) 
  - practice datasets
      - [wine](week9/wine.csv)
      - [biopsy](week9/biopsy.csv)
+
+---
+
+### Week 10
+
+**Plotting grab bag**
+
+- Review clustering
+- miscellaneous plots
+    - cowplot
+    - volcano plot
+    - MA plot
+
+**Materials**
+
+- demo [Rmd](week10/plotting_grab_bag.Rmd)
+
+**References**
+
+- cowplot [vignette](https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html)
 
 <br><br>
 

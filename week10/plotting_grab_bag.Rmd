@@ -20,13 +20,17 @@ select <- dplyr::select
 
 # Plotting Grab Bag
 
+For a relaxed meetup before Thanksgiving, we'll take a look at some useful plot code that's more specific for academic and biological representations.
+
 ## `cowplot`
+
+<br>
 
 `cowplot` goes on top of `ggplot` to create publication-ready plots. It has some minor tweaks to the default `ggplot` theme, but what most people use it for is to arrange plots in a grid.
 
 <br>
 
-If you haven't already, install `cowplot` by uncommenting the code in the chunk below.
+If you haven't already, install `cowplot` by uncommenting the code in the chunk below and running its.
 
 ```{r}
 #install.packages('cowplot')
@@ -34,7 +38,7 @@ If you haven't already, install `cowplot` by uncommenting the code in the chunk 
 
 <br>
 
-**Make a bunch of plots**
+**Make a bunch of plots** for making a grid in the next chunk.
 
 ```{r}
 # sepal length vs sepal width
@@ -58,7 +62,7 @@ ggplot(iris, aes(x = Sepal.Length, y = Petal.Width, color = Species)) +
 
 <br>
 
-**Plot together using `cowplot::plot_grid()`
+**Plot together** using `cowplot::plot_grid()`
 
 ```{r}
 # basic
@@ -77,28 +81,49 @@ plot_grid(iris1, iris2, iris3, labels = c('A', 'B', 'C'), nrow = 1)
 
 ## Plotting Differential Expression
 
+We're going to practice plotting a volcano plot and an MA plot for differential expression.
+
+<br>
+
+First, read in a fake-ish differential expression table to practice plotting with. (Counts are from the gilad count table downloaded from the ReCount RNAseq website <http://bowtie-bio.sourceforge.net/recount/>)
+
 ```{r}
 diff_exp <- read_tsv('demo_diff_exp_tbl.tsv')
 ```
 
+<br>
+
 ### Volcano Plot
 
+<br>
 
+**Wrangle table before plotting**
+
+A volcano plot has log2 fold change in RNA expression on the x axis vs. negative log10 p-values on the y-axis with points colored by significance of the p-value. This means we need three columns to plot:
+
+1. log2 fold change in expression (logFC)
+2. -log10 pvalues
+3. a categorical column for coloring by significance
+
+Log2 fold change is usually returned by differential expression packages and is in our table, the logFC column. However, we only have p-values in their normal small decimal format. They can be converted into -log10 inside of ggplot, but it makes plotting faster to add a column to the table first. Then we can add a categorical significance column for coloring by. 
 
 ```{r}
 diff_exp %>%
   mutate(log_pvalue = -log10(PValue),
-         significant = ifelse(-log10(PValue) > -log10(0.05) & (logFC < -2 | logFC > 2), 'sig', 'notsig')) -> diff_exp_volcplot
+         significant = ifelse(-log10(PValue) > -log10(0.05) & (logFC < -2 | logFC > 2), 
+                              'sig', 'notsig')) -> diff_exp_volcplot
 ```
 
 <br>
+
+**Plot a volcano plot**
 
 ```{r}
 ggplot(diff_exp_volcplot, aes(x = logFC, y = log_pvalue)) +
   geom_point(aes(color = significant)) +
   scale_color_manual(name = '', 
                      values = c('black', 'red'), 
-                     labels = c('significant', 'not significant')) +
+                     labels = c('significant (< 0.05)', 'not significant')) +
   geom_hline(yintercept = -log10(0.05), 
              linetype = 'dashed', 
              color = 'grey40') +
@@ -111,106 +136,50 @@ ggplot(diff_exp_volcplot, aes(x = logFC, y = log_pvalue)) +
         legend.text = element_text(size = 12))
 ```
 
+<br><br>
+
 ### MA Plot
 
-An MA plot has average expression on the x axis and log fold change in expression on the y axis. Looking at our table, we don't have average expression, so we'll have to calculate it first. Also, since `ggplot` prefers to color by categorical variables it will be easier to make a significant p-value/not signficant p-value column now.
+<br>
+
+**Wrangle table before plotting**
+
+An MA plot has average expression on the x axis and log fold change in expression on the y axis. This means the three columns we need to plot are:
+
+1. mean expression
+2. log2 fold change in expression (logFC)
+3. a categorical column for coloring by significance
+
+We already know from the volcano plot example that the table contains fold change in logFC and how to make a categorical significance column for coloring the points. Mean expression is also in our table, the logCPM column. LogCPM the is the log10 average mRNA count per million reads (basically logged average concentration). So we just need to add on the categorical significance column again.
 
 ```{r}
 # tidy calculation
 diff_exp %>% 
-  gather(sample_id, count, `SRX014818and9`:`SRX014828and9`) %>%
-  group_by(gene) %>%
-  mutate(mean_exp = mean(count)) %>%
-  ungroup() %>%
-  spread(sample_id, count) %>%
-  mutate(significant = ifelse(-log10(PValue) > 2 & (logFC < -2 | logFC > 2), 'sig', 'notsig')) -> diff_exp_maplot
+  mutate(significant = ifelse(-log10(PValue) > 2 & (logFC < -2 | logFC > 2), 
+                              'sig', 'notsig')) -> diff_exp_maplot
 ```
+
+<br>
 
 **Plot**
 
 ```{r}
-ggplot(diff_exp_maplot, aes(x = mean_exp, y = logFC)) +
-  geom_point(aes(color = significant)) +
-  theme_classic()
-```
-
-```{r}
-# fix the color
-ggplot(diff_exp_maplot, aes(x = mean_exp, y = logFC)) +
-  geom_point(aes(color = significant)) +
-  scale_color_manual(values = c('black', 'red')) +
-  theme_classic()
-```
-
-```{r}
-# add lines
-ggplot(diff_exp_maplot, aes(x = mean_exp, y = logFC)) +
-  geom_point(aes(color = significant)) +
-  scale_color_manual(values = c('black', 'red')) +
-  geom_hline(yintercept = c(-2, 0, 2)) +
-  theme_classic()
-```
-
-```{r}
-# fix more appearance stuff
-ggplot(diff_exp_maplot, aes(x = mean_exp, y = logFC)) +
-  geom_point(aes(color = significant)) +
-  scale_color_manual(values = c('black', 'red'), labels = c('significant', 'not significant')) +
-  geom_hline(yintercept = c(-2, 0, 2), 
-             linetype = c('dashed', 'solid', 'dashed'), 
-             color = c('grey40', 'red', 'grey40')) +
-  labs(x = 'Mean Expression', y = 'Log2 Fold Change in Expression') +
-  theme_classic() +
-  theme(legend.title = element_blank(), 
-        axis.title = element_text(size = 14),
-        legend.text = element_text(size = 12))
-```
-
-change scale of axis
-
-```{r}
-# rescale
-ggplot(diff_exp_maplot, aes(x = mean_exp, y = logFC)) +
-  geom_point(aes(color = significant)) +
-  scale_color_manual(values = c('black', 'red'), labels = c('significant', 'not significant')) +
-  geom_hline(yintercept = c(-2, 0, 2), 
-             linetype = c('dashed', 'solid', 'dashed'), 
-             color = c('grey40', 'red', 'grey40')) +
-  labs(x = 'Mean Expression', y = 'Log2 Fold Change in Expression') +
-  xlim(c(0, 100)) +
-  theme_classic() +
-  theme(legend.title = element_blank(), 
-        axis.title = element_text(size = 14),
-        legend.text = element_text(size = 12))
-
-# shift view
-ggplot(diff_exp_maplot, aes(x = mean_exp, y = logFC)) +
-  geom_point(aes(color = significant)) +
-  scale_color_manual(values = c('black', 'red'), labels = c('significant', 'not significant')) +
-  geom_hline(yintercept = c(-2, 0, 2), 
-             linetype = c('dashed', 'solid', 'dashed'), 
-             color = c('grey40', 'red', 'grey40')) +
-  labs(x = 'Mean Expression', y = 'Log2 Fold Change in Expression') +
-  coord_cartesian(xlim = c(0, 100)) +
-  theme_classic() +
-  theme(legend.title = element_blank(), 
-        axis.title = element_text(size = 14),
-        legend.text = element_text(size = 12))
-
-# log scale
 ggplot(diff_exp_maplot, aes(x = logCPM, y = logFC)) +
   geom_point(aes(color = significant)) +
-  scale_color_manual(values = c('black', 'red'), labels = c('significant', 'not significant')) +
+  scale_color_manual(values = c('black', 'red'), 
+                     labels = c('significant', 'not significant')) +
   geom_hline(yintercept = c(-2, 0, 2), 
              linetype = c('dashed', 'solid', 'dashed'), 
              color = c('grey40', 'red', 'grey40')) +
-  labs(x = 'Mean Expression', y = 'Log2 Fold Change in Expression') +
-#  scale_x_log10() +
+  labs(x = 'Mean Expression (log10 Counts per Million Reads)', 
+       y = 'Log2 Fold Change in Expression') +
   theme_classic() +
   theme(legend.title = element_blank(), 
         axis.title = element_text(size = 14),
         legend.text = element_text(size = 12))
 ```
+
+<br><br>
 
 
 
