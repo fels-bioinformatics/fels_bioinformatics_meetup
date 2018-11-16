@@ -232,7 +232,7 @@ ___
 
 ---
 
-### Week 8
+### Week 8 (Nov 2)
 
 **Linear Modeling and tidying models with broom**
 
@@ -252,7 +252,7 @@ ___
 
 ---
 
-### Week 9
+### Week 9 (Nov 9)
 
 **Clustering**
 
@@ -273,7 +273,7 @@ ___
 
 ---
 
-### Week 10
+### Week 10 (~~Nov 16~~ Nov 30)
 
 **Plotting grab bag**
 
