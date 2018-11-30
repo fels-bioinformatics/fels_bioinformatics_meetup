@@ -266,7 +266,7 @@ ___
  
  - [slides](week9/clustering.pdf)
  - demo [Rmd](week9/clustering.Rmd) and in class demo in [Rmd](week9/clustering_INCLASS.Rmd)
- - practice in [Rmd](week9/week9_practice_clustering.Rmd) and in [html](week9/week9_practice_clustering.html) 
+ - practice in [Rmd](week9/week9_practice_clustering.Rmd) and in [html](week9/week9_practice_clustering.html) and answers in [Rmd](week9/week9_practice_clustering_ANSWERS.Rmd) and in [html](week9/week9_practice_clustering_ANSWERS.html) and the in class [review](week9/week9_practice_clustering_INCLASS.Rmd)
  - practice datasets
      - [wine](week9/wine.csv)
      - [biopsy](week9/biopsy.csv)
@@ -287,6 +287,7 @@ ___
 
 - demo [Rmd](week10/plotting_grab_bag.Rmd)
 - demo [data](week10/demo_diff_exp_tbl.tsv)
+- in class demo [Rmd](week10/plotting_grab_bag_INCLASS.Rmd)
 
 **References**
 

@@ -1,0 +1,394 @@
+
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+library(broom)
+library(magrittr)
+library(nycflights13)
+library(Rtsne)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+# Practice: Clustering
+
+For this week's practice on clustering, we'll use two datasets from previous weeks, the wine and biopsy datasets, to try out all the algorithms discussed this week. Just like in the clustering demo for this week, we'll try to recover a categorical variable from the dataset using clustering.
+
+<br>
+
+Download the tables from the meetup website and stick them in the same folder as your practice R Markdown file for easy read-in.
+
+## wine.csv
+
+In the wine dataset, Cultivar is a categorical variable that we'll try to recover. All the information about the dataset is repeated below (from week 7) for reference.
+
+The wine dataset contains the results of a chemical analysis of wines grown in a specific area of Italy. Three types of wine are represented in the 178 samples, with the results of 13 chemical analyses recorded for each sample. The Type variable has been transformed into a categoric variable. The tidy wine dataset contains the following columns:
+
+- **Cultivar** = the number factor indicating the grape cultivar the wine was made from
+- **Alcohol** = the alcohol concentration in the wine sample (g/L)
+- **MalicAcid** = the malic acid concentration in the wine sample (g/L)
+- **Ash** = the ash concentration in the wine sample (g/L)
+- **Magnesium** = the magnesium concentration in the wine sample (g/L)
+- **TotalPhenol** = the total amount of all phenol compounds in the wine sample (g/L)
+- **Flavanoids** = the concentration of all flavanoids in the wine sample (g/L)
+- **NonflavPhenols** = the concentration of all non-flavanoid phenols in the wine sample (g/L)
+- **Color** = wine color (spectrophotometric measure?)
+
+<br>
+
+### Read and Wrangle
+
+Read in the wine.csv file in the chunk below and do any wrangling you might need to. Save the file read in as an object to use later.
+
+```{r}
+read_csv('wine.csv') -> wine
+```
+
+<br>
+
+### Kmeans
+
+#### Plot
+
+Pick two numeric variables and plot a scatterplot colored by Cultivar. You'll use this plot for comparison purposes after running kmeans clustering.
+
+```{r}
+
+```
+
+<br>
+
+#### Pick Number of Clusters for Kmeans
+
+Using the code from meetup as a guide, pick the best number of clusters for kmeans.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+How many clusters are you going to use? **Write your answer here**
+
+<br>
+
+#### Run Kmeans
+
+Now run `kmeans()` with the number of clusters you selected and plot the cluster results with whichever numeric variables you want.
+
+```{r}
+wine %>% 
+  select(-Cultivar) %>% 
+  kmeans(5) %>% 
+  augment(wine) -> wine_kmeans
+```
+
+<br>
+
+#### Plot Clustering Results
+
+Using the same numeric variables as above, plot them colored by kmeans cluster.
+
+```{r}
+ggplot(data = wine_kmeans, 
+       aes(x = Alcohol, y = MalicAcid, 
+           color = .cluster)) + 
+  geom_point() +
+  facet_wrap(~ Cultivar) +
+  theme_classic()
+
+###  
+  
+ggplot(data = wine_kmeans, 
+       aes(x = Alcohol, y = MalicAcid, 
+           color = .cluster)) + 
+  geom_point() +
+#  facet_wrap(~ Cultivar)
+  NULL
+### TIP: If you have NULL or a theme at the end of your ggplot code, you can comment out lines without worrying about deleting or commenting out + signs.
+```
+
+<br>
+
+**Questions to Consider:** Did the kmeans recapitulate the cultivar? Did it seem to find an other underlying pattern/structure in the data?
+
+<br>
+
+### PCA
+
+#### Run a PCA
+
+Run a PCA on the wine dataset and add the PCs back to the wine table with `augment()`. Don't forget to remove categorical columns first!
+
+```{r}
+wine %>% prcomp()
+
+###
+
+wine %>% select(-Cultivar) %>% prcomp() %>% augment(wine) -> wine_pca
+```
+
+<br>
+
+#### Plot Results
+
+Plot PC1 vs PC2 from your results, colored by cultivar
+
+```{r}
+ggplot(wine_pca, aes(x = .fittedPC1, y = .fittedPC2, 
+                     color = as.factor(Cultivar))) + 
+  geom_point()
+
+###
+
+# magnesium explains PC1
+wine_pca %>% summarize(max_mag = max(Magnesium), min_mag = min(Magnesium))
+
+
+ggplot(wine_pca, aes(x = .fittedPC1, y = .fittedPC2, 
+                     color = Magnesium)) + 
+  geom_point() +
+  scale_color_viridis()
+
+# fix the problem by scaling the PCA
+wine %>% 
+  select(-Cultivar) %>% 
+  prcomp(center = TRUE, scale = TRUE) %>% 
+  augment(wine) -> wine_pca_scaled
+
+ggplot(wine_pca_scaled, aes(x = .fittedPC1, y = .fittedPC2, 
+                     color = as.factor(Cultivar))) + 
+  geom_point()
+
+ggplot(wine_pca_scaled, aes(x = .fittedPC1, y = .fittedPC2, 
+                     color = Magnesium)) + 
+  geom_point() +
+  scale_color_viridis()
+
+###
+
+# pca without centering and scaling
+wine %>% select(-Cultivar) %>% prcomp(center = FALSE, scale = FALSE) %>%
+  augment(wine) -> wine_no_center_no_scale
+
+wine %>% select(-Cultivar) %>% prcomp(center = FALSE, scale = FALSE) %>% summary()
+wine %>% select(-Cultivar) %>% prcomp() %>% summary()
+
+ggplot(wine_no_center_no_scale, aes(x = .fittedPC1, y = .fittedPC2, 
+                     color = as.factor(Cultivar))) + 
+  geom_point()
+
+ggplot(wine_no_center_no_scale, aes(x = .fittedPC1, y = .fittedPC2, 
+                     color = Magnesium)) + 
+  geom_point() +
+  scale_color_viridis()
+```
+
+<br>
+
+It doesn't really discriminate between cultivars does it? Try plotting at least two combinations of other PCs in the chunk below to see if other PCs discriminate between cultivars.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+**Questions to Consider:** Did the PCA create distinct clusters? Do some combinations of PCs create better clusters than others?
+
+<br>
+
+### tSNE
+
+#### Run a tSNE
+
+Run a tSNE on the wine dataset. Don't forget to remove categorical columns first and set `check_duplicates = FALSE`.
+
+```{r}
+wine %>% select(-Cultivar) %>% Rtsne(check_duplicates = FALSE) -> wine_tsne
+```
+
+Add the tSNE results vectors back to the original data. Remember you can subset them from the tSNE using the `$` operator
+
+```{r}
+wine %>% mutate(tSNE1 = wine_tsne$Y[,1], tSNE2 = wine_tsne$Y[,2]) -> wine_tsne_plot
+```
+
+Plot your tSNE results colored by cultivar
+
+```{r}
+ggplot(wine_tsne_plot, aes(x = tSNE1, y = tSNE2, 
+                           color = as.factor(Cultivar))) +
+  geom_point() -> tsne
+
+ggplot(wine_tsne_plot, aes(x = tSNE1, y = tSNE2, 
+                           color = Magnesium)) +
+  geom_point() +
+  scale_color_viridis()
+```
+
+```{r}
+wine %>% select(-Cultivar) %>% 
+  Rtsne(check_duplicates = FALSE, pca_scale = TRUE) -> wine_tsne_scale
+
+wine %>% mutate(tSNE1 = wine_tsne_scale$Y[,1], tSNE2 = wine_tsne_scale$Y[,2]) -> wine_tsne_plot_scale
+
+ggplot(wine_tsne_plot_scale, aes(x = tSNE1, y = tSNE2, 
+                           color = as.factor(Cultivar))) +
+  geom_point() -> tsne_scale
+
+ggplot(wine_tsne_plot_scale, aes(x = tSNE1, y = tSNE2, 
+                           color = Magnesium)) +
+  geom_point() +
+  scale_color_viridis()
+```
+
+```{r}
+plot_grid(tsne, tsne_scale, ncol = 1)
+```
+
+<br><br>
+
+## biopsy.csv
+
+In the biopsy dataset, outcome is the categorical variable that we'll try to recover. All the information about the dataset is below for reference.
+
+The biopsy dataset contains the results of breast tumor biopsy results from 699 patients from the University of Wisconsin, Madison. Tumor biopsy attributes were measured on a scale of 1-10 and the diagnosis is given in the outcome column. The tidy biopsy dataset contains the following columns:
+
+- **clump_thickness** = biopsy thickness on a scale from 1-10
+- **uniform_cell_size** = uniformity of cell size on a scale from 1-10
+- **marg_adhesion** = marginal adhesion on a scale from 1-10
+- **epithelial_cell_size** = epithelial cell size on a scale from 1-10
+- **bare_nuclei** = proportion of cells that are mainly nucleus on a scale from 1-10
+- **bland_chromatin** = texture of chromatin on a scale from 1-10
+- **normal_nucleoli** = proportion of cells with normal nucleoli on a scale from 1-10
+- **mitoses** = proportion of mitoses on a scale from 1-10
+- **outcome** = is the biopsy cancerous or not? character, either 'benign' or 'malignant'
+
+<br>
+
+### Read and Wrangle
+
+Read in the biopsy.csv file in the chunk below and do any wrangling you might need to. Save the file read in as an object to use later.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+### Kmeans
+
+#### Plot
+
+Pick two numeric variables and plot a scatterplot colored by outcome. You'll use this plot for comparison purposes after running kmeans clustering.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+#### Pick Number of Clusters for Kmeans
+
+Using the code from meetup as a guide, pick the best number of clusters for kmeans.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+How many clusters are you going to use? **Write your answer here**
+
+<br>
+
+#### Run Kmeans
+
+Now run `kmeans()` with the number of clusters you selected and plot the cluster results with whichever numeric variables you want.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+#### Plot Clustering Results
+
+Using the same numeric variables as above, plot them colored by kmeans cluster.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+**Questions to Consider:** How did the kmeans do at separating the set into clusters? Why did it turn out the way it did? Why should you have known from the first plot that kmeans was a bad idea?
+
+<br>
+
+### PCA
+
+#### Run a PCA
+
+Run a PCA on the biopsy dataset.
+
+```{r}
+# put answer here
+```
+
+<br>
+
+#### Plot Results
+
+Plot PC1 vs PC2 from your results, colored by outcome
+
+```{r}
+# put answer here
+```
+
+<br>
+
+**Questions to Consider:** Why did the PCA do better at separating the data than kmeans?
+
+<br>
+
+### tSNE
+
+#### Run a tSNE
+
+Run a tSNE on the biopsy dataset.
+
+```{r}
+# put answer here
+```
+
+Add the tSNE results vectors back to the original data.
+
+```{r}
+# put answer here
+```
+
+Plot your tSNE results colored by cultivar
+
+```{r}
+# put answer here
+```
+
+<br>
+
+**Questions to Consider:** How does the tSNE compare to the PCA? Which cluster method would you pick and why? 
+
+<br><br>
+

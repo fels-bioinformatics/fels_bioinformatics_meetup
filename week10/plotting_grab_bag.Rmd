@@ -20,7 +20,7 @@ select <- dplyr::select
 
 # Plotting Grab Bag
 
-For a relaxed meetup before Thanksgiving, we'll take a look at some useful plot code that's more specific for academic and biological representations.
+For a relaxed meetup ~~before Thanksgiving~~, we'll take a look at some useful plot code that's more specific for academic and biological representations.
 
 ## `cowplot`
 
