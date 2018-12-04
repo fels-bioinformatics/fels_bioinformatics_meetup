@@ -93,9 +93,9 @@ Reference material used while creating material for meetups:
 
 **Materials**
 
-- [slides](week1/bioinformatics_meetup_introduction_2018.09.07.pdf)
-- Introduction to Rmarkdown [in Rmd](week1/intro_to_rmarkdown.Rmd), [html](week1/intro_to_rmarkdown.html), [word document](week1/intro_to_rmarkdown.docx), and [pdf](week1/intro_to_rmarkdown.pdf)
-- Practice for the week is [here](week1/week1_intro_to_rmarkdown_practice.Rmd) and answers are [here in R markdown](week1/week1_intro_to_rmarkdown_practice_ANSWERKEY.Rmd) and [in html](week1/week1_intro_to_rmarkdown_practice_ANSWERKEY.html)
+- [slides](week01/bioinformatics_meetup_introduction_2018.09.07.pdf)
+- Introduction to Rmarkdown [in Rmd](week01/intro_to_rmarkdown.Rmd), [html](week1/intro_to_rmarkdown.html), [word document](week01/intro_to_rmarkdown.docx), and [pdf](week01/intro_to_rmarkdown.pdf)
+- Practice for the week is [here](week01/week01_intro_to_rmarkdown_practice.Rmd) and answers are [here in R markdown](week01/week1_intro_to_rmarkdown_practice_ANSWERKEY.Rmd) and [in html](week01/week1_intro_to_rmarkdown_practice_ANSWERKEY.html)
 
 **References**
 
@@ -113,8 +113,8 @@ Reference material used while creating material for meetups:
 
 **Materials**
 
-- Demo in [Rmd](week2/examine_subset_filter_data.Rmd) and in [html](week2/examine_subset_filter_data.html)
-- Practice for the week is [here](week2/wee2_practice_examine_filter_subset_data.Rmd) and answers are [here in Rmd](week2/wee2_practice_examine_filter_subset_data_ANSWERS.Rmd) and [in html](wee2_practice_examine_filter_subset_data_ANSWERS.html)
+- Demo in [Rmd](week02/examine_subset_filter_data.Rmd) and in [html](week02/examine_subset_filter_data.html)
+- Practice for the week is [here](week02/wee2_practice_examine_filter_subset_data.Rmd) and answers are [here in Rmd](week02/wee2_practice_examine_filter_subset_data_ANSWERS.Rmd) and [in html](wee02_practice_examine_filter_subset_data_ANSWERS.html)
 
 ___
 
@@ -127,10 +127,10 @@ ___
 
 **Materials**
 
-- [slides](week3/2018.09.21_meetup_Plotting_with_ggplot2.pdf)
-- ggplot demo [Rmd file](week3/plotting_w_ggplot.Rmd), [html](week3/plotting_w_ggplot.html)
-- updated demo file with extras discussed in meetup, [Rmd file](week3/plotting_w_ggplot_classwork.Rmd), [html](week3/plotting_w_ggplot_classwork.html)
-- Practice for the week is [here](week3/week3_practice_plotting_with_ggplot.Rmd) and answers are [here in Rmd](week3/week3_practice_plotting_with_ggplot_ANSWERS.Rmd) and in [html](week3_practice_plotting_with_ggplot_ANSWERS.html)
+- [slides](week03/2018.09.21_meetup_Plotting_with_ggplot2.pdf)
+- ggplot demo [Rmd file](week03/plotting_w_ggplot.Rmd), [html](week03/plotting_w_ggplot.html)
+- updated demo file with extras discussed in meetup, [Rmd file](week03/plotting_w_ggplot_classwork.Rmd), [html](week03/plotting_w_ggplot_classwork.html)
+- Practice for the week is [here](week03/week3_practice_plotting_with_ggplot.Rmd) and answers are [here in Rmd](week03/week3_practice_plotting_with_ggplot_ANSWERS.Rmd) and in [html](week03_practice_plotting_with_ggplot_ANSWERS.html)
 
 **References**
 
@@ -138,7 +138,7 @@ ___
 - [viridis vignette](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)
 - [ggbeeswarm vignette/GitHub README](https://github.com/eclarke/ggbeeswarm)
 - [list of ggplot themes](https://jrnold.github.io/ggthemes/reference/index.html)
-- [list of colors](week3/ColorChart.pdf) you can plot with in R 
+- [list of colors](week03/ColorChart.pdf) you can plot with in R 
 
 ---
 
@@ -156,9 +156,9 @@ ___
 **Materials**
 
 - week3 practice ggplot in class review [Rmd file](week3/week3_practice_plotting_with_ggplot_INCLASS_anwsers.Rmd)
-- dplyr demo [Rmd file](week4/data_manipulation_w_dplyr.Rmd), [html file](week4/data_manipulation_w_dplyr.html)
-- dplyr demo with in class extras [Rmd file](week4/data_manipulation_w_dplyr_INCLASSwork.Rmd)
-- practice [Rmd](week4/week4_practice_data_manipulation_w_dplyr.Rmd) and answers in [Rmd](week4/week4_practice_data_manipulation_w_dplyr_ANSWERS.Rmd) and in [html](week4/week4_practice_data_manipulation_w_dplyr_ANSWERS.Rmd) and answer [Rmd](week4_practice_data_manipulation_w_dplyr_INCLASS.Rmd) with in class solutions and extra comments
+- dplyr demo [Rmd file](week04/data_manipulation_w_dplyr.Rmd), [html file](week04/data_manipulation_w_dplyr.html)
+- dplyr demo with in class extras [Rmd file](week04/data_manipulation_w_dplyr_INCLASSwork.Rmd)
+- practice [Rmd](week04/week4_practice_data_manipulation_w_dplyr.Rmd) and answers in [Rmd](week04/week4_practice_data_manipulation_w_dplyr_ANSWERS.Rmd) and in [html](week04/week4_practice_data_manipulation_w_dplyr_ANSWERS.Rmd) and answer [Rmd](week04_practice_data_manipulation_w_dplyr_INCLASS.Rmd) with in class solutions and extra comments
 
 **References**
 
@@ -179,10 +179,10 @@ ___
 
 **Materials**
 
-- [slides](week5/the_tidyverse_and_tidy_data.pdf)
-- data wrangling demo [Rmd](week5/data_wrangling_w_tidyr.Rmd), [html](week5/data_wrangling_w_tidyr.html)
-- tidyr/data wrangling demo with in class additions [Rmd](week5/data_wrangling_w_tidyr_INCLASS.Rmd)
-- data wrangling [practice](week5/week5_practice_data_wrangling_w_tidyr.Rmd) and answers in [Rmd](week5/week5_practice_data_wrangling_w_tidyr_ANSWERS.Rmd) and in [html](week5/week5_practice_data_wrangling_w_tidyr_ANSWERS.Rmd) and in-class answers in [Rmd](week5/week5_practice_data_wrangling_w_tidyr_INCLASS.Rmd)
+- [slides](week05/the_tidyverse_and_tidy_data.pdf)
+- data wrangling demo [Rmd](week05/data_wrangling_w_tidyr.Rmd), [html](week05/data_wrangling_w_tidyr.html)
+- tidyr/data wrangling demo with in class additions [Rmd](week05/data_wrangling_w_tidyr_INCLASS.Rmd)
+- data wrangling [practice](week05/week5_practice_data_wrangling_w_tidyr.Rmd) and answers in [Rmd](week05/week5_practice_data_wrangling_w_tidyr_ANSWERS.Rmd) and in [html](week05/week5_practice_data_wrangling_w_tidyr_ANSWERS.Rmd) and in-class answers in [Rmd](week05/week5_practice_data_wrangling_w_tidyr_INCLASS.Rmd)
 
 **References**
 
@@ -204,8 +204,8 @@ ___
 
 **Materials**
 
-- [slides](week6/statistics_review.pdf)
-- practice [Rmd](week6/week6_practice_stats_in_R.Rmd) and answers in [Rmd](week6/week6_practice_stats_in_R_ANSWERS.Rmd) and in [html](week6/week6_practice_stats_in_R_ANSWERS.html)
+- [slides](week06/statistics_review.pdf)
+- practice [Rmd](week06/week6_practice_stats_in_R.Rmd) and answers in [Rmd](week06/week6_practice_stats_in_R_ANSWERS.Rmd) and in [html](week06/week6_practice_stats_in_R_ANSWERS.html)
 
 ---
 
@@ -218,13 +218,13 @@ ___
 
 **Materials**
 
-- [slides](week7/reading_and_writing_data.pdf)
-- demo [Rmd](week7/import_data_and_review.Rmd), [html](week7/import_data_and_review.html), and the in-class [Rmd](week7/import_data_and_review_INCLASS.Rmd)
-- practice [Rmd](week7/week7_practice_combine_skills.Rmd) and answers in [Rmd](week7/week7_practice_combine_skills_ANSWERS.Rmd) and in [html](week7/week7_practice_combine_skills_ANSWERS.html) and from class in [Rmd](week7/week7_practice_combine_skills_INCLASS.Rmd)
+- [slides](week07/reading_and_writing_data.pdf)
+- demo [Rmd](week07/import_data_and_review.Rmd), [html](week07/import_data_and_review.html), and the in-class [Rmd](week07/import_data_and_review_INCLASS.Rmd)
+- practice [Rmd](week07/week7_practice_combine_skills.Rmd) and answers in [Rmd](week07/week7_practice_combine_skills_ANSWERS.Rmd) and in [html](week07/week7_practice_combine_skills_ANSWERS.html) and from class in [Rmd](week07/week7_practice_combine_skills_INCLASS.Rmd)
 - practice datasets
-    - [sparrows](week7/practice_files/sparrows2.csv)
-    - [wine](week7/practice_files/wine2.tsv)
-    - [rowan](week7/practice_files/rowan2.csv)
+    - [sparrows](week07/practice_files/sparrows2.csv)
+    - [wine](week07/practice_files/wine2.tsv)
+    - [rowan](week07/practice_files/rowan2.csv)
 
 **References**
 
@@ -242,9 +242,9 @@ ___
 
 **Materials**
 
-- [slides](week8/correlation_and_linear_regression_conceptual_review.pdf)
-- demo [Rmd](week8/linear_modeling_and_broom.Rmd) and in class demo [Rmd](week8/linear_modeling_and_broom_INCLASS.Rmd)
-- practice [Rmd](week8/week8_practice_linear_modeling_and_broom.Rmd) and [html](week8/week8_practice_linear_modeling_and_broom.html) and answers in [Rmd](week8/week8_practice_linear_modeling_and_broom_ANSWERS.Rmd) and in [html](week8/week8_practice_linear_modeling_and_broom_ANSWERS.html) and in class review [Rmd](week8/week8_practice_linear_modeling_and_broom_INCLASS.Rmd)
+- [slides](week08/correlation_and_linear_regression_conceptual_review.pdf)
+- demo [Rmd](week08/linear_modeling_and_broom.Rmd) and in class demo [Rmd](week08/linear_modeling_and_broom_INCLASS.Rmd)
+- practice [Rmd](week08/week8_practice_linear_modeling_and_broom.Rmd) and [html](week08/week8_practice_linear_modeling_and_broom.html) and answers in [Rmd](week08/week8_practice_linear_modeling_and_broom_ANSWERS.Rmd) and in [html](week08/week8_practice_linear_modeling_and_broom_ANSWERS.html) and in class review [Rmd](week08/week8_practice_linear_modeling_and_broom_INCLASS.Rmd)
 
 **References**
 
@@ -264,12 +264,12 @@ ___
  
 **Materials**
  
- - [slides](week9/clustering.pdf)
- - demo [Rmd](week9/clustering.Rmd) and in class demo in [Rmd](week9/clustering_INCLASS.Rmd)
- - practice in [Rmd](week9/week9_practice_clustering.Rmd) and in [html](week9/week9_practice_clustering.html) and answers in [Rmd](week9/week9_practice_clustering_ANSWERS.Rmd) and in [html](week9/week9_practice_clustering_ANSWERS.html) and the in class [review](week9/week9_practice_clustering_INCLASS.Rmd)
+ - [slides](week09/clustering.pdf)
+ - demo [Rmd](week09/clustering.Rmd) and in class demo in [Rmd](week09/clustering_INCLASS.Rmd)
+ - practice in [Rmd](week09/week9_practice_clustering.Rmd) and in [html](week09/week9_practice_clustering.html) and answers in [Rmd](week09/week9_practice_clustering_ANSWERS.Rmd) and in [html](week09/week9_practice_clustering_ANSWERS.html) and the in class [review](week09/week9_practice_clustering_INCLASS.Rmd)
  - practice datasets
-     - [wine](week9/wine.csv)
-     - [biopsy](week9/biopsy.csv)
+     - [wine](week09/wine.csv)
+     - [biopsy](week09/biopsy.csv)
 
 ---
 
@@ -292,6 +292,19 @@ ___
 **References**
 
 - cowplot [vignette](https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html)
+
+---
+
+---
+
+### Week 12 (Dec 14)
+
+**Heatmaps**
+
+**Materials**
+
+**References**
+- pheatmap [vignette](https://rdrr.io/cran/pheatmap/man/pheatmap.html)
 
 <br><br>
 
