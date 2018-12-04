@@ -130,7 +130,7 @@ ___
 - [slides](week03/2018.09.21_meetup_Plotting_with_ggplot2.pdf)
 - ggplot demo [Rmd file](week03/plotting_w_ggplot.Rmd), [html](week03/plotting_w_ggplot.html)
 - updated demo file with extras discussed in meetup, [Rmd file](week03/plotting_w_ggplot_classwork.Rmd), [html](week03/plotting_w_ggplot_classwork.html)
-- Practice for the week is [here](week03/week3_practice_plotting_with_ggplot.Rmd) and answers are [here in Rmd](week03/week3_practice_plotting_with_ggplot_ANSWERS.Rmd) and in [html](week03/week3_practice_plotting_with_ggplot_ANSWERS.html)
+- Practice for the week is [here](week03/week3_practice_plotting_with_ggplot.Rmd) and answers are [here in Rmd](week03/week3_practice_plotting_with_ggplot_ANSWERS.Rmd) and in [html](week03/week3_practice_plotting_with_ggplot_ANSWERS.html) and in class review is [here](week03/week3_practice_plotting_with_ggplot_INCLASS_anwsers.Rmd)
 
 **References**
 
@@ -155,10 +155,9 @@ ___
 
 **Materials**
 
-- week3 practice ggplot in class review [Rmd file](week3/week3_practice_plotting_with_ggplot_INCLASS_anwsers.Rmd)
 - dplyr demo [Rmd file](week04/data_manipulation_w_dplyr.Rmd), [html file](week04/data_manipulation_w_dplyr.html)
 - dplyr demo with in class extras [Rmd file](week04/data_manipulation_w_dplyr_INCLASSwork.Rmd)
-- practice [Rmd](week04/week4_practice_data_manipulation_w_dplyr.Rmd) and answers in [Rmd](week04/week4_practice_data_manipulation_w_dplyr_ANSWERS.Rmd) and in [html](week04/week4_practice_data_manipulation_w_dplyr_ANSWERS.Rmd) and answer [Rmd](week04_practice_data_manipulation_w_dplyr_INCLASS.Rmd) with in class solutions and extra comments
+- practice [Rmd](week04/week4_practice_data_manipulation_w_dplyr.Rmd) and answers in [Rmd](week04/week4_practice_data_manipulation_w_dplyr_ANSWERS.Rmd) and in [html](week04/week4_practice_data_manipulation_w_dplyr_ANSWERS.Rmd) and answer [Rmd](week04/week4_practice_data_manipulation_w_dplyr_INCLASS.Rmd) with in class solutions and extra comments
 
 **References**
 
