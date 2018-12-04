@@ -95,7 +95,7 @@ Reference material used while creating material for meetups:
 
 - [slides](week01/bioinformatics_meetup_introduction_2018.09.07.pdf)
 - Introduction to Rmarkdown [in Rmd](week01/intro_to_rmarkdown.Rmd), [html](week01/intro_to_rmarkdown.html), [word document](week01/intro_to_rmarkdown.docx), and [pdf](week01/intro_to_rmarkdown.pdf)
-- Practice for the week is [here](week01/week01_intro_to_rmarkdown_practice.Rmd) and answers are [here in R markdown](week01/week1_intro_to_rmarkdown_practice_ANSWERKEY.Rmd) and [in html](week01/week1_intro_to_rmarkdown_practice_ANSWERKEY.html)
+- Practice for the week is [here](week01/week1_intro_to_rmarkdown_practice.Rmd) and answers are [here in R markdown](week01/week1_intro_to_rmarkdown_practice_ANSWERKEY.Rmd) and [in html](week01/week1_intro_to_rmarkdown_practice_ANSWERKEY.html)
 
 **References**
 
