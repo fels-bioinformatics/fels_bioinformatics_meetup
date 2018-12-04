@@ -114,7 +114,7 @@ Reference material used while creating material for meetups:
 **Materials**
 
 - Demo in [Rmd](week02/examine_subset_filter_data.Rmd) and in [html](week02/examine_subset_filter_data.html)
-- Practice for the week is [here](week02/wee2_practice_examine_filter_subset_data.Rmd) and answers are [here in Rmd](week02/wee2_practice_examine_filter_subset_data_ANSWERS.Rmd) and [in html](week02_practice_examine_filter_subset_data_ANSWERS.html)
+- Practice for the week is [here](week02/wee2_practice_examine_filter_subset_data.Rmd) and answers are [here in Rmd](week02/wee2_practice_examine_filter_subset_data_ANSWERS.Rmd) and [in html](week02/wee2_practice_examine_filter_subset_data_ANSWERS.html)
 
 ___
 
