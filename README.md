@@ -130,7 +130,7 @@ ___
 - [slides](week03/2018.09.21_meetup_Plotting_with_ggplot2.pdf)
 - ggplot demo [Rmd file](week03/plotting_w_ggplot.Rmd), [html](week03/plotting_w_ggplot.html)
 - updated demo file with extras discussed in meetup, [Rmd file](week03/plotting_w_ggplot_classwork.Rmd), [html](week03/plotting_w_ggplot_classwork.html)
-- Practice for the week is [here](week03/week3_practice_plotting_with_ggplot.Rmd) and answers are [here in Rmd](week03/week3_practice_plotting_with_ggplot_ANSWERS.Rmd) and in [html](week03_practice_plotting_with_ggplot_ANSWERS.html)
+- Practice for the week is [here](week03/week3_practice_plotting_with_ggplot.Rmd) and answers are [here in Rmd](week03/week3_practice_plotting_with_ggplot_ANSWERS.Rmd) and in [html](week03/week3_practice_plotting_with_ggplot_ANSWERS.html)
 
 **References**
 
