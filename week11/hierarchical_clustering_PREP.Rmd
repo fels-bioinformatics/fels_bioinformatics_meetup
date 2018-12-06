@@ -1,0 +1,156 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+library(magrittr)
+library(cowplot)
+library(ggrepel)
+library(ggdendro)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggrepel)
+library(ggdendro)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+set.seed(42)
+tibble(x = rnorm(6, mean = 5, sd = 2), 
+       y = x + runif(6),
+       label = c('A', 'B', 'C', 'D', 'E', 'F')) -> demo
+```
+
+```{r}
+demo %>% select(-label) %>% dist(.) -> demo_dist
+```
+
+```{r}
+demo %>% mutate(int_clust_label = c('1', '3', '2', '2', '2', '3')) %>%
+  group_by(int_clust_label) %>%
+  summarize(mean_x = mean(x), mean_y = mean(y)) %>%
+  ungroup() %>%
+  select(-int_clust_label) %>%
+  dist(.)
+```
+
+```{r}
+plot(hclust(demo_dist))
+```
+
+
+```{r}
+ggplot(demo, aes(x = x, y = y, label = label)) + 
+  geom_text_repel(size = 14)
+
+cowplot::ggsave('hierarchical_clustering_demo.png')
+```
+
+```{r}
+hclust(dist(demo), labels = demo$label) -> model
+as.dendrogram(model) -> dendrogram_object
+dendro_data(dendrogram_object) -> ggdendro_model
+```
+
+```{r}
+model$merge
+
+model$height
+
+model$order
+
+model$labels
+
+model$method
+
+model$call
+
+model$dist.method
+```
+
+```{r}
+ggdendro_model$segments
+
+ggdendro_model$labels
+
+ggdendro_model$leaf_labels
+
+ggdendro_model$class
+```
+
+```{r}
+ggdendrogram(model)
+```
+
+```{r}
+ggplot(segment(ggdendro_model)) +
+  geom_segment(aes(x = x, y = y, xend = xend, yend = yend))
+```
+
+```{r}
+ggplot(segment(ggdendro_model)) +
+  geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) +
+  theme_dendro()
+```
+
+```{r}
+ggplot() +
+  geom_segment(data = ggdendro_model$segments, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_text(data = ggdendro_model$labels, aes(x = x, y = y, label = label), vjust = 1.5) +
+  theme_dendro()
+  NULL
+```
+
+### probs approximately what I'll do for demo
+
+```{r}
+demo %>% as.data.frame() %>% column_to_rownames('label') %>% dist(.) -> label_dist
+```
+
+```{r}
+plot(hclust(label_dist))
+```
+
+```{r}
+hclust(label_dist) %>% as.dendrogram() %>% dendro_data() -> gg_w_labels
+```
+
+```{r}
+ggdendrogram(gg_w_labels) +
+#  theme(axis.text.y = element_blank())
+  NULL
+```
+
+```{r}
+ggplot() +
+  geom_segment(data = gg_w_labels$segments, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_text(data = gg_w_labels$labels, aes(x = x, y = y, label = label), vjust = 1.5) +
+  theme_dendro()
+```
+
+
+
+
+
+
+

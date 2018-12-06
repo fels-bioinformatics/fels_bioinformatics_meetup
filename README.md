@@ -294,6 +294,24 @@ ___
 
 ---
 
+### Week 11 (Dec 7)
+
+**Hierarchical Clustering**
+
+- How does hierarchical clustering (broadly) work?
+- Calculate clustering
+- Plot clustering
+
+**Materials**
+
+- [slides](week11/hierarchical_clustering.pdf)
+- demo [Rmd](week11/hierarchical_clustering.Rmd) and in [html](week11/hierarchical_clustering.html)
+
+**References**
+
+- ggdendro [vignette](https://cran.r-project.org/web/packages/ggdendro/vignettes/ggdendro.html)
+- ggplot [extensions gallery](http://www.ggplot2-exts.org/gallery/)
+
 ---
 
 ### Week 12 (Dec 14)
@@ -303,6 +321,7 @@ ___
 **Materials**
 
 **References**
+
 - pheatmap [vignette](https://rdrr.io/cran/pheatmap/man/pheatmap.html)
 
 <br><br>
