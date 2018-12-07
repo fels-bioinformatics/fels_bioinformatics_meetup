@@ -1,0 +1,191 @@
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+library(magrittr)
+library(cowplot)
+library(ggdendro)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+<br>
+
+## Hierarchical Clustering
+
+<br>
+
+#### Prep
+
+In order to make, `ggplot` plots of hierarchical cluster, we'll need the `ggplot` extensions `ggdendro`. If you don't already have it installed, uncomment the code in the chunk below and install it now.
+
+```{r}
+#install.packages('ggdendro')
+```
+
+<br>
+
+We're going to use some simulated data from a normal distribution to demo hierarchical clustering. Run the code in the chunk below before continuing.
+
+```{r}
+set.seed(42)
+tibble(x = rnorm(6, mean = 5, sd = 2), 
+       y = x + runif(6),
+       label = c('A', 'B', 'C', 'D', 'E', 'F')) -> clust_demo
+```
+
+<br><br>
+
+### Getting the data in the correct format with `dist()`
+
+The clustering algorithm requires a distance matrix. A distance matrix calculates the euclidean distance between every row in the table and returns a distance matrix with the distances between all rows.
+
+<br>
+
+We need to convert our data into a distance matrix using the function `dist()`
+
+```{r}
+clust_demo %>% 
+# make the tibble into a dataframe because we need to make the labels
+# into rownames and tibbles don't allow rownames
+  as.data.frame() %>%
+# turn the data labels into rownames so they're carried through the distance
+# matrix and hierarchical clustering calculations
+  column_to_rownames('label') %>%
+# use dist() to calculate a distance matrix
+  dist(.) -> clust_demo_dist
+```
+
+Default distance in `dist()` is "euclidean", but you can select different distances by supplying a different argument to `method` inside `dist()`
+
+```{r}
+clust_demo %>% as.data.frame() %>% column_to_rownames('label') -> clust_demo_dataframe
+
+dist(clust_demo_dataframe, method = 'manhattan')
+```
+
+You can also supply `hclust()` with a correlation matrix. You can you can correlate all rows first, then calculate the distances of the correlations and give that to `hclust()`
+
+```{r}
+iris %>% select(-Species) %>% t() %>% cor(.) %>% dist(.) -> iris_dist
+
+hclust(iris_dist)
+
+plot(hclust(iris_dist))
+
+library(pheatmap)
+pheatmap(iris_dist)
+
+iris %>% select(-Species) %>% t() %>% as.matrix() %>% pheatmap()
+```
+
+<br>
+
+### Calculate the clustering with `hclust()`
+
+The `hclust()` function does the hierarchical clustering calculations.
+
+```{r}
+hclust(clust_demo_dist) -> clust_demo_hclust
+
+str(clust_demo_hclust)
+```
+
+Default clustering method in `hclust()` is "complete", but like with `dist()` you can select the method.
+
+```{r}
+hclust(clust_demo_dist, method = 'Ward.D2')
+```
+
+<br>
+
+### Base R plot the hierarchical clustering
+
+You can use the base R `plot()` to directly plot the `hclust` object.
+
+```{r}
+plot(clust_demo_hclust)
+```
+
+<br>
+
+### Plot hierarchical clustering in `ggplot` using `ggdendro`
+
+It requires more wrangling to plot the `hclust` clustering with ggplot, but the `ggendro` package will do most of the wrangling for us.
+
+```{r}
+# start with the saved hclust object
+clust_demo_hclust %>% 
+# as.dendrogram() turns the hclust results into a special dendrogram class 
+# that R uses for representing any kind of tree
+  as.dendrogram() %>% 
+# dendro_data() turns the dendrogram class data into numbers that are plottable
+  dendro_data() -> clust_demo_ggdendro
+```
+
+<br>
+
+#### `ggdendrogram()`
+
+Plot using `ggdendro`'s helper function, `ggdendro()`. It plots the dendrogram as a ggplot object.
+
+```{r}
+ggdendrogram(clust_demo_ggdendro)
+```
+
+You can modify this like any other ggplot plot. For example, I don't like the y axis labels, so I'll remove them.
+
+```{r}
+ggdendrogram(clust_demo_ggdendro) +
+  theme(axis.text.y = element_blank())
+```
+
+<br>
+
+#### Plotting the dendrogram with straight `ggplot()`
+
+However, you can't see (unless you look at the package code) what exact `ggplot` commands `ggdendrogram()` is plotting, which is super annoying when you want to make adjustments to the plot. However, as you can see when you look at the `dendro_data()` table below, all the numbers are there, so we can just plot it ourselves.
+
+```{r}
+clust_demo_ggdendro
+```
+
+<br>
+
+Now we can plot it with `ggplot()`
+
+```{r}
+# for once, don't put any data in ggplot() !!!
+# the stem and label information is in separate tables, so we want to supply
+# separate data to separate geoms
+ggplot() +
+# the segments table contains the information for plotting branches, so supply
+# that to geom_segment() to plot the branches of the tree
+  geom_segment(data = clust_demo_ggdendro$segments, 
+               aes(x = x, y = y, xend = xend, yend = yend)) +
+# the labels table has the labels for the ends of the branches, so supply that
+# to geom_text() to label the ends of the branches
+  geom_text(data = clust_demo_ggdendro$labels, 
+            aes(x = x, y = y, label = label), vjust = 1) +
+  theme_dendro()
+```
+
+```{r}
+clust_demo_ggdendro$segments
+```
+
+<br><br>
+
+From Jozef: Plot other shapes of cluster dendrograms
+
+```{r}
+library(ape)
+plot(as.phylo(clust_demo_hclust), type = 'fan')
+```
+

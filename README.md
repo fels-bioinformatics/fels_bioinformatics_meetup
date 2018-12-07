@@ -305,7 +305,7 @@ ___
 **Materials**
 
 - [slides](week11/hierarchical_clustering.pdf)
-- demo [Rmd](week11/hierarchical_clustering.Rmd) and in [html](week11/hierarchical_clustering.html)
+- demo [Rmd](week11/hierarchical_clustering.Rmd) and in [html](week11/hierarchical_clustering.html) and in class [demo Rmd](week11/hierarchical_clustering_INCLASS.Rmd)
 
 **References**
 
