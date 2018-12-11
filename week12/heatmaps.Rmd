@@ -1,0 +1,281 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# load libraries
+library(tidyverse)
+library(conflicted)
+library(viridis)
+library(magrittr)
+library(cowplot)
+library(pheatmap)
+
+# configure knit settings
+knitr::opts_chunk$set(echo = TRUE, fig.width = 6, fig.height = 4)
+
+# resolve package conflicts
+filter <- dplyr::filter
+select <- dplyr::select
+```
+
+## Heatmaps
+
+#### Prep
+
+This week uses the package `pheatmap`, so if you haven't installed it already uncomment the code in the chunk below and install it.
+
+```{r}
+#install.packages('pheatmap')
+```
+
+<br>
+
+Also, you'll need to download the data table from the meetup website and load it in the chunk below.
+
+```{r}
+data <- read_tsv('heatmap_tbl.tsv')
+```
+
+<br><br>
+
+### The Basics
+
+To plot a heatmap with `pheatmap()`, all that's needed is a completely numeric table. Row and column names will become labels in the heatmap.
+
+```{r}
+### look at the data and make sure it's totally numeric
+data
+```
+
+<br>
+
+This table has genes as a column, so they'll need to be converted to rownames in order to keep them as labels for the heatmap, or dropped.
+
+```{r}
+data %>%
+# tibbles don't allow rownames, so you have to convert to a dataframe first
+  as.data.frame() %>%
+# convert the gene column to rownames
+  column_to_rownames('gene') %>%
+# plot the heatmap
+  pheatmap(.)
+```
+
+<br><br>
+
+### Modifying Appearance
+
+Before playing with the appearance, save the data as a modified table that's in the correct format for `pheatmap()`
+
+```{r}
+data %>%
+  as.data.frame() %>%
+  column_to_rownames('gene') -> data_mat
+```
+
+<br>
+
+**Change the color palette** for the heatmap by supplying a different R color palette to the `color` argument.
+
+```{r}
+### use an existing color palette like viridis
+pheatmap(data_mat, color = viridis(50))
+
+### changing the number after the palette changes how many colors/breaks there are in the scale
+pheatmap(data_mat, color = viridis(5))
+
+### pick colors for high, medium, low
+# colorRampPalette takes a list of colors and makes them into a continuous palette
+pheatmap(data_mat, color = colorRampPalette(c("navy", "white", "firebrick3"))(50))
+```
+
+<br>
+
+**Cut the heatmap** to emphasize regions of interest. The `cutree_*` argument cuts based on the hierarchical clustering at the level where the number of branches matches the number you supply.
+
+```{r}
+### cut by columns
+pheatmap(data_mat, color = magma(50), cutree_cols = 3)
+
+### cut by rows
+pheatmap(data_mat, color = magma(50), cutree_rows = 2)
+
+### both
+pheatmap(data_mat, color = magma(50), cutree_cols = 2, cutree_rows = 2)
+```
+
+<br>
+
+#### Add color annotation to row/columns
+
+`pheatmap()` will take annotation in a separate table and add it to the heatmap. The table must be a dataframe because the rownames of the annotation table must match either the column names or the row names (whichever one you want to annotate) of the main heatmap table. We'll set up an annotation table for the columns in the chunk below.
+
+```{r}
+# make a data frame with columns listing what you want to annotate
+data.frame(treat_type = c(rep('DMSO', 3), rep('treat1', 3), rep('treat2', 3)), 
+# make the row names of the table the same as the column names
+           row.names = colnames(data_mat)) -> col_anno
+```
+
+<br>
+
+Add the annotation onto the heatmap with the `annotation_col` argument.
+
+```{r}
+pheatmap(data_mat, color = magma(50), annotation_col = col_anno)
+```
+
+<br>
+
+**Select your own annotation colors** by making a list where the annotation categories are assigned colors.
+
+```{r}
+anno_colors <- list(treat_type = c(DMSO = 'cornsilk3', 
+                                   treat1 = 'orange2', 
+                                   treat2 = 'midnightblue'))
+```
+
+<br>
+
+Then supply the annotation color list to the `annotation_colors` argument in `pheatmap()`
+
+```{r}
+pheatmap(data_mat, 
+         color = viridis(50), 
+         annotation_col = col_anno, 
+         annotation_colors = anno_colors)
+```
+
+<br>
+
+#### Combine everything
+
+```{r}
+pheatmap(data_mat, 
+         color = viridis(10),
+         cutree_rows = 2,
+         cutree_cols = 2,
+         annotation_col = col_anno, 
+         annotation_colors = anno_colors)
+```
+
+<br><br>
+
+### Clustering options
+
+Remember from last week (hierarchical clustering) that when clustering is implemented, first a measure of similarity is calculated, then second clustering is calculated. `pheatmap()` calls `dist()` and `hclust()` under the hood and you can select arguments to them within `pheatmap()`
+
+<br>
+
+#### Change the distance calculation
+
+You can change the distance calculated or calculate a correlation instead by supply different arguments to `clustering_distance_rows` and/or `clustering_distance_cols`. Check the documentation for both `pheatmap()` and `dist()` for all the options
+
+```{r}
+### default
+pheatmap(data_mat, clustering_distance_rows = 'euclidean')
+
+### correlation
+pheatmap(data_mat, clustering_distance_rows = 'correlation')
+
+### or any other option from dist(), like manhattan
+pheatmap(data_mat, clustering_distance_rows = 'manhattan')
+```
+
+<br>
+
+#### Change the clustering method
+
+You can change the clustering method by supplying a different argument to `clustering_method` in `pheatmap()`. Check the documentation for both `pheatmap()` and `hclust()` for all the options
+
+```{r}
+### default
+pheatmap(data_mat, clustering_method = 'complete')
+
+### different populat method
+pheatmap(data_mat, clustering_method = 'ward.D2')
+
+### third option; see hclust() documentation for complete list
+pheatmap(data_mat, clustering_method = 'average')
+```
+
+<br>
+
+#### No clustering
+
+If you don't want your heatmap clustered, you can set the `cluster_rows` and/or `cluster_cols` arguments to FALSE.
+
+```{r}
+pheatmap(data_mat, cluster_rows = FALSE)
+```
+
+<br>
+
+#### kmeans
+
+You can do kmeans clustering within `pheatmap()` as well. Here it clusters rows by kmeans, then displays the aggregated rows on the heatmap.
+
+```{r}
+pheatmap(data_mat, kmeans_k = 3)
+```
+
+<br>
+
+#### Scaling
+
+Not clustering, but in the same vein, data can be centered and scaled by either rows or columns.
+
+```{r}
+### default is no scaling
+pheatmap(data_mat, scale = 'none')
+
+### scale rows
+pheatmap(data_mat, scale = 'row')
+
+### scale columns
+pheatmap(data_mat, scale = 'column')
+```
+
+<br><br>
+
+### `geom_tile()`
+
+`ggplot()` sort of has a heatmap geom, `geom_tile()`. However, it only creates blocks of color and doesn't cluster the rows and columns.
+
+```{r}
+data %>% gather(sample, expression, 2:10) %>% 
+  ggplot(aes(x = sample, y = gene, fill = expression)) + 
+    geom_tile() +
+    scale_fill_viridis() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 0.6))
+```
+
+## Note of Caution
+
+You can drastically change the appearance of a heatmap. The same data can appear totally different depending on the parameters selected as seen in the examples below.
+
+```{r}
+pheatmap(data_mat,
+         annotation_col = col_anno,
+         annotation_colors = anno_colors,
+         cutree_rows = 2, 
+         cutree_cols = 3)
+```
+
+```{r}
+pheatmap(data_mat, 
+         color = viridis(50), 
+         scale = 'column',
+         annotation_col = col_anno,
+         annotation_colors = anno_colors,
+         clustering_distance_rows = 'euclidean',
+         clustering_distance_cols = 'canberra',
+         cutree_rows = 3)
+```
+
+<br><br>
+
+
+
+

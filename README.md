@@ -318,7 +318,15 @@ ___
 
 **Heatmaps**
 
+- Making heatmaps with `pheatmap()`
+    - appearance
+    - clustering
+- `geom_tile()`
+
 **Materials**
+
+- demo [Rmd](week12/heatmaps.Rmd) and [html](week12/heatmaps.html)
+- demo [data](week12/heatmap_tbl.tsv)
 
 **References**
 

@@ -1,0 +1,44 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+library(tidyverse)
+library(pheatmap)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Fake data for heatmap
+
+Not pictured in the code below: me messing around with the seed and what distribution I was adding/subtracting until I got something pretty.
+
+```{r}
+set.seed(654)
+tibble(dmso_1 = rnorm(20), dmso_2 = rnorm(20), dmso_3 = rnorm(20)) %>% 
+  arrange(dmso_1) %>%
+  rowwise() %>%
+  mutate(mean_dmso = mean(dmso_1, dmso_2, dmso_3)) %>%
+  ungroup() %>%
+  mutate(treat1_1 = mean_dmso - runif(20, min = 0.5, max = 2),
+         treat1_2 = mean_dmso - runif(20, min = 0.5, max = 2),
+         treat1_3 = mean_dmso - runif(20, min = 0.5, max = 2),
+         treat2_1 = mean_dmso + runif(20, min = 0.5, max = 2),
+         treat2_2 = mean_dmso + runif(20, min = 0.5, max = 2),
+         treat2_3 = mean_dmso + runif(20, min = 0.5, max = 2)) %>%
+  select(-mean_dmso) -> test2
+
+pheatmap(as.matrix(test2))
+
+test2 %>% 
+  mutate(temp1 = 'gene', temp2 = 1:nrow(.)) %>% 
+  unite(gene, temp1, temp2, sep = '') %>%
+  select(gene, everything()) -> test3
+
+test3 %>% as.data.frame() %>% column_to_rownames('gene') %>% pheatmap(.)
+
+#write_tsv(test3, 'heatmap_tbl.tsv')
+```
+
+
