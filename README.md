@@ -325,12 +325,18 @@ ___
 
 **Materials**
 
-- demo [Rmd](week12/heatmaps.Rmd) and [html](week12/heatmaps.html)
+- demo [Rmd](week12/heatmaps.Rmd) and [html](week12/heatmaps.html) and in class demo [Rmd](week12/heatmaps_INCLASS.Rmd)
 - demo [data](week12/heatmap_tbl.tsv)
 
 **References**
 
 - pheatmap [vignette](https://rdrr.io/cran/pheatmap/man/pheatmap.html)
+
+---
+
+NO meetups Dec 21, Dec 28, or Jan 4. Happy break!
+
+---
 
 <br><br>
 
