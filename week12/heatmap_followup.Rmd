@@ -1,0 +1,219 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(pheatmap)
+library(conflicted)
+library(ggdendro)
+
+filter <- dplyr::filter
+select <- dplyr::select
+rename <- dplyr::rename
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Heatmap Follow
+
+There were some questions at our hierarchical clustering and heatmap meetups about reordering dendrograms and subsetting rows from heatmaps, so here's some code for both!
+
+### Switching the Order of Dendrogram Branches
+
+The code in this section heavily draws on this Biostars thread <https://www.biostars.org/p/237067/>
+
+---
+
+This first chunk is just to set up the default dendrogram arrangement
+
+```{r}
+# make a dendrogram
+mtcars %>%
+  dist() %>%
+  hclust() %>%
+  as.dendrogram() %>%
+  dendro_data() -> mtcars_dendro
+
+# add color information to the labels so you can see how they move later
+# wouldn't normally do this step
+mtcars_dendro$labels %>% 
+  mutate(color = ifelse(label == 'Ferrari Dino' | label == 'Duster 360', 
+                        'yes', 'no')) ->
+  mtcars_dendro_labels
+
+# plot the dendrogram
+ggplot() +
+  geom_segment(data = mtcars_dendro$segments, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_text(data = mtcars_dendro_labels, 
+            aes(x = x, y = y, label = label, color = color), 
+            hjust = 1.1, angle = 90, size = 3) +
+  ylim(c(-150,430)) +
+  scale_color_manual(values = c('grey50', 'red')) +
+  theme_dendro() +
+  theme(legend.position = 'none')
+```
+
+To reorder the dendrogram branches, you have to put different weights on the portion of the dendrogram you want to swing around. To swing to the left (or up), make the weight lower, to swing right (or down), make the weight higher
+
+```{r}
+# make a vector of weights based on the names of the branches
+# you cacn make weights for as many branches as you want
+weights_rows <- ifelse(rownames(mtcars) == 'Ferrari Dino', yes = 1, no = 2) + 
+  ifelse(rownames(mtcars) == 'Duster 360', yes = 2, no = 1)
+
+# reorder the dendrogram
+mtcars %>%
+  dist() %>%
+  hclust() %>%
+  as.dendrogram() %>%
+# reorder() is the function that spins the dendrogram based on the weights
+# you need to give it your weight vector
+# The agglo.FUN = mean argument just means to assign weights to the ends of 
+# branches based on the mean of the weights. As long as you follow the rules in 
+# the text before this chunk it should work out fine.
+  reorder(wts = weights_rows, agglo.FUN = mean) %>% 
+  dendro_data() -> mtcars_dendro_reordered
+
+# again, add color information to the labels so you can see how they move
+# wouldn't normally do this step
+mtcars_dendro_reordered$labels %>% 
+  mutate(color = ifelse(label == 'Ferrari Dino' | label == 'Duster 360', 
+                        'yes', 'no')) -> mtcars_dendro_reordered_labels
+
+# plot the reordered dendrogram
+ggplot() +
+  geom_segment(data = mtcars_dendro_reordered$segments, 
+               aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_text(data = mtcars_dendro_reordered_labels, 
+            aes(x = x, y = y, label = label, color = color), 
+            hjust = 1.1, angle = 90, size = 3) +
+  ylim(c(-150,430)) +
+  scale_color_manual(values = c('grey50', 'red')) +
+  theme_dendro() +
+  theme(legend.position = 'none')
+```
+
+Looking at the reordered dendrogram, you can see that "Ferrari Dino", which was assigned a smaller weight,
+swung to the left, while "Duster 360" which was assigned a larger weight swung to the right within its group.
+
+---
+
+What does this look like on a heatmap?
+
+```{r}
+# heatmap with original data
+pheatmap(mtcars)
+
+# make a reordered dendrogram
+mtcars %>%
+  dist() %>%
+  hclust() %>%
+  as.dendrogram() %>%
+# using the same weights as above
+  reorder(wts = weights_rows, agglo.FUN = mean) %>%
+# make it into an hclust() object this time because pheatmap requires it
+  as.hclust() -> mtcars_reordered_rows
+
+# pheatmap requires both the original data plus the reordered rows and/or 
+# columns in hclust() format
+pheatmap(mtcars, cluster_rows = mtcars_reordered_rows)
+```
+
+---
+
+Here's another example where we're switching columns instead.
+
+```{r}
+# original heatmap again for reference
+pheatmap(mtcars)
+
+# Before I reorder the dendrogram, I'll make the weights for the columns I want
+# to use in the rotation.
+weights_col <- ifelse(colnames(mtcars) == 'hp', yes = 1, no = 2) + 
+  ifelse(colnames(mtcars) == 'gear', yes = 2, no = 1)
+
+# reorder the column dendrogram
+mtcars %>%
+# Have to transpose mtcars using t() before using dist() because dist() only works
+# rowwise and we want to work on the columns. So we just switch the columns to rows
+# However this is NOT going to work well with tibbles, so you'll need to switch to
+# a dataframe first and add on rownames before you can do this
+  t() %>%
+  dist() %>%
+  hclust() %>%
+  as.dendrogram() %>%
+  reorder(wts = weights_col, agglo.FUN = mean) %>%
+  as.hclust() -> mtcars_reordered_cols
+
+# plot with the columns swapped around
+pheatmap(mtcars, cluster_cols = mtcars_reordered_cols)
+```  
+
+---
+
+Last, obviously you can reorder both the rows and the columns of the heatmap.
+
+```{r}
+pheatmap(mtcars, 
+         cluster_rows = mtcars_reordered_rows, 
+         cluster_cols = mtcars_reordered_cols)
+```
+
+### Subset Rows Belonging to a Particular Cluster
+
+Code adapted from Biostar post <https://www.biostars.org/p/287512/>
+
+---
+
+First plot the original heatmap and save it.
+
+```{r}
+# plot the heatmap and save
+pheatmap(mtcars) -> mtcars_pheatmap
+```
+
+Cut the tree and decide what clusters you're going to subset out.
+
+```{r}
+# visually decide which section(s) to eliminate based on cutting the tree
+pheatmap(mtcars, cutree_rows = 3) 
+```
+
+Get the cut tree cluster assignments for the rows.
+
+```{r}
+# use the cutree() function to cut the rows from the saved heatmap
+# this will cut the rows the same way pheatmap does, but give you the cluster 
+# assignment with the rowname
+cutree(mtcars_pheatmap$tree_row, k = 3) %>% 
+# everything below this comment is just wrangling
+  as.data.frame() %>% 
+  rownames_to_column() %>%
+  rename(car_model = rowname, cluster = 2) -> mtcars_row_clusters_3
+```
+
+Identify the numbers of the cluster(s) you want to eliminate. Looking at the original heatmap, I'm arbitrarily going to eliminate the bottom cluster. In this toy example, I can just look at the rownames on the heatmap in the bottom cluster and then check them in the cluster assignment table, so I know that the bottom cluster is cluster 1 because that's the cluster "Honda Civic", and "Merc 280C" are assigned to. However, in a large heatmap of genes with thousands of rows, I haven't come up with an easy way to identify which cluster is which, so it might require some playing around with which clusters you want to eliminate.
+
+```{r}
+mtcars_row_clusters_3 %>%
+  filter(cluster != 1) -> no_clust_1
+```
+
+Filter the rownames of your original data to the subset you've selected and replot the heatmap.
+
+```{r}
+mtcars %>%
+# have to convert the rownames to a column so there's something to filter on
+  rownames_to_column() %>%
+# %in% does what it says - only keeps things that are in the lsit
+  filter(rowname %in% no_clust_1$car_model) %>%
+# Have to convert the rowname column back to actual rownames or they won't be
+# plotted on the heatmap. If you have too many rownames to plot just skip this step
+  column_to_rownames('rowname') %>%
+  pheatmap(cutree_rows = 2)
+```
+
+
+
+

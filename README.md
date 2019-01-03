@@ -327,6 +327,7 @@ ___
 
 - demo [Rmd](week12/heatmaps.Rmd) and [html](week12/heatmaps.html) and in class demo [Rmd](week12/heatmaps_INCLASS.Rmd)
 - demo [data](week12/heatmap_tbl.tsv)
+- **2018.01.03** [heatmap follow up](week12/heatmap_followup.Rmd)
 
 **References**
 
