@@ -1,0 +1,297 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Week 13: New Year Review
+
+Before we start on new material, let's review the old! This meetup will be an open-ended practice session, so everyone can review meetup material at their own pace. The questions in this document will guide you through analyzing some data using the code and principles we've discussed during meetups.
+
+For this week, you can use a dataset from a 2018 [TidyTuesday])(https://thomasmock.netlify.com/post/tidytuesday-a-weekly-social-data-project-in-r/). TidyTuesday is an online, social project where members of the R community clean, wrangle, tidy, plot, and test and then discuss (usually on Twitter) a new dataset every Tuesday. TidyTuesday datasets are 'tame' - that is a bit messy, but relatively easy to wrangle. Download data from the 2018 Tidy Tuesday GitHub archive <https://github.com/rfordatascience/tidytuesday/tree/master/data/2018> for this week or you can use your own data.
+
+### Setup
+
+Before you start, load your libraries in the chunk below! This has been done for you before now, so you can look at previous material for what libraries you might want to use. If you get part way through the exercises and realize you need another library, just come back and put it in this chunk.
+
+```{r}
+# load libraries here
+library(tidyverse)
+
+###
+
+library(magrittr)
+library(pheatmap)
+library(viridis)
+library(broom)
+library(ggrepel)
+```
+
+<br><br>
+
+### Wrangle Data
+
+Use the chunk below to read in your data. For help, reference Google, R package documentation, and meetup week 7.
+
+```{r}
+read_csv('starwars.csv') -> starwars_raw
+```
+
+<br>
+
+Wrangle/tidy your data. Remember the principles of tidy data: each variable is a column, and each observation is a row. However, if you have a reason for leaving your data untidy, go ahead. For help, reference Google, R package documentation, and meetup weeks 2, 4, and 5.
+
+```{r}
+# make vectors to set factor levels with when wrangling data
+film_rank <- c(1, 2, 3, 4, 5)
+character_rank <- c('Very favorably', 'Somewhat favorably', 
+                    'Neither favorably or unfavorably (neutral)', 
+                    'Somewhat unfavorably', 'Very unfavorably', 
+                    'Unfamiliar (N/A)')
+education_rank <- c('Less than high school degree', 'High school degree',
+                    'Some college or Associate degree', 'Bachelor degree',
+                    'Graduate degree')
+
+starwars_raw %>% 
+# get rid of that first row that has part of the question in it
+  filter(`Have you seen any of the 6 films in the Star Wars franchise?` != 'Response') %>%
+# recode columns with yes/no answers in them as 0 and 1
+  mutate(seen_any = ifelse(`Have you seen any of the 6 films in the Star Wars franchise?` == 'Yes', 
+                           1, 0),
+         is_fan = ifelse(`Do you consider yourself to be a fan of the Star Wars film franchise?` == 'Yes', 
+                         1, 0),
+         seen_film1 = ifelse(is.na(`Which of the following Star Wars films have you seen? Please select all that apply.`), 
+                             0, 1),
+         seen_film2 = ifelse(is.na(X5), 0, 1),
+         seen_film3 = ifelse(is.na(X6), 0, 1),
+         seen_film4 = ifelse(is.na(X7), 0, 1),
+         seen_film5 = ifelse(is.na(X8), 0, 1),
+         seen_film6 = ifelse(is.na(X9), 0, 1),
+# recode columns ranking films as factors
+         rank_film1 = factor(`Please rank the Star Wars films in order of preference with 1 being your favorite film in the franchise and 6 being your least favorite film.`, 
+                             levels = film_rank),
+         rank_film2 = factor(X11, levels = film_rank),
+         rank_film3 = factor(X12, levels = film_rank),
+         rank_film4 = factor(X13, levels = film_rank),
+         rank_film5 = factor(X14, levels = film_rank),
+         rank_film6 = factor(X15, levels = film_rank),
+# recode columns ranking characters as factors
+         like_HanSolo = factor(`Please state whether you view the following characters favorably, unfavorably, or are unfamiliar with him/her.`, 
+                               levels = character_rank),
+         like_LukeSkywalker = factor(X17, levels = character_rank),
+         like_PrincessLeia = factor(X18, levels = character_rank),
+         like_AnakinSkywalker = factor(X19, levels = character_rank),
+         like_ObiWanKenobi = factor(X20, levels = character_rank),
+         like_EmperorPalpatine = factor(X21, levels = character_rank),
+         like_DarthVader = factor(X22, levels = character_rank),
+         like_LandoCalrissian = factor(X23, levels = character_rank),
+         like_BobaFett = factor(X24, levels = character_rank),
+         like_C3PO = factor(X25, levels = character_rank),
+         like_R2D2 = factor(X26, levels = character_rank),
+         like_JarJarBinks = factor(X27, levels = character_rank),
+         like_PadmeAmidala = factor(X28, levels = character_rank),
+         like_Yoda = factor(X29, levels = character_rank),
+# recode the education column as a factor
+         education = factor(Education, levels = education_rank)
+         ) %>%
+# rename columns with better names for easier downstream analysis
+  rename(who_shot_first = `Which character shot first?`,
+         know_expand_univ = `Are you familiar with the Expanded Universe?`,
+         fan_expand_univ = 32,
+         fan_star_trek = `Do you consider yourself to be a fan of the Star Trek franchise?`,
+         sex = Gender,
+         age = Age,
+         income = `Household Income`,
+         location = 38) %>%
+# drop extra columns and reorder mutate columns
+  select(-(2:29), -Education) %>%
+  select(1, 10:37, 2:7, education, 8:9) %>%
+# get rid of NAs in the character rank column because that had an NA option in the survey
+  replace_na(list(like_HanSolo = 'Unfamiliar (N/A)',
+                  like_LukeSkywalker = 'Unfamiliar (N/A)',
+                  like_PrincessLeia = 'Unfamiliar (N/A)',
+                  like_AnakinSkywalker = 'Unfamiliar (N/A)',
+                  like_ObiWanKenobi = 'Unfamiliar (N/A)',
+                  like_EmperorPalpatine = 'Unfamiliar (N/A)',
+                  like_DarthVader = 'Unfamiliar (N/A)',
+                  like_LandoCalrissian = 'Unfamiliar (N/A)',
+                  like_BobaFett = 'Unfamiliar (N/A)',
+                  like_C3PO = 'Unfamiliar (N/A)',
+                  like_R2D2 = 'Unfamiliar (N/A)',
+                  like_JarJarBinks = 'Unfamiliar (N/A)',
+                  like_PadmeAmidala = 'Unfamiliar (N/A)',
+                  like_Yoda = 'Unfamiliar (N/A)')) -> starwars
+```
+
+<br><br>
+
+### Visualize Data
+
+Use ggplot in the chunks below to visualize your data. You should be aiming to answer a question with your plot. Create a different plot in each of the three chunks in this section, but if you have more ideas/want more practice, add more chunks! For help, reference Google, R package documentation, and meetup weeks 3-4, and 10-12.
+
+---
+
+**What's the question/purpose of the plot?:** Which character is the most liked/most disliked?
+
+```{r}
+starwars %>%
+  gather(character, response, like_HanSolo:like_Yoda) %>%
+  filter(response == 'Very favorably' | response == 'Very unfavorably') %>%
+  ggplot(aes(x = character)) + 
+    geom_bar() + 
+    facet_wrap(~ response) +
+    theme_classic() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+<br>
+
+**What's the question/purpose of the plot?:** Are people more likely to describle themselves as fans of Star Wars if they've seen all six (only six existed at the time of the survey) films?
+
+```{r}
+fan_anno <- data.frame(is_fan = starwars$is_fan, 
+                       row.names = starwars$RespondentID)
+anno_colors <- list(is_fan = c('1' = 'black', '0' = 'white', 'NA' = 'white'))
+
+starwars %>%
+  select(RespondentID, seen_film1:seen_film6) %>%
+  as.data.frame() %>%
+  column_to_rownames('RespondentID') %>%
+  pheatmap(color = colorRampPalette(c("deepskyblue", "firebrick3"))(2), 
+           show_rownames = FALSE,
+           legend_breaks = c(0, 1),
+           legend_labels = c('no', 'yes'),
+           annotation_row = fan_anno,
+           annotation_colors = anno_colors,
+           annotation_legend = FALSE,
+           cutree_rows = 4,
+           cutree_cols = 2)
+```
+
+<br>
+
+**What's the question/purpose of the plot?:** Does age matter to whether you've seen Star Wars?
+
+```{r}
+ggplot(starwars, aes(x = age, fill = as.factor(seen_any))) + 
+  geom_bar() +
+  facet_wrap(~ seen_any) +
+  scale_fill_manual('', values = c('grey', 'deepskyblue3')) +
+  scale_x_discrete(limits = c('18-29', '30-44', '45-60', '> 60', NA)) +
+  theme_classic() +
+  theme(legend.position = 'none')
+```
+
+<br><br>
+
+### Examine/Test Your Data
+
+Do some hypothesis testing on your data and try to reach some conclustions! Do a different hypothesis test in each of the three chunks in this section, but if you have more ideas/want more practice, add more chunks! For help, reference Google, R package documentation, and meetup weeks 2, 4, 6, 8, 9, and 11. Also for reference, here's some of the stuff we've discussed:
+
+- clustering
+    - kmeans
+    - hierarchical clustering
+    - PCA
+    - tSNE
+- hypothesis testing
+    - t test
+    - chi squared
+    - correlation
+    - linear model
+
+---
+
+**What's the question?:** Does sex correlate with being a fan of Star Wars?
+
+```{r}
+starwars %>%
+  mutate(sex_num = case_when(sex == 'Female' ~ 1,
+                             sex == 'Male' ~ 2,
+                             TRUE ~ 0)) %$% 
+  cor.test(is_fan, sex_num) %>% 
+  tidy()
+```
+
+<br>
+
+**What's the question?:** Are people more likely to describle themselves as fans of Star Wars if they've seen all six (only six existed at the time of the survey) films? Hypothesis test of the second plot.
+
+```{r}
+starwars %>%
+  select(RespondentID, is_fan, seen_film1:seen_film6) %>%
+  gather(film, has_seen, seen_film1:seen_film6) %>%
+  group_by(RespondentID, is_fan) %>%
+  summarize(num_films_seen = sum(has_seen)) %>%
+  ungroup() %>%
+  lm(is_fan ~ num_films_seen, data = .) %>%
+  tidy()
+```
+
+<br>
+
+**What's the question?:** Can you cluster characters by affinity, light side/dark side, using people's preferences for the character?
+
+```{r}
+# chance survey responses to numeric so you can do a PCA on them and
+# add the characters affinity and
+# format correctly for the PCA
+starwars %>% select(RespondentID, like_HanSolo:like_Yoda) %>%
+  gather(character, rank, like_HanSolo:like_Yoda) %>%
+  mutate(character = str_replace(character, 'like_', ''),
+         rank_num = case_when(rank == 'Very unfavorably' ~ 1,
+                              rank == 'Somewhat unfavorably' ~ 2,
+                              rank == 'Neither favorably or unfavorably (neutral)' ~ 3,
+                              rank == 'Somewhat favorably' ~ 4,
+                              rank == 'Very favorably' ~ 5,
+                              TRUE ~ 0),
+         affinity = case_when(character == 'AnakinSkywalker' ~ 'light',
+                          character == 'BobaFett' ~ 'dark',
+                          character == 'C3PO' ~ 'light',
+                          character == 'DarthVader' ~ 'dark',
+                          character == 'EmperorPalpatine' ~ 'dark',
+                          character == 'HanSolo' ~ 'light',
+                          character == 'JarJarBinks' ~ 'light',
+                          character == 'LandoCalrissian' ~ 'light',
+                          character == 'LukeSkywalker' ~ 'light',
+                          character == 'ObiWanKenobi' ~ 'light',
+                          character == 'PadmeAmidala' ~ 'light',
+                          character == 'PrincessLeia' ~ 'light',
+                          character == 'R2D2' ~ 'light',
+                          character == 'Yoda' ~ 'light')) %>%
+  select(-rank) %>%
+  spread(RespondentID, rank_num) -> starwars_characters
+
+# run the PCA
+starwars_characters %>% 
+  select(3:14) %>%
+  prcomp() %>%
+  augment(starwars_characters) %>% 
+  select(-1, -(4:1189)) -> characters_pca
+
+# plot the PCA
+ggplot(characters_pca, aes(x = .fittedPC1, 
+                           y = .fittedPC2, 
+                           color = affinity, 
+                           label = character)) +
+  geom_point(size = 3) + 
+  geom_text_repel(point.padding = 0.3) +
+  scale_color_manual('', values = c('red3', 'deepskyblue3')) +
+  theme_classic()
+```
+
+<br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
